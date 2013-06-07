@@ -3,18 +3,39 @@ $(document).ready(function(){
   initialize();
 });
 
-var data = {x:1, y:2, z:3};
-
-function refresh() {
-  $('#field1X').val(data.x);
-  $('#field1Y').val(data.y);
-  $('#field1Z').val(data.z);
-  $('#field2X').val(data.x);
-  $('#field2Y').val(data.y);
-  $('#field2Z').val(data.z);
+function Data() {
+  this.x = 1;
+  this.y = 2;
+  this.z = 3;
+  this.setX = function( x ) {
+    this.x = x;
+    this.trigger("change:x",x);
+  };
+  this.setY = function( y ) {
+    this.y = y;
+    this.trigger("change:y",y);
+  };
+  this.setZ = function( z ) {
+    this.z = z;
+    this.trigger("change:z",z);
+  };
 }
+
+var data = new Data;
+_.extend(data, Backbone.Events);
 
 function initialize() {
-  refresh();
+  data.on("change:x",changeHandler,$('#field1X'));
+  data.on("change:y",changeHandler,$('#field1Y'));
+  data.on("change:z",changeHandler,$('#field1Z'));
+  data.on("change:x",changeHandler,$('#field2X'));
+  data.on("change:y",changeHandler,$('#field2Y'));
+  data.on("change:z",changeHandler,$('#field2Z'));
 }
+
+function changeHandler(newVal) {
+  $(this).val(newVal);
+  //console.log(data.x+' '+data.y+' '+data.z);
+}
+
 

@@ -5,16 +5,18 @@
   <title>Reservations</title>  
   <link href="/css/reservations.css" rel="stylesheet" type="text/css" /> 
   <script type="text/javascript" src="/js/jquery-1.8.0.min.js"></script>
+  <script type="text/javascript" src="/js/underscore-1.4.4.js"></script> <!-- dev version -->
+  <script type="text/javascript" src="/js/backbone-1.0.0.js"></script> <!-- dev version -->
   <script type="text/javascript" src="/js/reservations.js"></script>
 </head>
 <body>
 <h1>Reservations app</h1>
-x: <input id="field1X" type="text" onchange="data.x=$('#field1X').val();refresh()"/>
-y: <input id="field1Y" type="text" onchange="data.y=$('#field1Y').val();refresh()"/>
-z: <input id="field1Z" type="text" onchange="data.z=$('#field1Z').val();refresh()"/>
+x: <input id="field1X" type="text" onchange="data.setX($('#field1X').val())"/>
+y: <input id="field1Y" type="text" onchange="data.setY($('#field1Y').val())"/>
+z: <input id="field1Z" type="text" onchange="data.setZ($('#field1Z').val())"/>
 <br/>
-x: <input id="field2X" type="text" onchange="data.x=$('#field2X').val();refresh()"/>
-y: <input id="field2Y" type="text" onchange="data.y=$('#field2Y').val();refresh()"/>
-z: <input id="field2Z" type="text" onchange="data.z=$('#field2Z').val();refresh()"/>
+x: <input id="field2X" type="text" onchange="data.setX($('#field2X').val())"/>
+y: <input id="field2Y" type="text" onchange="data.setY($('#field2Y').val())"/>
+z: <input id="field2Z" type="text" onchange="data.setZ($('#field2Z').val())"/>
 </body>
 </html>
