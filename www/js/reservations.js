@@ -8,22 +8,29 @@ var Data = Backbone.Model.extend({
     x: 1,
     y: 2,
     z: 3 
-  } 
+  },
+  url: 'model'
 });
 
 var data = new Data;
 
 function initialize() {
-  initObserver(data, 'x', $('#field1X'));
-  initObserver(data, 'y', $('#field1Y'));
-  initObserver(data, 'z', $('#field1Z'));
-  initObserver(data, 'x', $('#field2X'));
-  initObserver(data, 'y', $('#field2Y'));
-  initObserver(data, 'z', $('#field2Z'));
-  console.log('data.get '+data.get('x'));
-  data.set('x',$('#field1X').val());
-}
+  data.fetch();
 
+  registerEditor(data, 'x', $('#field1X'));
+  registerEditor(data, 'y', $('#field1Y'));
+  registerEditor(data, 'z', $('#field1Z'));
+  registerEditor(data, 'x', $('#field2X'));
+  registerEditor(data, 'y', $('#field2Y'));
+  registerEditor(data, 'z', $('#field2Z'));
+//  console.log('data.get '+data.get('x'));
+}
+function registerEditor(model, prop, elt) {
+  var $elt = $(elt);
+  $elt.change( function () { model.set(prop,$elt.val()); } );
+  initObserver(model,prop,$elt);
+
+}
 function initObserver(model, prop, elt) {
   elt.val(model.get(prop));
   model.on("change:"+prop,changeHandler,elt);
@@ -35,5 +42,6 @@ function changeHandler(model,newVal) {
 }
 
 function saveButton() {
+  console.log(data.toJSON());
   data.save();
 }

@@ -8,6 +8,7 @@ var http = require('http');
 var url = require('url');
 var path = require('path');
 var fs = require('fs');
+var qs = require('querystring');
 
 var mimeTypes = { "html": "text/html"
 				, "jpeg": "image/jpeg"
@@ -22,11 +23,31 @@ function writeError(res, nr, msg){
   res.end();
 }
 
-function handler(req, res) {
+
+function reqHandler(req, res) {
+  if (req.method == 'GET')
+    fileHandler(req,res);
+  else if (req.method == 'POST')
+    postHandler(req,res);
+  else
+    writeError(res,405,'Unknown method: \''+req.method+'\'');
+}
+
+function postHandler(req, res) {
+  var postData = '';
+  req.on('data', function (data) {
+      postData += data;
+  });
+  req.on('end', function () {
+      console.log(postData);
+  });
+}
+function fileHandler(req, res) {
   var uri = url.parse(req.url).pathname;
-  uri = uri == '/' ? 'index.html' : uri;
-  var filename = path.join(process.cwd(), path.join('www', unescape(uri)));
-  console.log(uri+ ' '+ filename);
+  console.log(req.method + ' ' +uri);
+  var filename = path.join( process.cwd()
+                          , path.join( 'www'
+                                     , unescape(uri == '/' ? 'index.html' : uri)));
 
   try {
     stats = fs.lstatSync(filename); // throws if path doesn't exist
@@ -46,9 +67,9 @@ function handler(req, res) {
         writeError(res,404,'Cannot open file\n');
       });
       
-      console.log('before');
+      //console.log('before');
       fileStream.pipe(res);
-      console.log('after'); // todo: even on exception in pipe, this code executes
+      //console.log('after'); // todo: even on exception in pipe, this code executes
     //} catch (e) {
     //  console.log('error reading file: '+e);
     //};
@@ -68,6 +89,6 @@ process.on('uncaughtException', function(err) {
 });
 
 
-http.createServer(handler).listen(portNr);
+http.createServer(reqHandler).listen(portNr);
 
 console.log('Server running at http://127.0.0.1:'+portNr+'/');
