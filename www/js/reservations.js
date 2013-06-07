@@ -3,39 +3,37 @@ $(document).ready(function(){
   initialize();
 });
 
-function Data() {
-  this.x = 1;
-  this.y = 2;
-  this.z = 3;
-  this.setX = function( x ) {
-    this.x = x;
-    this.trigger("change:x",x);
-  };
-  this.setY = function( y ) {
-    this.y = y;
-    this.trigger("change:y",y);
-  };
-  this.setZ = function( z ) {
-    this.z = z;
-    this.trigger("change:z",z);
-  };
-}
+var Data = Backbone.Model.extend({
+  defaults: {
+    x: 1,
+    y: 2,
+    z: 3 
+  } 
+});
 
 var data = new Data;
-_.extend(data, Backbone.Events);
 
 function initialize() {
-  data.on("change:x",changeHandler,$('#field1X'));
-  data.on("change:y",changeHandler,$('#field1Y'));
-  data.on("change:z",changeHandler,$('#field1Z'));
-  data.on("change:x",changeHandler,$('#field2X'));
-  data.on("change:y",changeHandler,$('#field2Y'));
-  data.on("change:z",changeHandler,$('#field2Z'));
+  initObserver(data, 'x', $('#field1X'));
+  initObserver(data, 'y', $('#field1Y'));
+  initObserver(data, 'z', $('#field1Z'));
+  initObserver(data, 'x', $('#field2X'));
+  initObserver(data, 'y', $('#field2Y'));
+  initObserver(data, 'z', $('#field2Z'));
+  console.log('data.get '+data.get('x'));
+  data.set('x',$('#field1X').val());
 }
 
-function changeHandler(newVal) {
-  $(this).val(newVal);
-  //console.log(data.x+' '+data.y+' '+data.z);
+function initObserver(model, prop, elt) {
+  elt.val(model.get(prop));
+  model.on("change:"+prop,changeHandler,elt);
 }
 
+function changeHandler(model,newVal) {
+  this.val(newVal);
+  console.log(model.get('x'));
+}
 
+function saveButton() {
+  data.save();
+}
