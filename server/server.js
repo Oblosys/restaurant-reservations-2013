@@ -60,7 +60,7 @@ app.post('/model/:type', function(req, res) {
 app.put('/model/:type/:id', function(req, res) {
   res.send(updateModel(req.params.type, req.params.id, req.body));
 });
-app.delete('/model/:type/:id', function(req, res) {
+app.del('/model/:type/:id', function(req, res) {
   res.send(deleteModel(req.params.type, req.params.id));
 });
 
