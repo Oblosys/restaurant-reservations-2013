@@ -1,0 +1,55 @@
+@CHARSET "UTF-8";
+
+body {
+	font-family: arial;
+}
+#calendar {
+	width: 400px;
+}
+.month {
+	display: table;
+	border-collapse: collapse;
+	text-align: center;
+	width: 100%;
+}
+.weekHeader {
+  display: table-row;
+  background-color: #888;
+  color: white;
+}
+.week {
+  display: table-row;
+  background-color: #bbb;
+}
+.weekHeader .day {
+	height: 20px;
+}
+.day {
+	display: table-cell;
+	width: auto;
+	height: 50px;
+	border: solid 2px black;
+}
+.day[selected]{
+	background-color: red;
+}
+.dayContent {
+  padding-top: 4px;
+}
+.hourSlots {
+  display: table;
+  width:100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+.hourHeader {
+	display: table-row;
+}
+.hour {
+	display: table-cell;
+	background-color: #999;
+  border: solid 2px black;
+}
+.hour[selected]{
+  background-color: red;
+}
