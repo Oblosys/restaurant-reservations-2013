@@ -37,7 +37,7 @@ function createModel(type, obj) {
   return {id: id};
 }
 function updateModel(type, id, obj) {
-  console.log('\nUPDATEl: type:'+type+' id:'+id);
+  console.log('\nUPDATE: type:'+type+' id:'+id);
   console.log('content: '+JSON.stringify(obj));
   return {};
 }
