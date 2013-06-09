@@ -3,6 +3,7 @@
  */
 
 var portNr = process.argv[2] || 8200
+  , modelFileName = 'model/reservations.json'
   , http = require('http')
   , url = require('url')
   , fs = require('fs')
@@ -15,25 +16,60 @@ function writeError(res, nr, msg){
   res.end();
 }
 
+
 function modelHandler(req, res) {
   var uri = url.parse(req.url).pathname;
-  console.log('model Handler: '+req.method+' '+uri);
+  console.log('Model handler: '+req.method+' (/model)'+uri);
   
-  if (req.method == 'GET')
-    res.end('{"x":10,"y":20,"z":30}');
+  if (req.method == 'GET') { // simply send contents of reservation.json
+    var fileStream = fs.createReadStream(modelFileName);
+    fileStream.on('error', function() { 
+      //writeError(res,404,'Cannot open file\n');
+    });
+    fileStream.pipe(res);
+  } 
   else if (req.method == 'POST')
     postHandler(req,res);
   else
-    writeError(res,400,'Unhandled method: \''+req.method+'\'');
+    putHandler(req,res);
+//    writeError(res,400,'Unhandled method: \''+req.method+'\'');
 }
 
-function postHandler(req, res) {
+var globalCounter = 0;
+function postHandler(req, res) { // simply write post data to reservation.json
   var postData = '';
   req.on('data', function (data) {
       postData += data;
   });
   req.on('end', function () {
-      console.log(postData);
+      console.log('Received '+postData);
+      fs.writeFile(modelFileName, postData, function (data) {
+        // what do we do here?
+        var freshId = 'res-'+ globalCounter++;
+        console.log('created id: '+freshId);
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
+        res.write('{"id": "'+freshId+'"}');
+        res.end();
+      });
+  });
+}
+
+function putHandler(req, res) { // simply write post data to reservation.json
+  var postData = '';
+  req.on('data', function (data) {
+      postData += data;
+  });
+  req.on('end', function () {
+      console.log('Received '+postData);
+      fs.writeFile(modelFileName, postData, function (data) {
+        // what do we do here?
+        var freshId = 'res-'+ globalCounter++;
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
+        // no response means id stays the same
+        res.end();
+      });
   });
 }
 
