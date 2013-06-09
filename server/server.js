@@ -7,70 +7,13 @@ var portNr = process.argv[2] || 8200
   , http = require('http')
   , url = require('url')
   , fs = require('fs')
-  , connect = require('connect')
+  , express = require('express')
   , app;
 
 function writeError(res, nr, msg){
   res.writeHead(nr, {'Content-Type': 'text/plain'});
   res.write(msg);
   res.end();
-}
-
-
-function modelHandler(req, res) {
-  var uri = url.parse(req.url).pathname;
-  console.log('Model handler: '+req.method+' (/model)'+uri);
-  
-  if (req.method == 'GET') { // simply send contents of reservation.json
-    var fileStream = fs.createReadStream(modelFileName);
-    fileStream.on('error', function() { 
-      //writeError(res,404,'Cannot open file\n');
-    });
-    fileStream.pipe(res);
-  } 
-  else if (req.method == 'POST')
-    postHandler(req,res);
-  else
-    putHandler(req,res);
-//    writeError(res,400,'Unhandled method: \''+req.method+'\'');
-}
-
-var globalCounter = 0;
-function postHandler(req, res) { // simply write post data to reservation.json
-  var postData = '';
-  req.on('data', function (data) {
-      postData += data;
-  });
-  req.on('end', function () {
-      console.log('Received '+postData);
-      fs.writeFile(modelFileName, postData, function (data) {
-        // what do we do here?
-        var freshId = 'res-'+ globalCounter++;
-        console.log('created id: '+freshId);
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
-        res.write('{"id": "'+freshId+'"}');
-        res.end();
-      });
-  });
-}
-
-function putHandler(req, res) { // simply write post data to reservation.json
-  var postData = '';
-  req.on('data', function (data) {
-      postData += data;
-  });
-  req.on('end', function () {
-      console.log('Received '+postData);
-      fs.writeFile(modelFileName, postData, function (data) {
-        // what do we do here?
-        var freshId = 'res-'+ globalCounter++;
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
-        // no response means id stays the same
-        res.end();
-      });
-  });
 }
 
 // todo: still necessary?
@@ -80,11 +23,46 @@ process.on('uncaughtException', function(err) {
 });
 
 
-app = connect()
-  //.use(connect.favicon())
-  .use(connect.logger('dev'))
-  .use(connect.static('www'))
-  .use('/model',modelHandler);
+var globalCounter = 0;
+
+function readModel(type, id) {
+  console.log('\nREAD: type:'+type+' id:'+id);
+  return {id: id, name: "Pino "+type, date: "4-6-2013"};
+}
+function createModel(type, obj) {
+  console.log('\nCREATE: type:'+type);
+  console.log('content: '+JSON.stringify(obj));
+  id = type+'-'+globalCounter++;
+  console.log('fresh id:'+id);
+  return {id: id};
+}
+function updateModel(type, id, obj) {
+  console.log('\nUPDATEl: type:'+type+' id:'+id);
+  console.log('content: '+JSON.stringify(obj));
+  return {};
+}
+function deleteModel(type, id) {
+  console.log('\nDELETE: type:'+type+' id:'+id);
+  return {};
+}
+
+app = express();
+app.use(express.static(__dirname + '/../www'));
+app.use(express.bodyParser());
+
+app.get('/model/:type/:id', function(req, res) {
+  res.send(readModel(req.params.type, req.params.id));
+});
+app.post('/model/:type', function(req, res) { 
+  console.log(req.body);
+  res.send(createModel(req.params.type, req.body));
+});
+app.put('/model/:type/:id', function(req, res) {
+  res.send(updateModel(req.params.type, req.params.id, req.body));
+});
+app.delete('/model/:type/:id', function(req, res) {
+  res.send(deleteModel(req.params.type, req.params.id));
+});
 
 http.createServer(app).listen(portNr, function() {
   console.log('Server running at http://127.0.0.1:'+portNr+'/');
