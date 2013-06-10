@@ -6,7 +6,8 @@ $(document).ready(function(){
 var Reservation = Backbone.Model.extend({
   defaults: {
     date: '1-1-2000',
-    name: 'name'
+    name: 'name',
+    nrOfPeople: 2
   },
   urlRoot: '/model/reservation'
 });
@@ -32,6 +33,35 @@ selection.on('change:hour', function(model, newHour) {
   $(newHour).attr('selected','selected');
 });
 
+
+function dayCellRefresh(dayCell) {
+  var cellDate = $(dayCell).attr('date');
+  var reservationsForCell = viewedMonth.where({date: cellDate});
+  console.log(reservationsForCell);
+  var nrOfPeople = _.reduce(reservationsForCell, function(nr,res) {return nr+res.get('nrOfPeople')}, 0);
+  //console.log(reservationsForDay);
+  $(dayCell).find('.dayContent').html(reservationsForCell.length + ' ('+nrOfPeople+')');
+}
+
+// TODO: don't use .day for header, and then update all selectors (remove .week)
+// TODO: fix width of colums (is proportional to day names)
+// TODO: rename viewedMonth to something with 'reservations'
+
+function handleReservationAdded(res,coll,opts) {
+  console.log('Reservation added '+res.get('name'));
+  logViewedMonth();
+  console.log('#calendar .week .day[date="'+res.get('date')+'"]');
+  var dayCell = $('#calendar .week .day[date="'+res.get('date')+'"]');
+  dayCellRefresh(dayCell);
+}
+// TODO: need full views here? Maybe not
+// TODO: handle removal
+
+function handleReservationRemoved(res,coll,opts) {
+  console.log('Reservation removed '+res.get('name'));
+  logViewedMonth();
+}
+
 function showDate(date) {
   return date.getDate() + '-' + (date.getMonth()+1) + '-' + date.getFullYear();
 }
@@ -40,13 +70,9 @@ function getNumberOfDaysInMonth(year,month) {
   // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
 }
 
-// less confusing name than getDay and has Monday = 0 rather than Sunday
-function getWeekDay(date) {
-  return (date.getDay+6)%7;
-}
 function initialize() {
   var today = new Date();
-  var currentMonth = 0;//today.getMonth();
+  var currentMonth = today.getMonth();
   var currentYear = today.getFullYear();
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
@@ -72,7 +98,7 @@ function initialize() {
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
     else
       $(this).removeAttr('isCurrentMonth');
-    $(this).html('<div class="dayContent">'+dates[i].getDate()+'</div>');
+    $(this).html('<div class="dayNr">'+dates[i].getDate()+'</div><div class="dayContent"></div>');
     $(this).click( function() { selection.set('day', this);} );
   });
   $('.hourHeader .hour').each(function(i) {
@@ -88,8 +114,8 @@ function initialize() {
   });
   
   viewedMonth = new Reservations;
-  viewedMonth.on("add", function(mdl,cln,opts) {console.log('Reservation added '+mdl.get('name')); logViewedMonth();});
-  viewedMonth.on("remove", function() {console.log('Reservation added'); logViewedMonth();});
+  viewedMonth.on("add", handleReservationAdded);
+  viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
 }
 
@@ -106,7 +132,7 @@ function testButton1() {
 }
 function testButton2() {
   console.log('Test button 2 pressed, create');
-  viewedMonth.create({name:'Ieniemienie', date: '10-6-2013'});
+  viewedMonth.create({name:'Ieniemienie', date: '10-6-2013', nrOfPeople: 2});
 }
 function testButton3() {
   console.log('Test button 3 pressed, fetch');
