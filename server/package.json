@@ -5,6 +5,7 @@
 , "dependencies": 
   { "connect": "2.x"
   , "express": "3.x"
+  , "underscore": "1.x"
   , "backbone": "1.x"
   }
 }
