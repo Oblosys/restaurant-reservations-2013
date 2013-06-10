@@ -7,7 +7,8 @@ var portNr = process.argv[2] || 8200
   , http = require('http')
   , url = require('url')
   , fs = require('fs')
-  , express = require('express')
+  , express = require('express')  
+  , Backbone = require('backbone')
   , app;
 
 function writeError(res, nr, msg){
