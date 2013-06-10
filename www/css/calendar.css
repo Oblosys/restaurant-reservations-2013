@@ -19,7 +19,7 @@ body {
 }
 .week {
   display: table-row;
-  background-color: #bbb;
+  background-color: white;
 }
 .weekHeader .day {
 	height: 20px;
@@ -31,7 +31,13 @@ body {
 	border: solid 2px black;
 }
 .day[selected]{
-	background-color: red;
+  background-color: red;
+}
+.week .day:not([isCurrentMonth]){
+  background-color: #ddd;
+}
+.week .day:not([isCurrentMonth])[selected]{
+  background-color: red;
 }
 .dayContent {
   padding-top: 4px;
