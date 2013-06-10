@@ -5,7 +5,7 @@ $(document).ready(function(){
 
 var Reservation = Backbone.Model.extend({
   defaults: {
-    date: 'date',
+    date: '1-1-2000',
     name: 'name',
     nrOfPeople: 2
   },
