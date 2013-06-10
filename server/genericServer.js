@@ -111,6 +111,7 @@ function createApplication() {
   var app = express();
 
   app.use(express.static(__dirname + '/../www'));
+//  app.use(express.logger());
   app.use(express.bodyParser());
 
   app.get('/model/:type/:id', function(req, res) {
@@ -131,6 +132,14 @@ function createApplication() {
 }
 
 function createServer(app) {
+  /*
+  app.use(function(err, req, res, next) {
+    // here we can handle exceptions, (function not called otherwise)
+    // but the default behaviour seems just fine (send to console and as 500 response)
+    res.send(500, 'error');
+  });
+  */
+
   http.createServer(app).listen(portNr, function() {
     console.log('Server running at http://127.0.0.1:'+portNr+'/');
   });
