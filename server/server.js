@@ -20,11 +20,11 @@ app = genericServer();
 // cannot set properties directly (so genericServer.root = .. fails)
 genericServer.root.reservation =
  { idCounter: 10
- , models: [ {id:'reservation-1', name:'Martijn', date:'4-6-2013'}
-           , {id:'reservation-2', name:'Henk', date:'4-6-2013'}
-           , {id:'reservation-3', name:'Carel', date:'5-6-2013'}
-           , {id:'reservation-4', name:'Anna', date:'6-6-2013'}
-           , {id:'reservation-5', name:'Pino', date:'7-6-2013'}
+ , models: [ {id:'reservation-1', name:'Martijn', date:'4-6-2013', nrOfPeople: 3}
+           , {id:'reservation-2', name:'Henk', date:'4-6-2013', nrOfPeople: 2}
+           , {id:'reservation-3', name:'Carel', date:'5-6-2013', nrOfPeople: 2}
+           , {id:'reservation-4', name:'Anna', date:'6-6-2013', nrOfPeople: 3}
+           , {id:'reservation-5', name:'Pino', date:'7-6-2013', nrOfPeople: 8}
            ]
  };
 
