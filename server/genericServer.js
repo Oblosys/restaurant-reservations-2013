@@ -106,24 +106,38 @@ function deleteModel(type, id) {
   return {};
 }
 
-app = express();
-app.use(express.static(__dirname + '/../www'));
-app.use(express.bodyParser());
 
-app.get('/model/:type/:id', function(req, res) {
-  res.send(readModel(req.params.type, req.params.id));
-});
-app.post('/model/:type', function(req, res) { 
-  console.log(req.body);
-  res.send(createModel(req.params.type, req.body));
-});
-app.put('/model/:type/:id', function(req, res) {
-  res.send(updateModel(req.params.type, req.params.id, req.body));
-});
-app.del('/model/:type/:id', function(req, res) {
-  res.send(deleteModel(req.params.type, req.params.id));
-});
+function createApplication() {
+  var app = express();
 
-http.createServer(app).listen(portNr, function() {
-  console.log('Server running at http://127.0.0.1:'+portNr+'/');
-});
+  app.use(express.static(__dirname + '/../www'));
+  app.use(express.bodyParser());
+
+  app.get('/model/:type/:id', function(req, res) {
+    res.send(readModel(req.params.type, req.params.id));
+  });
+  app.post('/model/:type', function(req, res) { 
+    console.log(req.body);
+    res.send(createModel(req.params.type, req.body));
+  });
+  app.put('/model/:type/:id', function(req, res) {
+    res.send(updateModel(req.params.type, req.params.id, req.body));
+  });
+  app.del('/model/:type/:id', function(req, res) {
+    res.send(deleteModel(req.params.type, req.params.id));
+  });
+  
+  return app;
+}
+
+function createServer(app) {
+  http.createServer(app).listen(portNr, function() {
+    console.log('Server running at http://127.0.0.1:'+portNr+'/');
+  });
+}
+
+// todo: why module.exports?
+exports = module.exports = createApplication;
+exports.version = '0.1.0';
+exports.root = root;
+exports.createServer = createServer;
