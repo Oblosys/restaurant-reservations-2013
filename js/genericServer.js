@@ -110,6 +110,7 @@ function deleteModel(type, id) {
 function createApplication() {
   var app = express();
 
+  app.use('/js', express.static(__dirname + '/client'));
   app.use(express.static(__dirname + '/../www'));
 //  app.use(express.logger());
   app.use(express.bodyParser());
