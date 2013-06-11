@@ -4,10 +4,11 @@
   function showJSON(json,indent,depth) {
     indent = indent || '';
     depth = depth || 0;
+    var str = '';
     
-    if (depth<10) {
-      var str = '';
-   
+    if (depth>=1) // max depth
+      str += typeof json != 'object' ? json : Array.isArray(json) ? '[...]' : '{...}';
+    else {   
       if (Array.isArray(json)) {
         if (json.length ==0 )
           str += '[]';
@@ -33,8 +34,8 @@
         else
           str += json;
       }
-      return str;
     }
+    return str;
   }
   
   function showDate(date) {
