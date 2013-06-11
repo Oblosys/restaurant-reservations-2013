@@ -1,34 +1,40 @@
 (function(exports){
 
-  function showJSON(json,indent) {
+  // depth is to prevent hanging on circular objects
+  function showJSON(json,indent,depth) {
     indent = indent || '';
-    var str = '';
-    if (Array.isArray(json)) {
-      if (json.length ==0 )
-        str += '[]';
-      else {
-        for (var i = 0; i<json.length; i++)
-          str += (i==0?'[ ':indent + ', ') + showJSON(json[i],'  '+indent)+'\n';
-        str += indent + ']';
-      }
-    } 
-    else {
-      if (typeof json == 'object') {
-        var keys = Object.keys(json); // TODO: use underscore version for safety
-        if (keys.length ==0 )
-          str += '{}';
+    depth = depth || 0;
+    
+    if (depth<10) {
+      var str = '';
+   
+      if (Array.isArray(json)) {
+        if (json.length ==0 )
+          str += '[]';
         else {
-          for (var i = 0; i<keys.length; i++)
-            str += (i==0?'{ ':indent + ', ') + keys[i] + ':' +
-            (typeof json[keys[i]] == 'object' ? '\n' + indent +'  ' : ' ') + // for object children start new line
-            showJSON(json[keys[i]],'  '+indent)+'\n';
-          str += indent + '}';
+          for (var i = 0; i<json.length; i++)
+            str += (i==0?'[ ':indent + ', ') + showJSON(json[i],'  '+indent, depth+1)+'\n';
+          str += indent + ']';
         }
+      } 
+      else {
+        if (typeof json == 'object') {
+          var keys = Object.keys(json); // TODO: use underscore version for safety
+          if (keys.length ==0 )
+            str += '{}';
+          else {
+            for (var i = 0; i<keys.length; i++)
+              str += (i==0?'{ ':indent + ', ') + keys[i] + ':' +
+              (typeof json[keys[i]] == 'object' ? '\n' + indent +'  ' : ' ') + // for object children start new line
+              showJSON(json[keys[i]],'  '+indent, depth+1)+'\n';
+            str += indent + '}';
+          }
+        }
+        else
+          str += json;
       }
-      else
-        str += json;
+      return str;
     }
-    return str;
   }
   
   function showDate(date) {
