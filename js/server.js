@@ -8,7 +8,6 @@ var _ = require('underscore')
   , genericServer = require('./genericServer.js')
   , app;
 
-console.log(util.readDate('4-6-2013'));
 app = genericServer();
 
 // cannot set properties directly (so genericServer.root = .. fails)
