@@ -6,7 +6,7 @@
     depth = depth || 0;
     var str = '';
     
-    if (depth>=1) // max depth
+    if (depth>=10) // max depth
       str += typeof json != 'object' ? json : Array.isArray(json) ? '[...]' : '{...}';
     else {   
       if (Array.isArray(json)) {
