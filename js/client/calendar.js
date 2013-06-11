@@ -62,9 +62,6 @@ function handleReservationRemoved(res,coll,opts) {
   logViewedMonth();
 }
 
-function showDate(date) {
-  return date.getDate() + '-' + (date.getMonth()+1) + '-' + date.getFullYear();
-}
 function getNumberOfDaysInMonth(year,month) {
   return (new Date(year,month + 1,0)).getDate(); 
   // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
@@ -93,7 +90,7 @@ function initialize() {
   //console.log(currentMonthDates);
   $('#calendar .week .day').each(function(i) {
     $(this).attr('id','day-'+i);
-    $(this).attr('date', showDate(dates[i]));
+    $(this).attr('date', util.showDate(dates[i]));
     if (dates[i].getMonth() == currentMonth) 
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
     else
@@ -109,7 +106,7 @@ function initialize() {
   
   $('#calendar .week .day').each(function(i) {
     
-    //console.log($(this).attr('id') +' x'+i +'x  '+(i<dates.length ? showDate(dates[i]) : ''));
+    //console.log($(this).attr('id') +' x'+i +'x  '+(i<dates.length ? util.showDate(dates[i]) : ''));
     
   });
   

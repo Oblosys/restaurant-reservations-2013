@@ -4,17 +4,11 @@
 
 var _ = require('underscore')
   , Backbone = require('backbone')
+  , util = require('./client/util.js')
   , genericServer = require('./genericServer.js')
   , app;
 
-function readDate(dateStr) {
-  var parts = dateStr.split('-');
-  if (parts.length == 3)
-    return new Date(parts[2], parts[1]-1, parts[0]);
-  else
-    throw 'Exception: Incorrect date: "'+dateStr+'"';
-}
-//console.log(readDate('4-6-2013'));
+console.log(util.readDate('4-6-2013'));
 app = genericServer();
 
 // cannot set properties directly (so genericServer.root = .. fails)
@@ -32,12 +26,12 @@ var allReservations = genericServer.root.reservation.models;
 
 app.get('/query/range', function(req, res) {
   //console.log(JSON.stringify(genericServer.root));
-  var startDate = readDate(req.query.start);
-  var endDate = readDate(req.query.end);
+  var startDate = util.readDate(req.query.start);
+  var endDate = util.readDate(req.query.end);
   console.log('Returning reservations between '+ startDate + ' and ' + endDate);
   
   res.send(_.filter(allReservations, function(reservation) { 
-    var date = readDate(reservation.date);
+    var date = util.readDate(reservation.date);
     return date >= startDate && date <= endDate;
   }));
 });
