@@ -37,7 +37,7 @@ var Day = Backbone.Model.extend({
 
 var DayCellView = Backbone.View.extend({
   tagName: "div",
-  className: "day",
+  className: "dayCell",
   events: {
 //     "click .icon":          "open",
 //     "click .button.edit":   "openEditDialog",
@@ -56,7 +56,7 @@ var DayCellView = Backbone.View.extend({
     var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople')}, 0);
     
     this.$el.html('<div class="dayNr">'+cellDate.getDate()+'</div>'+
-                 '<div class="dayContent">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
+                 '<div class="dayCellContent">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
                  '</div>');
     return this;
   }
@@ -80,21 +80,17 @@ selection.on('change:hour', function(model, newHour) {
 });
 
 
-// TODO: don't use .day for header, and then update all selectors (remove .week)
-// TODO: fix width of colums (is proportional to day names)
+// TODO: don't use .dayCell for header, and then update all selectors (remove .week)
 // TODO: rename viewedMonth to something with 'reservations'
-
+// TODO: use events property for view?
 function handleReservationAdded(res,coll,opts) {
   console.log('Reservation added '+res.get('name'));
-  //console.log('#calendar .week .day[date="'+res.get('date')+'"]');
-  //var dayCell = $('#calendar .week .day[date="'+res.get('date')+'"]');
+  //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
+  //var dayCell = $('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   console.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
-  //if(res.get('date')==day.get('date')) {
-  //  day.get('reservations').add(res);
-  //}
   logViewedMonth();
   
 }
@@ -130,8 +126,8 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   //console.log(''+nrOfDaysInPreviousMonth+' '+nrOfDaysInCurrentMonth+firstDayOfMonth);
   //console.log(previousMonthDates);
   //console.log(currentMonthDates);
-  $('#calendar .week .day').each(function(i) {
-    $(this).attr('id','day-'+i);
+  $('#calendar .week .dayCell').each(function(i) {
+    $(this).attr('id','dayCell-'+i);
     $(this).attr('date', util.showDate(dates[i]));
     if (dates[i].getMonth() == currentMonth) 
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
@@ -148,9 +144,9 @@ function setCurrentYearMonth(currentYear,currentMonth) {
 }
 function initialize() {
   // create dayViews
-  var dayElts = $('#calendar .week .day').toArray();
+  var dayElts = $('#calendar .week .dayCell').toArray();
 
-  days = $('#calendar .week .day').map(function(ix) {
+  days = $('#calendar .week .dayCell').map(function(ix) {
     var day = new Day({date: new Date()});
     var dayView = new DayCellView({model: day, el: dayElts[ix]});
     return day;
@@ -175,22 +171,15 @@ function initialize() {
   viewedMonth.fetch();
 }
 
-function clickDay(day) {
-  selection.set('day', day);
-}
 function logViewedMonth() {
   $('#log').empty();
   $('#log').append( JSON.stringify(viewedMonth.models) +'<br/>');
-  //$('#log').append( JSON.stringify(day) +'<br/>');
 }
 function testButton1() {
   console.log('Test button 1 pressed');
   var martijnRes = viewedMonth.findWhere({name: 'Martijn'});
   //var newRes = new Reservation({name: 'a Name'});
-  //day.get('reservations').add(newRes);
   martijnRes.set('nrOfPeople',10);
-  //day.get('reservations').remove(martijnRes);
-  //day.get('reservations').reset(newRes);
   //console.log(JSON.stringify(viewedMonth));
 }
 

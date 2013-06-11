@@ -4,13 +4,11 @@ body {
 	font-family: arial;
 }
 #calendar {
-	width: 400px;
 }
 .month {
 	display: table;
 	border-collapse: collapse;
 	text-align: center;
-	width: 100%;
 }
 .weekHeader {
   display: table-row;
@@ -21,31 +19,31 @@ body {
   display: table-row;
   background-color: white;
 }
-.weekHeader .day {
+.weekHeader .dayCell {
 	height: 20px;
 }
-.day {
+.dayCell {
 	display: table-cell;
-	width: auto;
+	width: 70px;
 	height: 50px;
 	border: solid 2px black;
 }
-.day[selected]{
+.dayCell[selected]{
   background-color: red;
 }
-.week .day:not([isCurrentMonth]){
+.week .dayCell:not([isCurrentMonth]){
   background-color: #ddd;
 }
-.week .day:not([isCurrentMonth])[selected]{
+.week .dayCell:not([isCurrentMonth])[selected]{
   background-color: red;
 }
-.dayContent {
+.dayCellContent {
   padding-top: 4px;
   color: blue;
 }
 .hourSlots {
   display: table;
-  width:100%;
+  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
   text-align: center;
   border-collapse: collapse;
 }
