@@ -3,7 +3,6 @@
  */
 
 var portNr = process.argv[2] || 8200
-  , modelFileName = 'model/reservations.json'
   , http = require('http')
   , url = require('url')
   , fs = require('fs')
