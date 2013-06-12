@@ -20,7 +20,7 @@ var viewedMonth;
 
 var Day = Backbone.Model.extend({
   defaults: {
-    date: new Date(1000,1,1) // valid but unused date
+    date: new Date(1000,1,1) // valid but unused date TODO: not nice
   },
   initialize: function() {
     var reservations = new Reservations()
@@ -45,7 +45,7 @@ var DayCellView = Backbone.View.extend({
   },
 
   initialize: function() {
-    //sconsole.log('init view');
+    //console.log('init view');
     this.listenTo(this.model, "change", this.render);
   },
 
@@ -62,8 +62,33 @@ var DayCellView = Backbone.View.extend({
   }
 });
 
+var DayView = Backbone.View.extend({
+  tagName: "div",
+  className: "day",
+  events: {},
+
+  initialize: function() {
+  },
+  setModel: function(model) {
+    this.stopListening(this.model, "change");
+    this.model = model;
+    this.listenTo(this.model, "change", this.render);
+    this.render();
+  },
+  render: function() {
+    console.log('rendering dayView');
+    var cellDate = this.model.get('date');
+    var reservationsForCell = this.model.get('reservations');
+    var html = '<ul>';
+    reservationsForCell.each(function(res){html += '<li>'+res.get('name')+' ('+res.get('nrOfPeople')+')</li>';});
+    html += '</ul>';
+    this.$el.html(html);
+    return this;
+  }
+});
+var dayView;
+
 var days;
-var dayViews;
 
 var Selection = Backbone.Model.extend({});
 var selection = new Selection();
@@ -72,6 +97,7 @@ selection.on('change:day', function(model, newDay) {
   //console.log('day: '+$(selection.previous('day')).attr('id')+'~>'+$(newDay).attr('id'));
   $(selection.previous('day')).removeAttr('selected'); // $() takes care of any undefineds
   $(newDay).attr('selected','selected');
+  dayView.setModel(days[10]);
 });
 selection.on('change:hour', function(model, newHour) {
   //console.log('hour: '+$(selection.previous('hour')).attr('id')+'~>'+$(newHour).attr('id'));
@@ -79,6 +105,9 @@ selection.on('change:hour', function(model, newHour) {
   $(newHour).attr('selected','selected');
 });
 
+// TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
+// TODO: selection change doesn't have the correct day
+         // figure out whether to record selection as Day instead of div elt, or look it up
 
 // TODO: don't use .dayCell for header, and then update all selectors (remove .week)
 // TODO: rename viewedMonth to something with 'reservations'
@@ -126,14 +155,12 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   //console.log(''+nrOfDaysInPreviousMonth+' '+nrOfDaysInCurrentMonth+firstDayOfMonth);
   //console.log(previousMonthDates);
   //console.log(currentMonthDates);
-  $('#calendar .week .dayCell').each(function(i) {
-    $(this).attr('id','dayCell-'+i);
-    $(this).attr('date', util.showDate(dates[i]));
-    if (dates[i].getMonth() == currentMonth) 
+  $('#calendar .week .dayCell').each(function(ix) {
+    $(this).attr('date', util.showDate(dates[ix]));
+    if (dates[ix].getMonth() == currentMonth) 
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
     else
       $(this).removeAttr('isCurrentMonth');
-    //$(this).html('<div class="dayNr">'+dates[i].getDate()+'</div><div class="dayContent"></div>');
     $(this).click( function() { selection.set('day', this);} );
   });
   
@@ -143,16 +170,18 @@ function setCurrentYearMonth(currentYear,currentMonth) {
 
 }
 function initialize() {
-  // create dayViews
+  // create dayCellViews
   var dayElts = $('#calendar .week .dayCell').toArray();
 
   days = $('#calendar .week .dayCell').map(function(ix) {
+    $(this).attr('id','dayCell-'+ix);
     var day = new Day({date: new Date()});
-    var dayView = new DayCellView({model: day, el: dayElts[ix]});
+    var dayCellView = new DayCellView({model: day, el: dayElts[ix]}); // are not reachable from global var, but does not seem necessary
     return day;
   });
   
-  
+  dayView = new DayView({el: document.getElementById('dayView')});
+  dayView.setModel(days[5]);
   //console.log(days[5].get('date'));
   //console.log(dayElts[5]);
   //dayCellView = new DayCellView({model: days[5], el: dayElts[5]});
