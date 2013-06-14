@@ -1,3 +1,5 @@
+/* global util:false */
+
 console.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
@@ -19,11 +21,9 @@ var Reservations = Backbone.Collection.extend({
 var viewedMonth;
 
 var Day = Backbone.Model.extend({
-  defaults: {
-    date: new Date(1000,1,1) // valid but unused date TODO: not nice
-  },
+  defaults: {},
   initialize: function() {
-    var reservations = new Reservations()
+    var reservations = new Reservations();
     this.set('reservations', reservations); // not in defaults, because then all days will share reservations
    
     // need to redirect all change events from reservation collection 
@@ -45,15 +45,27 @@ var DayCellView = Backbone.View.extend({
   },
 
   initialize: function() {
-    //console.log('init view');
-    this.listenTo(this.model, "change", this.render);
-  },
+    console.log('init view ');
+    //var el =  this.el;
+    var dayModel = this.model;
+    $(this.el).click( function() { selection.set('day', dayModel);} );
 
+    this.listenTo(this.model, "change", this.render);
+    this.listenTo(selection, "change:day", this.renderSelection);
+    // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
+  },
+  renderSelection: function(selectionModel, newDay) {
+    //console.log('selection changed '+this.model.get('date')+' '+selectionModel+' '+$(newDay).attr('date')+' '+$(selection.previous('day')).attr('date'));
+    if (this.model.get('date') == $(newDay).attr('date'))
+      this.$el.attr('selected','selected');
+    else
+      this.$el.removeAttr('selected');
+  },
   render: function() {
     //console.log('rendering');
     var cellDate = this.model.get('date');
     var reservationsForCell = this.model.get('reservations');
-    var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople')}, 0);
+    var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople');}, 0);
     
     this.$el.html('<div class="dayNr">'+cellDate.getDate()+'</div>'+
                  '<div class="dayCellContent">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
@@ -67,7 +79,8 @@ var DayView = Backbone.View.extend({
   className: "day",
   events: {},
 
-  initialize: function() {
+  initialize: function() { //
+    this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
   },
   setModel: function(model) {
     this.stopListening(this.model, "change");
@@ -77,7 +90,6 @@ var DayView = Backbone.View.extend({
   },
   render: function() {
     console.log('rendering dayView');
-    var cellDate = this.model.get('date');
     var reservationsForCell = this.model.get('reservations');
     var html = '<ul>';
     reservationsForCell.each(function(res){html += '<li>'+res.get('name')+' ('+res.get('nrOfPeople')+')</li>';});
@@ -92,7 +104,7 @@ var days;
 
 var Selection = Backbone.Model.extend({});
 var selection = new Selection();
-
+/*
 selection.on('change:day', function(model, newDay) {
   //console.log('day: '+$(selection.previous('day')).attr('id')+'~>'+$(newDay).attr('id'));
   $(selection.previous('day')).removeAttr('selected'); // $() takes care of any undefineds
@@ -104,7 +116,7 @@ selection.on('change:hour', function(model, newHour) {
   $(selection.previous('hour')).removeAttr('selected'); // $() takes care of any undefineds
   $(newHour).attr('selected','selected');
 });
-
+*/
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
@@ -161,14 +173,13 @@ function setCurrentYearMonth(currentYear,currentMonth) {
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
     else
       $(this).removeAttr('isCurrentMonth');
-    $(this).click( function() { selection.set('day', this);} );
   });
   
   for (var i=0; i<days.length; i++) {
     days[i].set('date', dates[i]);
-  };
-
+  }
 }
+
 function initialize() {
   // create dayCellViews
   var dayElts = $('#calendar .week .dayCell').toArray();
@@ -194,7 +205,7 @@ function initialize() {
   var today = new Date();
   setCurrentYearMonth(today.getFullYear(), today.getMonth());
   
-  viewedMonth = new Reservations;
+  viewedMonth = new Reservations();
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
