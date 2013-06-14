@@ -1,5 +1,6 @@
 /* global util:false */
 
+
 console.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
@@ -76,7 +77,7 @@ var DayCellView = Backbone.View.extend({
 
 var DayView = Backbone.View.extend({
   tagName: "div",
-  className: "day",
+  className: "dayView",
   events: {},
 
   initialize: function() { //
@@ -95,11 +96,43 @@ var DayView = Backbone.View.extend({
     reservationsForCell.each(function(res){html += '<li>'+res.get('name')+' ('+res.get('nrOfPeople')+')</li>';});
     html += '</ul>';
     this.$el.html(html);
+    this.$el.find('li').each(function(ix) {
+      $(this).click( function() {
+        console.log('klik '+ix+reservationsForCell.models[ix]);
+        selection.set('reservation',reservationsForCell.models[ix]);
+      });
+    });
     return this;
   }
 });
-var dayView;
 
+var ReservationView = Backbone.View.extend({
+  tagName: "div",
+  className: "reservationView",
+  events: {},
+
+  initialize: function() { //
+    this.listenTo(selection, "change:reservation", this.render);
+  },
+  render: function() {
+    console.log('rendering reservationView');
+    var reservation = selection.get('reservation'); // doesn't have its own model
+    var html = '';
+    if (reservation) { 
+      html += 'Name: '+reservation.get('name')+'<br/>';
+      html += 'Nr. of people: '+reservation.get('nrOfPeople');
+      html += '';
+    }
+    else {
+      html += 'No reservation selected';
+    }
+    this.$el.html(html);
+    return this;
+  }
+});
+
+var dayView;
+var reservationView;
 var days;
 
 var Selection = Backbone.Model.extend({});
@@ -123,7 +156,8 @@ selection.on('change:hour', function(model, newHour) {
 
 // TODO: don't use .dayCell for header, and then update all selectors (remove .week)
 // TODO: rename viewedMonth to something with 'reservations'
-// TODO: use events property for view?
+// TODO: are selections okay like this, without a model of their own?
+
 function handleReservationAdded(res,coll,opts) {
   console.log('Reservation added '+res.get('name'));
   //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
@@ -192,7 +226,7 @@ function initialize() {
   });
   
   dayView = new DayView({el: document.getElementById('dayView')});
-  dayView.setModel(days[5]);
+  reservationView = new ReservationView({el: document.getElementById('reservationView')});
   //console.log(days[5].get('date'));
   //console.log(dayElts[5]);
   //dayCellView = new DayCellView({model: days[5], el: dayElts[5]});
@@ -234,6 +268,7 @@ function testButton3() {
 //  console.log(JSON.stringify(viewedMonth));
 }
 function testButton4() {
+  selection.set('reservation', viewedMonth.findWhere({name: 'Martijn'}));
   console.log('Test button 4 pressed');
 //  console.log(JSON.stringify(viewedMonth));
 }
