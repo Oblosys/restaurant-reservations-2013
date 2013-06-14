@@ -54,7 +54,7 @@
   exports.showDate = showDate;
   exports.readDate = readDate;
 
-})(typeof exports == 'undefined'? this['util']={}: exports);
+})(typeof exports == 'undefined'? this.util={}: exports);
 // Module for loading by Node.js as well as browser.
 // Closure is to prevent declaring globals in browser.
 // in Browser, exports is bound to global util variable.
