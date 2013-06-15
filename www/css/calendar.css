@@ -58,3 +58,19 @@ body {
 .hour[selected]{
   background-color: red;
 }
+.dayView {
+	margin-top: 10px;
+  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
+  height: 100px;
+  overflow: auto;
+	border: solid black 1px;
+}
+.dayView .reservationLine {
+	border-bottom: solid #999 1px;
+}
+.reservationView {
+  margin-top: 10px;
+  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
+  height: 100px;
+  border: solid black 1px;
+}

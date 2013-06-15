@@ -56,8 +56,8 @@ var DayCellView = Backbone.View.extend({
     // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
   },
   renderSelection: function(selectionModel, newDay) {
-    //console.log('selection changed '+this.model.get('date')+' '+selectionModel+' '+$(newDay).attr('date')+' '+$(selection.previous('day')).attr('date'));
-    if (this.model.get('date') == $(newDay).attr('date'))
+    //console.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
+    if (this.model.get('date') == newDay.get('date'))
       this.$el.attr('selected','selected');
     else
       this.$el.removeAttr('selected');
@@ -80,7 +80,7 @@ var DayView = Backbone.View.extend({
   className: "dayView",
   events: {},
 
-  initialize: function() { //
+  initialize: function() {
     this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
   },
   setModel: function(model) {
@@ -92,13 +92,13 @@ var DayView = Backbone.View.extend({
   render: function() {
     console.log('rendering dayView');
     var reservationsForCell = this.model.get('reservations');
-    var html = '<ul>';
-    reservationsForCell.each(function(res){html += '<li>'+res.get('name')+' ('+res.get('nrOfPeople')+')</li>';});
-    html += '</ul>';
+    var html = '';
+    reservationsForCell.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
+    html += '';
     this.$el.html(html);
-    this.$el.find('li').each(function(ix) {
+    this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
-        console.log('klik '+ix+reservationsForCell.models[ix]);
+        //console.log('klik '+ix+reservationsForCell.models[ix]);
         selection.set('reservation',reservationsForCell.models[ix]);
       });
     });
@@ -119,9 +119,12 @@ var ReservationView = Backbone.View.extend({
     var reservation = selection.get('reservation'); // doesn't have its own model
     var html = '';
     if (reservation) { 
+      html += 'Time: '+reservation.get('time')+'<br/>';
       html += 'Name: '+reservation.get('name')+'<br/>';
-      html += 'Nr. of people: '+reservation.get('nrOfPeople');
-      html += '';
+      html += 'Nr. of people: '+reservation.get('nrOfPeople')+'<br/>';
+      html += 'Name: '+reservation.get('name')+'<br/>';
+      html += 'Comment:<br/>';
+      html += reservation.get('comment');
     }
     else {
       html += 'No reservation selected';
@@ -243,6 +246,7 @@ function initialize() {
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
+  selection.set('day', days[19]);
 }
 
 function logViewedMonth() {
@@ -268,7 +272,6 @@ function testButton3() {
 //  console.log(JSON.stringify(viewedMonth));
 }
 function testButton4() {
-  selection.set('reservation', viewedMonth.findWhere({name: 'Martijn'}));
   console.log('Test button 4 pressed');
 //  console.log(JSON.stringify(viewedMonth));
 }
