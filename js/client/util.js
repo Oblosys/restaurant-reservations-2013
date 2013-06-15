@@ -1,4 +1,15 @@
 (function(exports){
+  if (typeof require == 'undefined') require = function() {};
+  // todo: how to do imports in imported modules? On client require is not defined 
+  var _ = require('underscore');
+
+  // NOTE: replicated objects are only cloned on top-level
+  function replicate(n,x) {
+    var xs = [];
+    for (var i=0; i<n; i++) 
+      xs.push(_.clone(x));
+    return xs;
+  }
 
   // depth is to prevent hanging on circular objects
   function showJSON(json,indent,depth) {
@@ -50,6 +61,7 @@
       throw 'Exception: Incorrect date: "'+dateStr+'"';
   }
 
+  exports.replicate = replicate;
   exports.showJSON = showJSON;
   exports.showDate = showDate;
   exports.readDate = readDate;
