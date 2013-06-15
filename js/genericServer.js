@@ -55,7 +55,7 @@ function createModel(type, newModel) {
   console.log('content: '+JSON.stringify(newModel));
   
   if (!root.hasOwnProperty(type))
-    root[type] = {idCounter: 1, models: []};
+    root[type] = {idCounter: 0, models: []};
   
   id = type+'-'+root[type].idCounter++;
   console.log('fresh id:'+id);
