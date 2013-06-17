@@ -36,9 +36,12 @@ function initialize() {
     newReservation.set('name', $(this).val());
   });
   
-  $('.NrOfPeopleButtons input').each(function(i) {
+  var $nrOfPeopleButtons = $('.NrOfPeopleButtons input');
+  $nrOfPeopleButtons.each(function(i) {
     $(this).click(function() {
-      newReservation.set('nrOfPeople', i);      
+      newReservation.set('nrOfPeople', i);
+      $nrOfPeopleButtons.removeAttr('selected');
+      $(this).attr('selected','selected');
     });
   });
   
@@ -48,12 +51,15 @@ function initialize() {
   var weekDay = today.getDay(); // 0 is Sunday
   for (var d=0; d<6; d++)
     dateLabels.push(dayLabels[(d+weekDay+2)%7]);
-  $('.LargeDayButtons input,.SmallDayButtons input').each(function(i) {
+  var $dateButtons = $('.LargeDayButtons input,.SmallDayButtons input');
+  $dateButtons.each(function(i) {
     var buttonDate = new Date(today);
     buttonDate.setDate( today.getDate() + i );
     $(this).attr('value', dateLabels[i]);
     $(this).click(function() {
       newReservation.set('date', util.showDate(buttonDate));
+      $dateButtons.removeAttr('selected');
+      $(this).attr('selected','selected');
     });
   });
   
@@ -62,10 +68,14 @@ function initialize() {
     timeLabels.push(hr+':00');
     timeLabels.push(hr+':30');
   }
-  $('.TimeButtons input').each(function(i) {
+  
+  var $timeButtons = $('.TimeButtons input');
+  $timeButtons.each(function(i) {
     $(this).attr('value', timeLabels[i]);
     $(this).click(function() {
       newReservation.set('time', timeLabels[i]);
+      $timeButtons.removeAttr('selected');
+      $(this).attr('selected','selected');
     });
   });
 }
@@ -103,7 +113,6 @@ function testButton1() {
   disenableButtons();
   log();
 }
-
 function testButton2() {
   console.log('Test button 2 pressed, create');
 }
