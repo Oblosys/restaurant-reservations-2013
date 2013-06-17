@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Reservations</title>  
+  <link href="/css/reservation.css" rel="stylesheet" type="text/css" /> 
+  <script type="text/javascript" src="/js/lib/jquery-1.8.0.min.js"></script>
+  <script type="text/javascript" src="/js/lib/underscore-1.4.4.js"></script> <!-- dev version -->
+  <script type="text/javascript" src="/js/lib/backbone-1.0.0.js"></script> <!-- dev version -->
+  <script type="text/javascript" src="/js/shared/util.js"></script>
+  <!-- Non-optimal lib imports, would rather use required also on client (doesn't play well with backbone and underscore though) -->
+  <script type="text/javascript" src="/js/client/reservation.js"></script>
+</head>
+<body>
+<table id="main">
+<tr><td>
+  <table class="NrOfPeopleButtons"><tr>
+    <td>Name:</td><td><td><input type="text" id="nameField"></input></td>
+  </tr></table>
+</td></tr>
+<tr><td>Please select nr of people:</td></tr>
+<tr><td>
+  <table class="NrOfPeopleButtons"><tr>
+    <td><input type="button" value="1"></input></td>
+    <td><input type="button" value="2"></input></td>
+    <td><input type="button" value="3"></input></td>
+    <td><input type="button" value="4"></input></td>
+    <td><input type="button" value="5"></input></td>
+    <td><input type="button" value="6"></input></td>
+    <td><input type="button" value="7"></input></td>
+    <td><input type="button" value="8"></input></td>
+  </tr></table>
+</td></tr>
+<tr><td>Please select a date:</td></tr>
+<tr><td>
+  <table class="LargeDayButtons"><tr>
+    <td><input type="button" value="Today"></input></td>
+    <td><input type="button" value="Today"></input></td>
+  </tr></table>
+</td></tr>
+<tr><td>
+  <table class="SmallDayButtons"><tr>
+    <td><input type="button" value="0"></input></td>
+    <td><input type="button" value="0"></input></td>
+    <td><input type="button" value="0"></input></td>
+    <td><input type="button" value="0"></input></td>
+    <td><input type="button" value="0"></input></td>
+    <td><input type="button" value="0"></input></td>
+  </tr></table>
+</td></tr>
+<tr><td>Please select a time:</td></tr>
+<tr><td>
+  <table class="TimeButtons">
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+    <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
+  </table>
+</td></tr>
+<tr><td>Comments:</td></tr>
+<tr><td><div id="commentArea"><textarea type="text"></textarea></div></td></tr>
+<tr><td><input type="button" id="confirmButton" value="Confirm"></input></td></tr>
+</table>
+<br/>
+<input type="button" onclick="testButton1()" value="Test 1 (update)"></input>
+<input type="button" onclick="testButton2()" value="Test 2 (create)"></input>
+<input type="button" onclick="testButton3()" value="Test 3 (remove)"></input>
+<input type="button" onclick="testButton4()" value="Test 4 (fetch)"></input>
+<input type="button" onclick="refreshButton()" value="Refresh"></input>
+<div id="log"></div>
+</body>
+</html>

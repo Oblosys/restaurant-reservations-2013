@@ -1,0 +1,48 @@
+@CHARSET "UTF-8";
+textarea, input[type=text] { /* otherwise layout in tables is incorrect */
+  -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+  -moz-box-sizing: border-box; /* FF1+ */
+  box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+}
+
+table {
+  font: inherit; color: inherit; /* for some weird reason tables don't inherit font and color by default */
+  border-spacing:0;
+}
+table td, table th {
+  padding: 0;
+}
+
+body {
+  font-family: arial;
+  background: url('/img/background_linen.png') repeat scroll center top transparent;
+  overflow: scroll; /* prevents background from being cut-off to viewport size */
+}
+#main {
+  background-color: white;
+  border: solid black 1px;
+  margin: 20px;
+  padding: 8px;
+}
+
+/* all buttons inside tables are layed out with equal width */
+#main table {
+  width: 100%;
+}
+#main table input {
+  width: 100%;
+}
+
+#nameField {
+  width: 100%;
+}
+#commentArea textarea {
+  width: 100%;
+  
+}
+#confirmButton {
+  width: 100%;
+}
+.NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #commentArea {
+  margin-bottom: 4px;
+}
