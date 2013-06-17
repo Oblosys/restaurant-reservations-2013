@@ -4,7 +4,7 @@
 
 var _ = require('underscore')
   , Backbone = require('backbone')
-  , util = require('./client/util.js')
+  , util = require('./shared/util.js')
   , genericServer = require('./genericServer.js')
   , app;
 
