@@ -10,8 +10,6 @@ table td, table th {
 body {
 	font-family: arial;
 	background: url('/img/background_linen.png') repeat scroll center top transparent;
-  height:100%;
-  width: 100%;
   overflow: scroll; /* prevents background from being cut-off to viewport size */
 }
 #calendar {
