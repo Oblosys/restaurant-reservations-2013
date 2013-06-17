@@ -7,14 +7,15 @@ $(document).ready(function(){
 });
 
 var Reservation = Backbone.Model.extend({
-  defaults: {
-    date: '',
-    time: '',
-    name: '',
-    nrOfPeople: 0,
-    comment: ''
+  clear: function() {
+    this.set('date', '');
+    this.set('time', '');
+    this.set('name', '');
+    this.set('nrOfPeople', 0);
+    this.set('comment', '');
   },
   initialize: function() {
+    this.clear();
     this.on("change", disenableButtons);
   },
   urlRoot: '/model/reservation'
@@ -26,20 +27,20 @@ var Reservations = Backbone.Collection.extend({
 });
 var reservationsToday;
 
-var newReservation;
+var currentReservation;
 
 function initialize() {
   console.log('initializing');
-  newReservation = new Reservation();
+  currentReservation = new Reservation();
   
   $('#nameField').keyup(function() {
-    newReservation.set('name', $(this).val());
+    currentReservation.set('name', $(this).val());
   });
   
   var $nrOfPeopleButtons = $('.NrOfPeopleButtons input');
   $nrOfPeopleButtons.each(function(i) {
     $(this).click(function() {
-      newReservation.set('nrOfPeople', i);
+      currentReservation.set('nrOfPeople', i);
       $nrOfPeopleButtons.removeAttr('selected');
       $(this).attr('selected','selected');
     });
@@ -57,7 +58,7 @@ function initialize() {
     buttonDate.setDate( today.getDate() + i );
     $(this).attr('value', dateLabels[i]);
     $(this).click(function() {
-      newReservation.set('date', util.showDate(buttonDate));
+      currentReservation.set('date', util.showDate(buttonDate));
       $dateButtons.removeAttr('selected');
       $(this).attr('selected','selected');
     });
@@ -72,10 +73,17 @@ function initialize() {
   var $timeButtons = $('.TimeButtons input');
   $timeButtons.each(function(i) {
     $(this).attr('value', timeLabels[i]);
+    var $button = $(this);
+    currentReservation.on('change:time', function(r,newTime) {
+      if (newTime == timeLabels[i])
+        $button.attr('selected','selected');
+      else
+        $button.removeAttr('selected');
+    });
     $(this).click(function() {
-      newReservation.set('time', timeLabels[i]);
-      $timeButtons.removeAttr('selected');
-      $(this).attr('selected','selected');
+      currentReservation.set('time', timeLabels[i]);
+      //$timeButtons.removeAttr('selected');
+      //$(this).attr('selected','selected');
     });
   });
 }
@@ -88,25 +96,26 @@ function isValidReservation(res) {
 }
 
 function confirmButton() {
-  if (isValidReservation(newReservation)) {
+  if (isValidReservation(currentReservation)) {
+    var newReservation = _.clone(currentReservation); // submit a clone, to prevent having to reinitialize listeners
     newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
     newReservation.save();
-    newReservation = new Reservation;
+    currentReservation.clear();
   }
   else {
-    console.error('confirmButton: invalid reservation '+JSON.stringify(newReservation));
+    console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
   }
   log();
 }
 
 function disenableButtons() {
-  console.log('valid:'+isValidReservation(newReservation));
-  document.getElementById('confirmButton').disabled = !isValidReservation(newReservation);
+  console.log('valid:'+isValidReservation(currentReservation));
+  document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
 }
 
 function log() {
   $('#log').empty();
-  $('#log').append( JSON.stringify(newReservation) +'<br/>');
+  $('#log').append( JSON.stringify(currentReservation) +'<br/>');
 }
 function testButton1() {
   console.log('Test button 1 pressed');
@@ -114,6 +123,8 @@ function testButton1() {
   log();
 }
 function testButton2() {
+  currentReservation.clear();
+
   console.log('Test button 2 pressed, create');
 }
 function testButton3() {
