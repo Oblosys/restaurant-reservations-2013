@@ -9,8 +9,10 @@ $(document).ready(function(){
 var Reservation = Backbone.Model.extend({
   defaults: {
     date: '1-1-2000',
+    time: '18:00',
     name: 'name',
-    nrOfPeople: 2
+    nrOfPeople: 2,
+    comment: ''
   },
   urlRoot: '/model/reservation'
 });
@@ -58,6 +60,12 @@ function initialize() {
       newReservation.set('time', timeLabels[i]);
     });
   });
+}
+
+function confirmButton() {
+  newReservation.set('name', $('#nameField').val());
+  newReservation.set('comment', $('#commentArea').val());
+  log();
 }
 
 function log() {
