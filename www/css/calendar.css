@@ -1,9 +1,23 @@
 @CHARSET "UTF-8";
+table {
+  font: inherit; color: inherit; /* for some weird reason tables don't inherit font and color by default */
+  border-spacing:0;
+}
+table td, table th {
+  padding: 0;
+}
 
 body {
 	font-family: arial;
+	background: url('/img/background_linen.png') repeat scroll center top transparent;
+  height:100%;
+  width: 100%;
+  overflow: scroll; /* prevents background from being cut-off to viewport size */
 }
 #calendar {
+	background-color: white;
+	border: solid black 1px;
+	padding: 5px;
 }
 .month {
 	display: table;
@@ -17,60 +31,77 @@ body {
 }
 .week {
   display: table-row;
-  background-color: white;
 }
 .weekHeader .dayCell {
 	height: 20px;
+	color: black;
+	background-color: white;
 }
 .dayCell {
 	display: table-cell;
-	width: 70px;
-	height: 50px;
-	border: solid 2px black;
+	width: 52px;
+	height: 44px;
+	border: solid 1px black;
+	background-color: #eee;
 }
 .dayCell[selected]{
   background-color: red;
 }
 .week .dayCell:not([isCurrentMonth]){
-  background-color: #ddd;
+  color: #777;
 }
 .week .dayCell:not([isCurrentMonth])[selected]{
   background-color: red;
 }
 .dayCellContent {
   padding-top: 4px;
+  font-size: 85%;
   color: blue;
 }
 .hourSlots {
   display: table;
-  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
   text-align: center;
   border-collapse: collapse;
 }
 .hourHeader {
 	display: table-row;
+	width: 100%;
 }
 .hour {
 	display: table-cell;
+	width: 1%; /* to get equal column width */
 	background-color: #999;
-  border: solid 2px black;
+  border: solid 1px black;
 }
 .hour[selected]{
   background-color: red;
 }
 .dayView {
 	margin-top: 10px;
-  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
+  width:100%;
   height: 100px;
   overflow: auto;
 	border: solid black 1px;
 }
 .dayView .reservationLine {
 	border-bottom: solid #999 1px;
+	padding-left: 2px;
 }
 .reservationView {
   margin-top: 10px;
-  width:504px; /* todo: messy, maybe auto this one (need another table for that) */
-  height: 100px;
+  padding-left: 4px;
+  width: 100%;
+  height: 140px;
   border: solid black 1px;
+  background-color: #eee;
+  font-size: 90%;
+}
+.reservationView .info {
+  color: blue;
+}
+.reservationView .commentView {
+  height: 60px;
+  overflow: auto;
+  border: solid black 1px;
+  
 }

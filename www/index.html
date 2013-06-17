@@ -12,8 +12,8 @@
   <script type="text/javascript" src="/js/client/calendar.js"></script>
 </head>
 <body>
-<h1>Reservations app</h1>
-<div id="calendar"><div class="month">
+<table id="calendar">
+<tr><td><div class="month">
 <div class="weekHeader"><div class="dayCell">ma</div><div class="dayCell">di</div><div class="dayCell">wo</div><div class="dayCell">do</div><div class="dayCell">vr</div><div class="dayCell">za</div><div class="dayCell">zo</div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
@@ -21,12 +21,13 @@
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-</div>
-<div class="hourSlots">
+</div></td></tr>
+<tr><td><div class="hourSlots">
 <div class="hourHeader"><div class="hour">18</div><div class="hour">19</div><div class="hour">20</div><div class="hour">21</div><div class="hour">22</div>
-</div></div>
-<div id="dayView" class="dayView"></div>
-<div id="reservationView" class="reservationView"></div>
+</div></div></td></tr>
+<tr><td><div id="dayView" class="dayView"></div></td></tr>
+<tr><td><div id="reservationView" class="reservationView"></div></td></tr>
+</table>
 <br/>
 <input type="button" onclick="testButton1()" value="Test 1 (update)"></input>
 <input type="button" onclick="testButton2()" value="Test 2 (create)"></input>

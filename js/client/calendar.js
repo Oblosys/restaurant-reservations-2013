@@ -118,17 +118,21 @@ var ReservationView = Backbone.View.extend({
     console.log('rendering reservationView');
     var reservation = selection.get('reservation'); // doesn't have its own model
     var html = '';
+    var time = name = nrOfPeople = comment = ''; 
+    
     if (reservation) { 
-      html += 'Time: '+reservation.get('time')+'<br/>';
-      html += 'Name: '+reservation.get('name')+'<br/>';
-      html += 'Nr. of people: '+reservation.get('nrOfPeople')+'<br/>';
-      html += 'Name: '+reservation.get('name')+'<br/>';
-      html += 'Comment:<br/>';
-      html += reservation.get('comment');
-    }
-    else {
-      html += 'No reservation selected';
-    }
+      time = reservation.get('time');
+      name = reservation.get('name');
+      nrOfPeople = reservation.get('nrOfPeople');
+      comment = reservation.get('comment');
+    }  
+    html += 'Time: <span class="info">'+time+'</span><br/>';
+    html += 'Name: <span class="info">'+name+'</span><br/>';
+    html += 'Nr. of people: <span class="info">'+nrOfPeople+'</span><br/>';
+    html += 'Comment:<br/><div class="commentView info">';
+    html += comment;
+    html += '</div>';
+    
     this.$el.html(html);
     return this;
   }
@@ -246,7 +250,7 @@ function initialize() {
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
-  selection.set('day', days[19]);
+  selection.set('day', days[21]);
 }
 
 function logViewedMonth() {
