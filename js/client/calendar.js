@@ -173,7 +173,7 @@ function handleReservationAdded(res,coll,opts) {
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   console.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
-  logViewedMonth();
+  //logViewedMonth();
   
 }
 // TODO: need full views here? Maybe not
@@ -182,7 +182,7 @@ function handleReservationRemoved(res,coll,opts) {
   console.log('Reservation removed '+res.get('name'));
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   correspondingDay.get('reservations').remove(res);
-  logViewedMonth();
+  //logViewedMonth();
 }
 
 function getNumberOfDaysInMonth(year,month) {
