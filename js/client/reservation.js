@@ -8,11 +8,14 @@ $(document).ready(function(){
 
 var Reservation = Backbone.Model.extend({
   defaults: {
-    date: '1-1-2000',
-    time: '18:00',
-    name: 'name',
-    nrOfPeople: 2,
+    date: '',
+    time: '',
+    name: '',
+    nrOfPeople: 0,
     comment: ''
+  },
+  initialize: function() {
+    this.on("change", disenableButtons);
   },
   urlRoot: '/model/reservation'
 });
@@ -28,9 +31,14 @@ var newReservation;
 function initialize() {
   console.log('initializing');
   newReservation = new Reservation();
+  
+  $('#nameField').keyup(function() {
+    newReservation.set('name', $(this).val());
+  });
+  
   $('.NrOfPeopleButtons input').each(function(i) {
     $(this).click(function() {
-        newReservation.set('nrOfPeople', i);
+      newReservation.set('nrOfPeople', i);      
     });
   });
   
@@ -62,10 +70,28 @@ function initialize() {
   });
 }
 
+function isValidReservation(res) {
+  return res.get('date') != '' &&
+         res.get('time') != '' &&
+         res.get('name') != '' &&
+         res.get('nrOfPeople') != 0;
+}
+
 function confirmButton() {
-  newReservation.set('name', $('#nameField').val());
-  newReservation.set('comment', $('#commentArea').val());
+  if (isValidReservation(newReservation)) {
+    newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
+    newReservation.save();
+    newReservation = new Reservation;
+  }
+  else {
+    console.error('confirmButton: invalid reservation '+JSON.stringify(newReservation));
+  }
   log();
+}
+
+function disenableButtons() {
+  console.log('valid:'+isValidReservation(newReservation));
+  document.getElementById('confirmButton').disabled = !isValidReservation(newReservation);
 }
 
 function log() {
@@ -74,6 +100,7 @@ function log() {
 }
 function testButton1() {
   console.log('Test button 1 pressed');
+  disenableButtons();
   log();
 }
 
@@ -88,6 +115,4 @@ function testButton4() {
 }
 function refreshButton() {
   console.log('Refresh button pressed');
-  viewedMonth.fetch();
-  logViewedMonth();
 }
