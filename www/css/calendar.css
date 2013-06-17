@@ -20,7 +20,6 @@ body {
 	padding: 5px;
 }
 #calendar td { /* setting width on cells doesn't work if they also set padding */
-	width: 100%;
 }
 .month {
 	display: table;
@@ -48,13 +47,13 @@ body {
 	background-color: #eee;
 }
 .dayCell[selected]{
-  background-color: red;
+  background-color: #7af;
 }
 .week .dayCell:not([isCurrentMonth]){
   color: #777;
 }
 .week .dayCell:not([isCurrentMonth])[selected]{
-  background-color: red;
+  background-color: #7af;
 }
 .dayCellContent {
   padding-top: 4px;
@@ -63,12 +62,12 @@ body {
 }
 .hourSlots {
   display: table;
+  width: 100%;
   text-align: center;
   border-collapse: collapse;
 }
 .hourHeader {
 	display: table-row;
-	width: 100%;
 }
 .hour {
 	display: table-cell;
@@ -106,5 +105,4 @@ body {
   height: 60px;
   overflow: auto;
   border: solid black 1px;
-  
 }
