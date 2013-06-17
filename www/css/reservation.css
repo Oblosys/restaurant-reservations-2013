@@ -43,6 +43,16 @@ body {
 #confirmButton {
   width: 100%;
 }
+input[type=button] {
+  border-width: 1px;
+  border-color: black;
+  border-radius: 10px;
+  background-color: lightgrey;
+}
+button[selected] {
+  background-color: #04f;
+  color: white;
+}
 .NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #commentArea {
   margin-bottom: 4px;
 }
