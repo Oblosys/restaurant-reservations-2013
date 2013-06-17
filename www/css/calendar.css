@@ -8,21 +8,21 @@ table td, table th {
 }
 
 body {
-	font-family: arial;
-	background: url('/img/background_linen.png') repeat scroll center top transparent;
+  font-family: arial;
+  background: url('/img/background_linen.png') repeat scroll center top transparent;
   overflow: scroll; /* prevents background from being cut-off to viewport size */
 }
 #calendar {
-	background-color: white;
-	border: solid black 1px;
-	padding: 5px;
+  background-color: white;
+  border: solid black 1px;
+  padding: 5px;
 }
 #calendar td { /* setting width on cells doesn't work if they also set padding */
 }
 .month {
-	display: table;
-	border-collapse: collapse;
-	text-align: center;
+  display: table;
+  border-collapse: collapse;
+  text-align: center;
 }
 .weekHeader {
   display: table-row;
@@ -33,16 +33,16 @@ body {
   display: table-row;
 }
 .weekHeader .dayCell {
-	height: 20px;
-	color: black;
-	background-color: white;
+  height: 20px;
+  color: black;
+  background-color: white;
 }
 .dayCell {
-	display: table-cell;
-	width: 52px;
-	height: 44px;
-	border: solid 1px black;
-	background-color: #eee;
+  display: table-cell;
+  width: 52px;
+  height: 44px;
+  border: solid 1px black;
+  background-color: #eee;
 }
 .dayCell[selected]{
   background-color: #7af;
@@ -65,26 +65,26 @@ body {
   border-collapse: collapse;
 }
 .hourHeader {
-	display: table-row;
+  display: table-row;
 }
 .hour {
-	display: table-cell;
-	width: 1%; /* to get equal column width */
-	background-color: #999;
+  display: table-cell;
+  width: 1%; /* to get equal column width */
+  background-color: #999;
   border: solid 1px black;
 }
 .hour[selected]{
   background-color: red;
 }
 .dayView {
-	margin-top: 10px;
+  margin-top: 10px;
   height: 100px;
   overflow: auto;
-	border: solid black 1px;
+  border: solid black 1px;
 }
 .dayView .reservationLine {
-	border-bottom: solid #999 1px;
-	padding-left: 2px;
+  border-bottom: solid #999 1px;
+  padding-left: 2px;
 }
 .reservationView {
   margin-top: 10px;
@@ -99,7 +99,7 @@ body {
   color: blue;
 }
 .reservationView .commentView {
-	padding: 2px;
+  padding: 2px;
   height: 60px;
   overflow: auto;
   border: solid black 1px;
