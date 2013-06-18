@@ -2,11 +2,11 @@
 killall node
 cd ~/svn/Oblomov/JavaScript/Reservations
 
-node js/server.js >> nodeServerOutput.txt 2>&1 &
+/usr/local/bin/node js/server.js >> nodeServerOutput.txt 2>&1 &
 
 # Wait a bit and show initial output to see if the server actually started
 # (cannot use $? because background shell command always exits succesfully)
-sleep 0.2
+sleep 0.3
 echo -------- Showing server output tail: --------
 tail nodeServerOutput.txt
 echo --------- End of server output tail ---------
