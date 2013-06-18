@@ -170,6 +170,7 @@ function handleReservationAdded(res,coll,opts) {
   //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   //var dayCell = $('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   
+  // need find instead of findWhere, since the date needs to be converted
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   //console.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
