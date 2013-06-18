@@ -36,7 +36,6 @@ function initialize() {
   console.log('initializing');
   currentReservation = new Reservation();
   
-  $('#nameField').val(''); // ui may still hold a value, which doesn't get set by listener on init, since currentReservation doesn't change
   $('#nameField').keyup(function() {
     currentReservation.set('name', $(this).val());  
   });
@@ -121,7 +120,11 @@ function initialize() {
     reservationsThisWeek.on("change", disenableTimeButtons);
     reservationsThisWeek.on("add", disenableTimeButtons);
     reservationsThisWeek.on("remove", disenableTimeButtons);
-    disenableTimeButtons();
+    currentReservation.trigger('change');
+    
+    currentReservation.trigger('change:name');       // clear ui text field (in case of a reload)  
+    currentReservation.trigger('change:nrOfPeople'); // and disenable buttons according to newly fetched reservations
+    // would be nice to just trigger 'change', but that does not trigger the sub events
   }});
 }
 
