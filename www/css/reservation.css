@@ -53,6 +53,6 @@ input[type=button][selected] {
   background-color: #04f;
   color: white;
 }
-.NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #commentArea {
+.NameLine, .NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #commentArea {
   margin-bottom: 4px;
 }

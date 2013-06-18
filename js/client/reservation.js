@@ -1,9 +1,7 @@
 /* global util:false */
 var maxNrOfPeople = 12; // todo: obtain from server
 
-/* - fix namefield + disable status on reload (force a present)
- * - don't allow confirm before reservations are fetched (doesn't work yet)
- * LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
+/* LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
  */
 console.log('executing reservation.js');
 $(document).ready(function(){
@@ -36,6 +34,7 @@ function initialize() {
   console.log('initializing');
   currentReservation = new Reservation();
   
+  ////// Name 
   $('#nameField').keyup(function() {
     currentReservation.set('name', $(this).val());  
   });
@@ -44,11 +43,13 @@ function initialize() {
                                   // occur, even if we bind the handler above to .changed
   });
   
+  ////// Number of people
+  setLabelOn($('#nrOfPeopleLabel'), currentReservation, 'nrOfPeople','Number of people: ', 'Please select nr. of people.');
   var $nrOfPeopleButtons = $('.NrOfPeopleButtons input');
   $nrOfPeopleButtons.each(function(i) {
     var $button = $(this);
-    currentReservation.on('change:nrOfPeople', function(r,newSelection) {
-      if (newSelection == i+1)
+    currentReservation.on('change:nrOfPeople', function(r,newNrOfPeople) {
+      if (newNrOfPeople == i+1)
         $button.attr('selected','selected');
       else
         $button.removeAttr('selected');
@@ -59,7 +60,9 @@ function initialize() {
       currentReservation.set('nrOfPeople', i+1);
     });
   });
-  
+
+  ////// Date
+  setLabelOn($('#dateLabel'), currentReservation, 'date','Date: ', 'Please select a date.');
   var today = new Date();
   var dayLabels = ['Zo','Ma','Di','Wo','Do','Vr','Za'];
   var dateLabels = ['Today ('+util.showDate(today)+')','Tomorrow'];
@@ -88,6 +91,8 @@ function initialize() {
     });
   });
   
+  ////// Time
+  setLabelOn($('#timeLabel'), currentReservation, 'time','Time: ', 'Please select a time.');
   var timeLabels = [];
   for (var hr=18; hr<25; hr++) {
     timeLabels.push(hr+':00');
@@ -110,6 +115,8 @@ function initialize() {
     });
   });
   
+  
+  
   reservationsThisWeek = new Reservations();
   var lastDay = new Date(today); 
   // Just assume first day is today, even it's midnight and a new day starts while making the reservation
@@ -127,6 +134,16 @@ function initialize() {
     // would be nice to just trigger 'change', but that does not trigger the sub events
   }});
 }
+
+function setLabelOn($label, model, prop, setMsg, unsetMsg) {
+  model.on('change:'+prop, function(r,newVal) { 
+  if (newVal)
+    $label.text(setMsg+newVal);
+  else
+    $label.text(unsetMsg);
+});
+}
+
 
 function isValidReservation(res) {
   return res.get('date') != '' &&
