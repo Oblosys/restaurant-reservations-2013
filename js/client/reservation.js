@@ -36,13 +36,23 @@ function initialize() {
   $('#nameField').keyup(function() {
     currentReservation.set('name', $(this).val());
   });
+  currentReservation.on('change:name', function(r,newName) {
+    $('#nameField').val(newName); // only triggers change event if value actually changed, so no loops will
+                                  // occur, even if we bind the handler above to .changed
+  });
   
   var $nrOfPeopleButtons = $('.NrOfPeopleButtons input');
   $nrOfPeopleButtons.each(function(i) {
+    var $button = $(this);
+    currentReservation.on('change:nrOfPeople', function(r,newSelection) {
+      if (newSelection == i+1)
+        $button.attr('selected','selected');
+      else
+        $button.removeAttr('selected');
+    });
+
     $(this).click(function() {
-      currentReservation.set('nrOfPeople', i);
-      $nrOfPeopleButtons.removeAttr('selected');
-      $(this).attr('selected','selected');
+      currentReservation.set('nrOfPeople', i+1);
     });
   });
   
@@ -54,13 +64,21 @@ function initialize() {
     dateLabels.push(dayLabels[(d+weekDay+2)%7]);
   var $dateButtons = $('.LargeDayButtons input,.SmallDayButtons input');
   $dateButtons.each(function(i) {
+    
+    $(this).attr('value', dateLabels[i]);
+ 
     var buttonDate = new Date(today);
     buttonDate.setDate( today.getDate() + i );
-    $(this).attr('value', dateLabels[i]);
+    var $button = $(this);
+    currentReservation.on('change:date', function(r,newDate) {
+      if (newDate == util.showDate(buttonDate))
+        $button.attr('selected','selected');
+      else
+        $button.removeAttr('selected');
+    });
+    
     $(this).click(function() {
       currentReservation.set('date', util.showDate(buttonDate));
-      $dateButtons.removeAttr('selected');
-      $(this).attr('selected','selected');
     });
   });
   
@@ -73,6 +91,7 @@ function initialize() {
   var $timeButtons = $('.TimeButtons input');
   $timeButtons.each(function(i) {
     $(this).attr('value', timeLabels[i]);
+   
     var $button = $(this);
     currentReservation.on('change:time', function(r,newTime) {
       if (newTime == timeLabels[i])
@@ -81,6 +100,7 @@ function initialize() {
         $button.removeAttr('selected');
     });
     $(this).click(function() {
+    
       currentReservation.set('time', timeLabels[i]);
       //$timeButtons.removeAttr('selected');
       //$(this).attr('selected','selected');
