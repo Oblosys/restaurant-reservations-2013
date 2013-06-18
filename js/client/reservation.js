@@ -1,8 +1,8 @@
 /* global util:false */
-var maxNrOfPeople = 12;
+var maxNrOfPeople = 12; // todo: obtain from server
 
-/*
- * - don't allow confirm before reservations are fetched
+/* - fix namefield + disable status on reload (force a present)
+ * - don't allow confirm before reservations are fetched (doesn't work yet)
  * LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
  */
 console.log('executing reservation.js');
@@ -36,8 +36,9 @@ function initialize() {
   console.log('initializing');
   currentReservation = new Reservation();
   
+  $('#nameField').val(''); // ui may still hold a value, which doesn't get set by listener on init, since currentReservation doesn't change
   $('#nameField').keyup(function() {
-    currentReservation.set('name', $(this).val());
+    currentReservation.set('name', $(this).val());  
   });
   currentReservation.on('change:name', function(r,newName) {
     $('#nameField').val(newName); // only triggers change event if value actually changed, so no loops will
@@ -117,7 +118,6 @@ function initialize() {
   lastDay.setDate( today.getDate() + 7);
   reservationsThisWeek.url = '/query/range?start='+util.showDate(today)+'&end='+util.showDate(lastDay);
   reservationsThisWeek.fetch({success: function() {
-    console.log('done');
     reservationsThisWeek.on("change", disenableTimeButtons);
     reservationsThisWeek.on("add", disenableTimeButtons);
     reservationsThisWeek.on("remove", disenableTimeButtons);
@@ -132,16 +132,24 @@ function isValidReservation(res) {
          res.get('nrOfPeople') != 0;
 }
 
+/*
+ * Could be improved by also having a check for availability at server side.
+ * */
 function confirmButton() {
-  if (isValidReservation(currentReservation)) {
-    var newReservation = _.clone(currentReservation); // submit a clone, to prevent having to reinitialize listeners
-    newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
-    newReservation.save();
-    currentReservation.clear();
-  }
-  else {
-    console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
-  }
+  var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
+  reservationsThisWeek.fetch({success: function() {    
+    if (isValidReservation(currentReservation)) {
+      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
+      newReservation.save();
+      currentReservation.clear();
+      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
+            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
+    }
+    else {
+      alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
+//      console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
+    }
+  }});
   log();
 }
 
@@ -155,7 +163,6 @@ function disenableTimeButtons() {
   var curTime = currentReservation.get('time');
   var curNr = currentReservation.get('nrOfPeople');
    var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
-  console.log('bla'+JSON.stringify(ressForDate.length));
   var nrOfPeopleAtTime = []
   _.each(ressForDate, function(res){
     var t = res.get('time');
