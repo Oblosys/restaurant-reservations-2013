@@ -1,29 +1,33 @@
 /* global util:false */
+var maxNrOfPeople = 12;
 
-
+/*
+ * - Use today for range url
+ * - calendar doesn't show new reservations
+ * - don't allow confirm before reservations are fetched
+ */
 console.log('executing reservation.js');
 $(document).ready(function(){
   initialize();
 });
 
 var Reservation = Backbone.Model.extend({
-  clear: function() {
-    this.set('date', '');
-    this.set('time', '');
-    this.set('name', '');
-    this.set('nrOfPeople', 0);
-    this.set('comment', '');
+  defaults: {
+    date: '',
+    time: '',
+    name: '',
+    nrOfPeople: 0,
+    comment: ''
   },
   initialize: function() {
-    this.clear();
-    this.on("change", disenableButtons);
+    this.on("change", disenableConfirmButton);
   },
   urlRoot: '/model/reservation'
 });
 
 var Reservations = Backbone.Collection.extend({
   model: Reservation,
-  url: '/query/range?start=17-6-2013&end=17-6-2013'
+  url: '/query/range?start=18-6-2013&end=25-6-2013'
 });
 var reservationsToday;
 
@@ -49,6 +53,7 @@ function initialize() {
         $button.attr('selected','selected');
       else
         $button.removeAttr('selected');
+      disenableTimeButtons();
     });
 
     $(this).click(function() {
@@ -75,6 +80,8 @@ function initialize() {
         $button.attr('selected','selected');
       else
         $button.removeAttr('selected');
+      
+      disenableTimeButtons();
     });
     
     $(this).click(function() {
@@ -100,12 +107,18 @@ function initialize() {
         $button.removeAttr('selected');
     });
     $(this).click(function() {
-    
       currentReservation.set('time', timeLabels[i]);
-      //$timeButtons.removeAttr('selected');
-      //$(this).attr('selected','selected');
     });
   });
+  
+  reservationsToday = new Reservations();
+  reservationsToday.fetch({success: function() {
+    console.log('done');
+    reservationsToday.on("change", disenableTimeButtons);
+    reservationsToday.on("add", disenableTimeButtons);
+    reservationsToday.on("remove", disenableTimeButtons);
+    disenableTimeButtons();
+  }});
 }
 
 function isValidReservation(res) {
@@ -128,18 +141,44 @@ function confirmButton() {
   log();
 }
 
-function disenableButtons() {
-  console.log('valid:'+isValidReservation(currentReservation));
+function disenableConfirmButton() {
+  //console.log('valid:'+isValidReservation(currentReservation));
   document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
 }
-
+function disenableTimeButtons() {
+  console.log('disenableTimeButtons');
+  var curDate = currentReservation.get('date');
+  var curTime = currentReservation.get('time');
+  var curNr = currentReservation.get('nrOfPeople');
+   var ressForDate = reservationsToday.where({date: curDate}); // date=='' yields empty ressForDate
+  console.log('bla'+JSON.stringify(ressForDate.length));
+  var nrOfPeopleAtTime = []
+  _.each(ressForDate, function(res){
+    var t = res.get('time');
+    if (!nrOfPeopleAtTime[t])
+      nrOfPeopleAtTime[t] = 0;
+    nrOfPeopleAtTime[t] += res.get('nrOfPeople');
+  });
+  console.log(nrOfPeopleAtTime);
+  var $timeButtons = $('.TimeButtons input');
+  $timeButtons.each(function() {
+    var tm = $(this).val();
+    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= maxNrOfPeople)
+      $(this).removeAttr('disabled');
+    else {
+      $(this).attr('disabled','disabled');
+      if (curTime==tm)
+        currentReservation.set('time','');
+    }
+  });
+}
 function log() {
   $('#log').empty();
-  $('#log').append( JSON.stringify(currentReservation) +'<br/>');
+  $('#log').append( JSON.stringify(currentReservation) +'<br/>'+
+                    JSON.stringify(reservationsToday) +'<br/>');
 }
 function testButton1() {
   console.log('Test button 1 pressed');
-  disenableButtons();
   log();
 }
 function testButton2() {
@@ -149,9 +188,11 @@ function testButton2() {
 }
 function testButton3() {
   console.log('Test button 3 pressed, remove');
+  disenableTimeButtons();
 }
 function testButton4() {
-  console.log('Test button 4 pressed');
+  console.log('Test button 4 pressed, fetch');
+  reservationsToday.fetch();
 }
 function refreshButton() {
   console.log('Refresh button pressed');
