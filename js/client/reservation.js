@@ -28,7 +28,7 @@ var Reservations = Backbone.Collection.extend({
   model: Reservation,
   url: ''
 });
-var reservationsToday;
+var reservationsThisWeek;
 
 var currentReservation;
 
@@ -110,17 +110,17 @@ function initialize() {
     });
   });
   
-  reservationsToday = new Reservations();
+  reservationsThisWeek = new Reservations();
   var lastDay = new Date(today); 
   // Just assume first day is today, even it's midnight and a new day starts while making the reservation
   
   lastDay.setDate( today.getDate() + 7);
-  reservationsToday.url = '/query/range?start='+util.showDate(today)+'&end='+util.showDate(lastDay);
-  reservationsToday.fetch({success: function() {
+  reservationsThisWeek.url = '/query/range?start='+util.showDate(today)+'&end='+util.showDate(lastDay);
+  reservationsThisWeek.fetch({success: function() {
     console.log('done');
-    reservationsToday.on("change", disenableTimeButtons);
-    reservationsToday.on("add", disenableTimeButtons);
-    reservationsToday.on("remove", disenableTimeButtons);
+    reservationsThisWeek.on("change", disenableTimeButtons);
+    reservationsThisWeek.on("add", disenableTimeButtons);
+    reservationsThisWeek.on("remove", disenableTimeButtons);
     disenableTimeButtons();
   }});
 }
@@ -154,7 +154,7 @@ function disenableTimeButtons() {
   var curDate = currentReservation.get('date');
   var curTime = currentReservation.get('time');
   var curNr = currentReservation.get('nrOfPeople');
-   var ressForDate = reservationsToday.where({date: curDate}); // date=='' yields empty ressForDate
+   var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
   console.log('bla'+JSON.stringify(ressForDate.length));
   var nrOfPeopleAtTime = []
   _.each(ressForDate, function(res){
@@ -179,7 +179,7 @@ function disenableTimeButtons() {
 function log() {
   $('#log').empty();
   $('#log').append( JSON.stringify(currentReservation) +'<br/>'+
-                    JSON.stringify(reservationsToday) +'<br/>');
+                    JSON.stringify(reservationsThisWeek) +'<br/>');
 }
 function testButton1() {
   console.log('Test button 1 pressed');
@@ -196,7 +196,7 @@ function testButton3() {
 }
 function testButton4() {
   console.log('Test button 4 pressed, fetch');
-  reservationsToday.fetch();
+  reservationsThisWeek.fetch();
 }
 function refreshButton() {
   console.log('Refresh button pressed');
