@@ -166,12 +166,12 @@ selection.on('change:hour', function(model, newHour) {
 // TODO: are selections okay like this, without a model of their own?
 
 function handleReservationAdded(res,coll,opts) {
-  console.log('Reservation added '+res.get('name'));
+  console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
   //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   //var dayCell = $('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  console.log('correspondingDay = '+correspondingDay.get('date'));
+  //console.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
   //logViewedMonth();
   
@@ -179,7 +179,7 @@ function handleReservationAdded(res,coll,opts) {
 // TODO: need full views here? Maybe not
 
 function handleReservationRemoved(res,coll,opts) {
-  console.log('Reservation removed '+res.get('name'));
+  console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   correspondingDay.get('reservations').remove(res);
   //logViewedMonth();
@@ -195,10 +195,11 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
   var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
   
-  var previousMonthDates =_.range(nrOfDaysInPreviousMonth-firstDayOfMonth,nrOfDaysInPreviousMonth).map(function(day){
+  // note: _.range(x,y) == [x..y-1] 
+  var previousMonthDates =_.range(nrOfDaysInPreviousMonth-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
     return new Date(currentYear,currentMonth-1,day);
   });
-  var currentMonthDates = _.range(1,nrOfDaysInCurrentMonth).map(function(day){
+  var currentMonthDates = _.range(1,nrOfDaysInCurrentMonth+1).map(function(day){
     return new Date(currentYear,currentMonth,day);
   });
   var nextMonthDates = _.range(1,14).map(function(day){ // will never be more than 14
@@ -277,6 +278,7 @@ function testButton3() {
 }
 function testButton4() {
   console.log('Test button 4 pressed');
+  viewedMonth.fetch();
 //  console.log(JSON.stringify(viewedMonth));
 }
 function refreshButton() {
