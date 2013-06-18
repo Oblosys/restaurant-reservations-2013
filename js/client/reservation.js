@@ -2,9 +2,8 @@
 var maxNrOfPeople = 12;
 
 /*
- * - Use today for range url
- * - calendar doesn't show new reservations
  * - don't allow confirm before reservations are fetched
+ * LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
  */
 console.log('executing reservation.js');
 $(document).ready(function(){
@@ -27,7 +26,7 @@ var Reservation = Backbone.Model.extend({
 
 var Reservations = Backbone.Collection.extend({
   model: Reservation,
-  url: '/query/range?start=18-6-2013&end=25-6-2013'
+  url: ''
 });
 var reservationsToday;
 
@@ -112,6 +111,11 @@ function initialize() {
   });
   
   reservationsToday = new Reservations();
+  var lastDay = new Date(today); 
+  // Just assume first day is today, even it's midnight and a new day starts while making the reservation
+  
+  lastDay.setDate( today.getDate() + 7);
+  reservationsToday.url = '/query/range?start='+util.showDate(today)+'&end='+util.showDate(lastDay);
   reservationsToday.fetch({success: function() {
     console.log('done');
     reservationsToday.on("change", disenableTimeButtons);
