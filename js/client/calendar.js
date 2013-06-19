@@ -187,7 +187,7 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
   
   // note: _.range(x,y) == [x..y-1] 
-  var previousMonthDates =_.range(nrOfDaysInPreviousMonth-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
+  var previousMonthDates =_.range(nrOfDaysInPreviousMonth+1-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
     return new Date(currentYear,currentMonth-1,day);
   });
   var currentMonthDates = _.range(1,nrOfDaysInCurrentMonth+1).map(function(day){
