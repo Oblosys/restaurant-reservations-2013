@@ -19,6 +19,8 @@ $(document).ready(function(){
   initialize();
 });
 
+var maanden = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+
 var Reservation = Backbone.Model.extend({
   defaults: {
     date: '1-1-2000',
@@ -232,20 +234,36 @@ function initialize() {
   });
 
   var today = new Date();
-  setCurrentYearMonth(today.getFullYear(), today.getMonth());
   
   viewedMonth = new Reservations();
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
+
+
+  selection.on('change:yearMonth', setYearMonth);
+  selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()+1});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
+}
+
+function setYearMonth() {
+  var yearMonth = selection.get('yearMonth');
+  $('#monthLabel').text(maanden[yearMonth.month]+' '+yearMonth.year);
+  setCurrentYearMonth(yearMonth.year, yearMonth.month);
+  // TODO: handle reservations + handlers
 }
 
 function prevMonthButton() {
   console.log('Prev month button pressed');
+  var yearMonth = selection.get('yearMonth');
+  var currentYearMonth = new Date(yearMonth.year, yearMonth.month-1,1);
+  selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
 function nextMonthButton() {
   console.log('Next month button pressed');
+  var yearMonth = selection.get('yearMonth');
+  var currentYearMonth = new Date(yearMonth.year, yearMonth.month+1,1);
+  selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
 
 function logViewedMonth() {
