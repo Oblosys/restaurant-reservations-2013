@@ -2,7 +2,6 @@
 
 /* 
  * TODO:
- * sort reservations in day view
  * handle multiple months
  * show reservations for partial previous and next months */
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
@@ -240,6 +239,13 @@ function initialize() {
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
+}
+
+function prevMonthButton() {
+  console.log('Prev month button pressed');
+}
+function nextMonthButton() {
+  console.log('Next month button pressed');
 }
 
 function logViewedMonth() {

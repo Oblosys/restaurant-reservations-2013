@@ -19,6 +19,13 @@ body {
 }
 #calendar td { /* setting width on cells doesn't work if they also set padding */
 }
+
+#monthLabel {
+  font-size: 140%;
+  width: 100%;
+  text-align: center;
+}
+
 .month {
   display: table;
   border-collapse: collapse;
