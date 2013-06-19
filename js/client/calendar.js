@@ -1,9 +1,5 @@
 /* global util:false */
 
-/* 
- * TODO:
- * handle multiple months
- * show reservations for partial previous and next months */
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
@@ -11,6 +7,7 @@
 // TODO: don't use .dayCell for header, and then update all selectors (remove .week)
 // TODO: rename viewedMonth to something with 'reservations'
 // TODO: are selections okay like this, without a model of their own?
+// TODO: maybe cache viewed months?
 
 
 
@@ -33,7 +30,7 @@ var Reservation = Backbone.Model.extend({
 var Reservations = Backbone.Collection.extend({
   model: Reservation,
   comparator: 'time',
-  url: '/query/range?start=1-6-2013&end=30-6-2013'
+  url: ''
 });
 var viewedMonth;
 
@@ -163,7 +160,7 @@ var selection = new Selection();
 //TODO: need full views here? Maybe not
 function handleReservationAdded(res,coll,opts) {
   //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  
+  //for (var i=0;i<days.length; i++) console.log(days[i].get('date'));
   // need find instead of findWhere, since the date needs to be converted
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   //console.log('correspondingDay = '+correspondingDay.get('date'));
@@ -182,6 +179,9 @@ function getNumberOfDaysInMonth(year,month) {
 }
 
 function setCurrentYearMonth(currentYear,currentMonth) {
+  while (viewedMonth.length)
+    viewedMonth.pop();
+
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
   var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
@@ -209,6 +209,10 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   for (var i=0; i<days.length; i++) {
     days[i].set('date', dates[i]);
   }
+  
+  viewedMonth.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
+  console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  viewedMonth.fetch();
 }
 
 function initialize() {
@@ -238,8 +242,6 @@ function initialize() {
   viewedMonth = new Reservations();
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
-  viewedMonth.fetch();
-
 
   selection.on('change:yearMonth', setYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
@@ -280,12 +282,17 @@ function testButton1() {
 
 function testButton2() {
   console.log('Test button 2 pressed, create');
-  viewedMonth.create({name:'Ieniemienie', date: '1-6-2013', nrOfPeople: 2});
+//  viewedMonth.create({name:'Ieniemienie', date: '1-6-2013', nrOfPeople: 2});
+  while (viewedMonth.length)
+    viewedMonth.pop();
+  viewedMonth.url = '/query/range?start=1-7-2013&end=11-8-2013';
 }
 function testButton3() {
   console.log('Test button 3 pressed, remove');
-  viewedMonth.remove(viewedMonth.findWhere({name: 'Ieniemienie'}));
-  
+  //viewedMonth.remove(viewedMonth.findWhere({name: 'Ieniemienie'}));
+  //console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  viewedMonth.fetch();
+  console.log( 'viewedMonth.length '+viewedMonth.length );
 //  console.log(JSON.stringify(viewedMonth));
 }
 function testButton4() {
