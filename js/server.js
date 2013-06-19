@@ -20,6 +20,8 @@ var someReservations =
      ]
    , [ { time:'21:00', name:'Charlie', nrOfPeople:8, comment:'Dinner at nine' } 
      ]
+   , [ { time:'20:00', name:'Frank', nrOfPeople:8, comment:'' } 
+     ]
    , [ { time:'18:00', name:'Sam', nrOfPeople:3, comment:'Would like the special menu' } 
      ]
    , []
