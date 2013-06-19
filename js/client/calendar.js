@@ -242,7 +242,7 @@ function initialize() {
 
 
   selection.on('change:yearMonth', setYearMonth);
-  selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()+1});
+  selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 }
 
