@@ -31,6 +31,7 @@ var Reservation = Backbone.Model.extend({
 
 var Reservations = Backbone.Collection.extend({
   model: Reservation,
+  comparator: 'time',
   url: '/query/range?start=1-6-2013&end=30-6-2013'
 });
 var viewedMonth;
@@ -105,15 +106,14 @@ var DayView = Backbone.View.extend({
   },
   render: function() {
     console.log('rendering dayView');
-    var reservationsForCell = this.model.get('reservations');
+    var reservationsForDay = this.model.get('reservations'); // is a Day
     var html = '';
-    reservationsForCell.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
+    reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
     html += '';
     this.$el.html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
-        //console.log('klik '+ix+reservationsForCell.models[ix]);
-        selection.set('reservation',reservationsForCell.models[ix]);
+        selection.set('reservation',sortedReservationsForDay.models[ix]);
       });
     });
     return this;
@@ -158,39 +158,21 @@ var days;
 
 var Selection = Backbone.Model.extend({});
 var selection = new Selection();
-/*
-selection.on('change:day', function(model, newDay) {
-  //console.log('day: '+$(selection.previous('day')).attr('id')+'~>'+$(newDay).attr('id'));
-  $(selection.previous('day')).removeAttr('selected'); // $() takes care of any undefineds
-  $(newDay).attr('selected','selected');
-  dayView.setModel(days[10]);
-});
-selection.on('change:hour', function(model, newHour) {
-  //console.log('hour: '+$(selection.previous('hour')).attr('id')+'~>'+$(newHour).attr('id'));
-  $(selection.previous('hour')).removeAttr('selected'); // $() takes care of any undefineds
-  $(newHour).attr('selected','selected');
-});
-*/
 
+//TODO: need full views here? Maybe not
 function handleReservationAdded(res,coll,opts) {
   //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
-  //var dayCell = $('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   
   // need find instead of findWhere, since the date needs to be converted
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   //console.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
-  //logViewedMonth();
-  
 }
-// TODO: need full views here? Maybe not
 
 function handleReservationRemoved(res,coll,opts) {
-  console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
+  //console.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   correspondingDay.get('reservations').remove(res);
-  //logViewedMonth();
 }
 
 function getNumberOfDaysInMonth(year,month) {
@@ -214,9 +196,7 @@ function setCurrentYearMonth(currentYear,currentMonth) {
     return new Date(currentYear,currentMonth+1,day);
   });
   var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
-  //console.log(''+nrOfDaysInPreviousMonth+' '+nrOfDaysInCurrentMonth+firstDayOfMonth);
-  //console.log(previousMonthDates);
-  //console.log(currentMonthDates);
+
   $('#calendar .week .dayCell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
     if (dates[ix].getMonth() == currentMonth) 
@@ -237,7 +217,7 @@ function initialize() {
   days = $('#calendar .week .dayCell').map(function(ix) {
     $(this).attr('id','dayCell-'+ix);
     var day = new Day({date: new Date()});
-    var dayCellView = new DayCellView({model: day, el: dayElts[ix]}); // are not reachable from global var, but does not seem necessary
+    new DayCellView({model: day, el: dayElts[ix]}); // DayCellViews are not stored in a var, has not been necessary yet.
     return day;
   });
   
