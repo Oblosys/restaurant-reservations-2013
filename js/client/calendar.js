@@ -3,7 +3,6 @@
 /* 
  * TODO:
  * sort reservations in day view
- * select today
  * handle multiple months
  * show reservations for partial previous and next months */
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
@@ -44,10 +43,10 @@ var Day = Backbone.Model.extend({
    
     // need to redirect all change events from reservation collection 
     var day = this;
-    reservations.on('change', function() {console.log('change'); day.trigger('change');}); // child reservation change, propagated to collection  
-    reservations.on('add',    function() {console.log('add');    day.trigger('change');});  
-    reservations.on('remove', function() {console.log('remove'); day.trigger('change');});
-    reservations.on('reset',  function() {console.log('reset');  day.trigger('change');});    
+    reservations.on('change', function() {/*console.log('change');*/ day.trigger('change');}); // child reservation change, propagated to collection  
+    reservations.on('add',    function() {/*console.log('add');*/    day.trigger('change');});  
+    reservations.on('remove', function() {/*console.log('remove');*/ day.trigger('change');});
+    reservations.on('reset',  function() {/*console.log('reset');*/  day.trigger('change');});    
   }// not synced, so no url
 });
 
@@ -174,7 +173,7 @@ selection.on('change:hour', function(model, newHour) {
 */
 
 function handleReservationAdded(res,coll,opts) {
-  console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
+  //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
   //console.log('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   //var dayCell = $('#calendar .week .dayCell[date="'+res.get('date')+'"]');
   
@@ -260,7 +259,7 @@ function initialize() {
   viewedMonth.on("add", handleReservationAdded);
   viewedMonth.on("remove", handleReservationRemoved);
   viewedMonth.fetch();
-  selection.set('day', days[21]);
+  selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 }
 
 function logViewedMonth() {
