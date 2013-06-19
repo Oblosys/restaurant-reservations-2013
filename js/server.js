@@ -41,7 +41,7 @@ function makeLotOfReservations(n) {
   return reservations;
 }
 
-var lotOfReservations = makeLotOfReservations(10);
+var lotOfReservations = makeLotOfReservations(20);
 
 // cannot set properties directly (so genericServer.root = .. fails)
 genericServer.root.reservation =
