@@ -20,6 +20,10 @@ body {
 #calendar td { /* setting width on cells doesn't work if they also set padding */
 }
 
+.MonthSelection {
+  width: 100%;
+  margin-bottom: 3px;
+}
 #monthLabel {
   font-size: 140%;
   width: 100%;
