@@ -1,5 +1,6 @@
 /* global util:false */
 
+// TODO: make some log functions for collections and models
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
@@ -111,7 +112,7 @@ var DayView = Backbone.View.extend({
     this.$el.html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
-        selection.set('reservation',sortedReservationsForDay.models[ix]);
+        selection.set('reservation',reservationsForDay.models[ix]);
       });
     });
     return this;
@@ -130,7 +131,10 @@ var ReservationView = Backbone.View.extend({
     console.log('rendering reservationView');
     var reservation = selection.get('reservation'); // doesn't have its own model
     var html = '';
-    var time = name = nrOfPeople = comment = ''; 
+    var time = '';
+    var name = '';
+    var nrOfPeople = '';
+    var comment = ''; 
     
     if (reservation) { 
       time = reservation.get('time');
