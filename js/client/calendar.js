@@ -63,6 +63,7 @@ var Day = Backbone.Model.extend({
 
 /***** Backbone views *****/
 
+// Calendar cells
 var DayCellView = Backbone.View.extend({
   tagName: "div",
   className: "dayCell",
@@ -99,7 +100,8 @@ var DayCellView = Backbone.View.extend({
   }
 });
 
-var DayView = Backbone.View.extend({
+//List of reservations for the selected day
+var DayView = Backbone.View.extend({  
   tagName: "div",
   className: "dayView",
   events: {},
@@ -129,6 +131,7 @@ var DayView = Backbone.View.extend({
   }
 });
 
+// Selected reservation
 var ReservationView = Backbone.View.extend({
   tagName: "div",
   className: "reservationView",

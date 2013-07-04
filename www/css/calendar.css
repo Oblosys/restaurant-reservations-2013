@@ -16,7 +16,7 @@ body {
 #calendar td { /* setting width on cells doesn't work if they also set padding */
 }
 
-.MonthSelection {
+.MonthSelectionBar {
   width: 100%;
   margin-bottom: 3px;
 }
@@ -32,20 +32,24 @@ body {
   text-align: center;
   margin-top: 4px;
 }
+
 .weekHeader {
   display: table-row;
   background-color: #888;
   color: white;
 }
-.week {
-  display: table-row;
-}
+
 .dayName {
   display: table-cell;
   height: 20px;
   color: black;
   background-color: white;
 }
+
+.week {
+  display: table-row;
+}
+
 .dayCell {
   display: table-cell;
   width: 52px;
@@ -59,32 +63,12 @@ body {
 .dayCell:not([isCurrentMonth]){
   color: #777;
 }
-.dayCell:not([isCurrentMonth])[selected]{
-  background-color: #7af;
-}
 .dayCellContent {
   padding-top: 4px;
   font-size: 85%;
   color: blue;
 }
-.hourSlots {
-  display: table;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-.hourHeader {
-  display: table-row;
-}
-.hour {
-  display: table-cell;
-  width: 1%; /* to get equal column width */
-  background-color: #999;
-  border: solid 1px black;
-}
-.hour[selected]{
-  background-color: red;
-}
+
 .dayView {
   margin-top: 10px;
   height: 100px;
@@ -95,6 +79,7 @@ body {
   border-bottom: solid #999 1px;
   padding-left: 2px;
 }
+
 .reservationView {
   margin-top: 10px;
   padding-left: 2px;
