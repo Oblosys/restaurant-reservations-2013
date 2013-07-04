@@ -5,6 +5,8 @@
 // TODO: make some log functions for collections and models
 // TODO: maybe cache viewed months?
 
+var restaurantInfo = { maxNrOfPeople: 12 };
+
 var _ = require('underscore')
   , Backbone = require('backbone')
   , util = require('./shared/util.js')
@@ -12,6 +14,7 @@ var _ = require('underscore')
   , app;
 
 app = genericServer();
+
 
 var someReservations =
   [  [ { time:'20:00', name:'Nathan', nrOfPeople:2, comment:'Nathan says hi' }
@@ -63,6 +66,9 @@ genericServer.root.reservation =
 
 var allReservations = genericServer.root.reservation.models;
 
+app.get('/query/restaurantInfo', function(req, res) {  
+  res.send(restaurantInfo);
+});
 app.get('/query/range', function(req, res) {
   //console.log(JSON.stringify(genericServer.root));
   var startDate = util.readDate(req.query.start);

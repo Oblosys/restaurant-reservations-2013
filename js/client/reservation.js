@@ -1,15 +1,16 @@
 /* global util:false */
-var maxNrOfPeople = 12; // todo: obtain from server
 
 /* LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
  */
 console.log('executing reservation.js');
-$(document).ready(function(){
+$(document).ready(function() {
   initialize();
 });
 
 
 /***** Globals *****/
+
+var restaurantInfo;
 
 var reservationsThisWeek;
 
@@ -17,6 +18,13 @@ var currentReservation;
 
 
 /***** Backbone models *****/
+
+var RestaurantInfo =  Backbone.Model.extend({
+  defaults: { 
+    maxNrOfPeople: 0
+  },
+  urlRoot: 'query/restaurantInfo'
+});
 
 var Reservation = Backbone.Model.extend({
   defaults: {
@@ -42,6 +50,12 @@ var Reservations = Backbone.Collection.extend({
 
 function initialize() {
   console.log('initializing');
+  
+  restaurantInfo = new RestaurantInfo();
+  restaurantInfo.fetch({success: function() {
+    disenableTimeButtons();
+  }});
+
   currentReservation = new Reservation();
   
   ////// Name 
@@ -172,24 +186,25 @@ function disenableConfirmButton() {
   document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
 }
 
+/* can be called before buttons are set up, so needs to work correctly in that case */
 function disenableTimeButtons() {
   console.log('disenableTimeButtons');
   var curDate = currentReservation.get('date');
   var curTime = currentReservation.get('time');
   var curNr = currentReservation.get('nrOfPeople');
-   var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
-  var nrOfPeopleAtTime = []
+  var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
+  var nrOfPeopleAtTime = [];
   _.each(ressForDate, function(res){
     var t = res.get('time');
     if (!nrOfPeopleAtTime[t])
       nrOfPeopleAtTime[t] = 0;
     nrOfPeopleAtTime[t] += res.get('nrOfPeople');
   });
-  console.log(nrOfPeopleAtTime);
+  //console.log(nrOfPeopleAtTime);
   var $timeButtons = $('.TimeButtons input');
   $timeButtons.each(function() {
     var tm = $(this).val();
-    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= maxNrOfPeople)
+    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.get('maxNrOfPeople'))
       $(this).removeAttr('disabled');
     else {
       $(this).attr('disabled','disabled');
