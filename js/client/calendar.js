@@ -4,7 +4,6 @@
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
 
-// TODO: rename viewedMonth to something with 'reservations'
 // TODO: are selections okay like this, without a model of their own?
 
 
@@ -15,6 +14,9 @@ $(document).ready(function(){
 });
 
 var maanden = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+
+
+/***** Backbone models *****/
 
 var Reservation = Backbone.Model.extend({
   defaults: {
@@ -30,7 +32,6 @@ var Reservations = Backbone.Collection.extend({
   comparator: 'time',
   url: ''
 });
-var viewedMonth;
 
 var Day = Backbone.Model.extend({
   defaults: {},
@@ -46,6 +47,9 @@ var Day = Backbone.Model.extend({
     reservations.on('reset',  function() {/*console.log('reset');*/  day.trigger('change');});    
   }// not synced, so no url
 });
+
+
+/***** Backbone views *****/
 
 var DayCellView = Backbone.View.extend({
   tagName: "div",
@@ -151,12 +155,18 @@ var ReservationView = Backbone.View.extend({
   }
 });
 
+
+/* Globals */
+
+var viewedReservations;
+
 var dayView;
 var reservationView;
 var days;
 
 var Selection = Backbone.Model.extend({});
 var selection = new Selection();
+
 
 //TODO: need full views here? Maybe not
 function handleReservationAdded(res,coll,opts) {
@@ -174,14 +184,9 @@ function handleReservationRemoved(res,coll,opts) {
   correspondingDay.get('reservations').remove(res);
 }
 
-function getNumberOfDaysInMonth(year,month) {
-  return (new Date(year,month + 1,0)).getDate(); 
-  // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
-}
-
 function setCurrentYearMonth(currentYear,currentMonth) {
-  while (viewedMonth.length)
-    viewedMonth.pop();
+  while (viewedReservations.length)
+    viewedReservations.pop();
 
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
@@ -211,9 +216,9 @@ function setCurrentYearMonth(currentYear,currentMonth) {
     days[i].set('date', dates[i]);
   }
   
-  viewedMonth.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
+  viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
   console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedMonth.fetch();
+  viewedReservations.fetch();
 }
 
 function initialize() {
@@ -240,9 +245,9 @@ function initialize() {
 
   var today = new Date();
   
-  viewedMonth = new Reservations();
-  viewedMonth.on("add", handleReservationAdded);
-  viewedMonth.on("remove", handleReservationRemoved);
+  viewedReservations = new Reservations();
+  viewedReservations.on("add", handleReservationAdded);
+  viewedReservations.on("remove", handleReservationRemoved);
 
   selection.on('change:yearMonth', setYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
@@ -255,6 +260,16 @@ function setYearMonth() {
   setCurrentYearMonth(yearMonth.year, yearMonth.month);
   // TODO: handle reservations + handlers
 }
+
+/***** Utils *****/
+
+function getNumberOfDaysInMonth(year,month) {
+  return (new Date(year,month + 1,0)).getDate(); 
+  // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
+}
+
+
+/***** Button handlers *****/
 
 function prevMonthButton() {
   console.log('Prev month button pressed');
@@ -269,40 +284,42 @@ function nextMonthButton() {
   selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
 
-function logViewedMonth() {
+/***** Debug *****/
+
+function logViewedReservations() {
   $('#log').empty();
-  $('#log').append( JSON.stringify(viewedMonth.models) +'<br/>');
+  $('#log').append( JSON.stringify(viewedReservations.models) +'<br/>');
 }
 function testButton1() {
   console.log('Test button 1 pressed');
-  var martijnRes = viewedMonth.findWhere({name: 'Martijn'});
+  var martijnRes = viewedReservations.findWhere({name: 'Martijn'});
   //var newRes = new Reservation({name: 'a Name'});
   martijnRes.set('nrOfPeople',10);
-  //console.log(JSON.stringify(viewedMonth));
+  //console.log(JSON.stringify(viewedReservations));
 }
 
 function testButton2() {
   console.log('Test button 2 pressed, create');
-//  viewedMonth.create({name:'Ieniemienie', date: '1-6-2013', nrOfPeople: 2});
-  while (viewedMonth.length)
-    viewedMonth.pop();
-  viewedMonth.url = '/query/range?start=1-7-2013&end=11-8-2013';
+//  viewedReservations.create({name:'Ieniemienie', date: '1-6-2013', nrOfPeople: 2});
+  while (viewedReservations.length)
+    viewedReservations.pop();
+  viewedReservations.url = '/query/range?start=1-7-2013&end=11-8-2013';
 }
 function testButton3() {
   console.log('Test button 3 pressed, remove');
-  //viewedMonth.remove(viewedMonth.findWhere({name: 'Ieniemienie'}));
+  //viewedReservations.remove(viewedReservations.findWhere({name: 'Ieniemienie'}));
   //console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedMonth.fetch();
-  console.log( 'viewedMonth.length '+viewedMonth.length );
-//  console.log(JSON.stringify(viewedMonth));
+  viewedReservations.fetch();
+  console.log( 'viewedReservations.length '+viewedReservations.length );
+//  console.log(JSON.stringify(viewedReservations));
 }
 function testButton4() {
   console.log('Test button 4 pressed');
-  viewedMonth.fetch();
-//  console.log(JSON.stringify(viewedMonth));
+  viewedReservations.fetch();
+//  console.log(JSON.stringify(viewedReservations));
 }
 function refreshButton() {
   console.log('Refresh button pressed');
-  viewedMonth.fetch();
-  logViewedMonth();
+  viewedReservations.fetch();
+  logviewedReservations();
 }
