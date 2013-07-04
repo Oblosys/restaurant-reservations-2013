@@ -79,6 +79,9 @@ body {
   border-bottom: solid #999 1px;
   padding-left: 2px;
 }
+.dayView .reservationLine[selected]{
+  background-color: #7af;
+}
 
 .reservationView {
   margin-top: 10px;

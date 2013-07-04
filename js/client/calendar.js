@@ -80,7 +80,7 @@ var DayCellView = Backbone.View.extend({
     console.log('init view ');
     //var el =  this.el;
     var dayModel = this.model;
-    $(this.el).click( function() { selection.set('day', dayModel);} );
+    $(this.el).click( function() { selectDay(dayModel); } );
 
     this.listenTo(this.model, "change", this.render);
     this.listenTo(selection, "change:day", this.renderSelection);
@@ -111,12 +111,22 @@ var DayView = Backbone.View.extend({
 
   initialize: function() {
     this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
+    this.listenTo(selection, "change:reservation", this.renderSelection);
   },
   setModel: function(model) {
     this.stopListening(this.model, "change");
     this.model = model;
     this.listenTo(this.model, "change", this.render);
     this.render();
+  },
+  // Rather than having a subview for each reservation line, we render their selection here. 
+  // This is slightly less elegant, but saves the complication of having another view.
+  renderSelection: function(selectionModel, newReservation) {
+    //console.log('selected reservation changed '+newReservation.get("time")+':'+newReservation.get('name')+' prev:'+previousRes.attr('time')+':'+previousRes.attr('name'));
+    var $reservationLines = $('#dayView .reservationLine');
+    var viewedDayReservations = this.model.get('reservations');
+    for (var i=0; i<$reservationLines.length; i++) 
+      setAttr($($reservationLines[i]), 'selected', viewedDayReservations.at(i) === newReservation );
   },
   render: function() {
     console.log('rendering dayView');
@@ -127,7 +137,7 @@ var DayView = Backbone.View.extend({
     this.$el.html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
-        selection.set('reservation',reservationsForDay.models[ix]);
+        selectReservation(reservationsForDay.models[ix]);
       });
     });
     return this;
@@ -203,6 +213,15 @@ function initialize() {
 
 
 /***** Event handlers *****/
+
+function selectDay(selectedDay) {
+  selection.set('day', selectedDay);
+  selectReservation(selectedDay.get('reservations').at(0));
+}
+
+function selectReservation(selectedReservation) {
+  selection.set('reservation',selectedReservation);
+}
 
 function setYearMonth() {
   var yearMonth = selection.get('yearMonth');
