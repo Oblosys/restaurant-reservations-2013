@@ -5,7 +5,7 @@
          // figure out whether to record selection as Day instead of div elt, or look it up
 
 // TODO: are selections okay like this, without a model of their own?
-
+// TODO: check events in views and remove commented code afterwards (e.g. "click .button.edit" etc.)
 
 console.log('executing calendar.js');
 $(document).ready(function(){
