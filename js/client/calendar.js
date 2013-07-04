@@ -203,7 +203,7 @@ function initialize() {
 }
 
 
-/***** Handlers *****/
+/***** Event handlers *****/
 
 function setYearMonth() {
   var yearMonth = selection.get('yearMonth');
@@ -264,14 +264,6 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   viewedReservations.fetch();
 }
 
-/* Set boolean DOM attribute for jQuery object $elt according to HTML standard.
- * (absence denotes false, attrName=AttrName denotes true) */
-function setAttr($elt, attrName, isSet) {
-  if (isSet) 
-    $elt.attr(attrName, attrName);
-  else
-    $elt.removeAttr(attrName);  
-}
 
 /***** Button handlers *****/
 
@@ -291,6 +283,15 @@ function nextMonthButton() {
 
 
 /***** Utils *****/
+
+/* Set boolean DOM attribute for jQuery object $elt according to HTML standard.
+ * (absence denotes false, attrName=AttrName denotes true) */
+function setAttr($elt, attrName, isSet) {
+  if (isSet) 
+    $elt.attr(attrName, attrName);
+  else
+    $elt.removeAttr(attrName);  
+}
 
 function getNumberOfDaysInMonth(year,month) {
   return (new Date(year,month + 1,0)).getDate(); 
