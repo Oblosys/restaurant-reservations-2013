@@ -1,13 +1,11 @@
 /* global util:false */
 
-// TODO: make some log functions for collections and models
 // TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
 
 // TODO: rename viewedMonth to something with 'reservations'
 // TODO: are selections okay like this, without a model of their own?
-// TODO: maybe cache viewed months?
 
 
 

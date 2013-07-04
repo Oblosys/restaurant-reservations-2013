@@ -2,6 +2,9 @@
  * Web server for reservations app
  */
 
+// TODO: make some log functions for collections and models
+// TODO: maybe cache viewed months?
+
 var _ = require('underscore')
   , Backbone = require('backbone')
   , util = require('./shared/util.js')
