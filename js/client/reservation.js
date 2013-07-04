@@ -8,6 +8,16 @@ $(document).ready(function(){
   initialize();
 });
 
+
+/***** Globals *****/
+
+var reservationsThisWeek;
+
+var currentReservation;
+
+
+/***** Backbone models *****/
+
 var Reservation = Backbone.Model.extend({
   defaults: {
     date: '',
@@ -26,9 +36,9 @@ var Reservations = Backbone.Collection.extend({
   model: Reservation,
   url: ''
 });
-var reservationsThisWeek;
 
-var currentReservation;
+
+/***** Init ****/
 
 function initialize() {
   console.log('initializing');
@@ -135,6 +145,16 @@ function initialize() {
   }});
 }
 
+
+/***** Utils *****/
+
+function isValidReservation(res) {
+  return res.get('date') != '' &&
+         res.get('time') != '' &&
+         res.get('name') != '' &&
+         res.get('nrOfPeople') != 0;
+}
+
 function setLabelOn($label, model, prop, setMsg, unsetMsg) {
   model.on('change:'+prop, function(r,newVal) { 
   if (newVal)
@@ -145,38 +165,13 @@ function setLabelOn($label, model, prop, setMsg, unsetMsg) {
 }
 
 
-function isValidReservation(res) {
-  return res.get('date') != '' &&
-         res.get('time') != '' &&
-         res.get('name') != '' &&
-         res.get('nrOfPeople') != 0;
-}
-
-/*
- * Could be improved by also having a check for availability at server side.
- * */
-function confirmButton() {
-  var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
-  reservationsThisWeek.fetch({success: function() {    
-    if (isValidReservation(currentReservation)) {
-      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
-      newReservation.save();
-      currentReservation.clear();
-      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
-            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
-    }
-    else {
-      alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
-//      console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
-    }
-  }});
-  log();
-}
+/***** Disenabling *****/
 
 function disenableConfirmButton() {
   //console.log('valid:'+isValidReservation(currentReservation));
   document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
 }
+
 function disenableTimeButtons() {
   console.log('disenableTimeButtons');
   var curDate = currentReservation.get('date');
@@ -203,11 +198,40 @@ function disenableTimeButtons() {
     }
   });
 }
+
+
+/***** Button handlers *****/
+
+/*
+ * Could be improved by also having a check for availability at server side.
+ * */
+function confirmButton() {
+  var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
+  reservationsThisWeek.fetch({success: function() {    
+    if (isValidReservation(currentReservation)) {
+      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
+      newReservation.save();
+      currentReservation.clear();
+      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
+            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
+    }
+    else {
+      alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
+//      console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
+    }
+  }});
+  //log();
+}
+
+
+/***** Debug *****/
+
 function log() {
   $('#log').empty();
   $('#log').append( JSON.stringify(currentReservation) +'<br/>'+
                     JSON.stringify(reservationsThisWeek) +'<br/>');
 }
+
 function testButton1() {
   console.log('Test button 1 pressed');
   log();
