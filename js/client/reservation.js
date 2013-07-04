@@ -1,7 +1,5 @@
 /* global util:false */
 
-/* LATER: check if update on reservation is handled correctly here and in calendar (not a normal scenario yet)
- */
 console.log('executing reservation.js');
 $(document).ready(function() {
   initialize();

@@ -4,6 +4,8 @@
 
 // TODO: make some log functions for collections and models
 // TODO: maybe cache viewed months?
+// LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
+
 
 var restaurantInfo = { maxNrOfPeople: 12 };
 
