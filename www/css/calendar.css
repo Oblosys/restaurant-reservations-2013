@@ -1,43 +1,4 @@
 @CHARSET "UTF-8";
-table {
-  font: inherit; color: inherit; /* for some weird reason tables don't inherit font and color by default */
-  border-spacing:0;
-}
-table td, table th {
-  padding: 0;
-}
-.roundedCorners {
-  border:solid; 
-  border-width:2px;
-  margin: 0px 0px 0px 0px;
-  /* Rounded corner stuff starts here */
-  border-radius: 6px;            /* standard */
-  -webkit-border-radius: 6px;    /* for older Safari */
-  -moz-border-radius: 6px;       /* for older Firefox (<13) */
-  -khtml-border-radius: 6px;     /* for Konqueror */
-}
-#menu {
-  background-color: grey;
-  width: 100%;
-  margin-top:4px;
-  padding-top: 4px;
-  padding-bottom: 2px;
-  border-top: solid black 1px; 
-  border-bottom: solid black 1px; 
-}
-#menu>* {
-  display:inline;
-  text-align: center;
-  background-color: grey;
-  padding-left: 20px;
-  width: 100px;
-}
-#menu div {
-  font-weight: bold;
-}
-#menu a, #menu div {
-  color: white;
-}
 
 body {
   margin: 0px;
