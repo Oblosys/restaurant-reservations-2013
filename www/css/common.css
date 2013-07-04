@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
-
+.debugButtons {
+  /*display: none;*/
+}
 table {
   font: inherit; color: inherit; /* for some weird reason tables don't inherit font and color by default */
   border-spacing:0;
