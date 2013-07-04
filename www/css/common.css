@@ -38,16 +38,25 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   border-top: solid black 1px; 
   border-bottom: solid black 1px; 
 }
-#menu>* {
+#menu > * {
   display:inline;
   text-align: center;
   background-color: grey;
   padding-left: 20px;
-  width: 100px;
+  color: white;
 }
-#menu div {
+#menu > div {
   font-weight: bold;
 }
-#menu a, #menu div {
-  color: white;
+#menu > #copyright { /* Include parent to make it more specific than rule above */
+  float: right;
+  padding-top: 2px; 
+  padding-right: 10px;
+  font-size: 13px;
+  color: #ddd;
+  font-weight: normal;
+}
+#copyright * {
+  text-decoration: none;
+  color: #ddd;
 }
