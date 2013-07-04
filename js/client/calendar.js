@@ -13,22 +13,25 @@ $(document).ready(function(){
 });
 
 
-/* Globals */
+/***** Globals *****/
 
 var viewedReservations;
 
+var selection;
 var dayView;
 var reservationView;
 var days;
-
-var selection;
 
 var monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 
 
 /***** Backbone models *****/
 
-var Selection = Backbone.Model.extend({});
+var Selection = Backbone.Model.extend({
+  // attributes: yearMonth :: {year :: Int, month :: Int}
+  //             day :: Day() 
+  //             reservation :: Reservation()
+});
 
 var Reservation = Backbone.Model.extend({
   defaults: {
@@ -51,7 +54,7 @@ var Day = Backbone.Model.extend({
     var reservations = new Reservations();
     this.set('reservations', reservations); // not in defaults, because then all days will share reservations
    
-    // need to redirect all change events from reservation collection 
+    // need to propagate all change events from reservation collection 
     var day = this;
     reservations.on('change', function() {/*console.log('change');*/ day.trigger('change');}); // child reservation change, propagated to collection  
     reservations.on('add',    function() {/*console.log('add');*/    day.trigger('change');});  
@@ -184,16 +187,9 @@ function initialize() {
   });
   
   dayView = new DayView({el: document.getElementById('dayView')});
+  
   reservationView = new ReservationView({el: document.getElementById('reservationView')});
-  //console.log(days[5].get('date'));
-  //console.log(dayElts[5]);
-  //dayCellView = new DayCellView({model: days[5], el: dayElts[5]});
-  //days[5].trigger('change');
-  $('.hourHeader .hour').each(function(i) {
-    $(this).attr('id','hour-'+i);
-    $(this).click( function() { selection.set('hour', this);} );
-  });
-
+  
   var today = new Date();
   
   viewedReservations = new Reservations();
