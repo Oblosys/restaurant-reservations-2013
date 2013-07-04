@@ -23,7 +23,7 @@ var days;
 
 var selection;
 
-var maanden = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+var monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 
 
 /***** Backbone models *****/
@@ -84,10 +84,7 @@ var DayCellView = Backbone.View.extend({
   },
   renderSelection: function(selectionModel, newDay) {
     //console.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
-    if (this.model.get('date') == newDay.get('date'))
-      this.$el.attr('selected','selected');
-    else
-      this.$el.removeAttr('selected');
+    setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
   },
   render: function() {
     //console.log('rendering');
@@ -168,60 +165,7 @@ var ReservationView = Backbone.View.extend({
 });
 
 
-/***** Misc ****/
-
-//TODO: need full views here? Maybe not
-function handleReservationAdded(res,coll,opts) {
-  //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  //for (var i=0;i<days.length; i++) console.log(days[i].get('date'));
-  // need find instead of findWhere, since the date needs to be converted
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  //console.log('correspondingDay = '+correspondingDay.get('date'));
-  correspondingDay.get('reservations').add(res);
-}
-
-function handleReservationRemoved(res,coll,opts) {
-  //console.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  correspondingDay.get('reservations').remove(res);
-}
-
-function setCurrentYearMonth(currentYear,currentMonth) {
-  while (viewedReservations.length)
-    viewedReservations.pop();
-
-  var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
-  var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
-  var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
-  
-  // note: _.range(x,y) == [x..y-1] 
-  var previousMonthDates =_.range(nrOfDaysInPreviousMonth+1-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
-    return new Date(currentYear,currentMonth-1,day);
-  });
-  var currentMonthDates = _.range(1,nrOfDaysInCurrentMonth+1).map(function(day){
-    return new Date(currentYear,currentMonth,day);
-  });
-  var nextMonthDates = _.range(1,14).map(function(day){ // will never be more than 14
-    return new Date(currentYear,currentMonth+1,day);
-  });
-  var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
-
-  $('.dayCell').each(function(ix) {
-    $(this).attr('date', util.showDate(dates[ix]));
-    if (dates[ix].getMonth() == currentMonth) 
-      $(this).attr('isCurrentMonth', 'isCurrentMonth');
-    else
-      $(this).removeAttr('isCurrentMonth');
-  });
-  
-  for (var i=0; i<days.length; i++) {
-    days[i].set('date', dates[i]);
-  }
-  
-  viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
-  console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedReservations.fetch();
-}
+/***** Init ****/
 
 function initialize() {
   selection = new Selection();
@@ -258,20 +202,76 @@ function initialize() {
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 }
 
+
+/***** Handlers *****/
+
 function setYearMonth() {
   var yearMonth = selection.get('yearMonth');
-  $('#monthLabel').text(maanden[yearMonth.month]+' '+yearMonth.year);
+  $('#monthLabel').text(monthNames[yearMonth.month]+' '+yearMonth.year);
   setCurrentYearMonth(yearMonth.year, yearMonth.month);
   // TODO: handle reservations + handlers
 }
 
-/***** Utils *****/
-
-function getNumberOfDaysInMonth(year,month) {
-  return (new Date(year,month + 1,0)).getDate(); 
-  // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
+//TODO: need full views here? Maybe not
+function handleReservationAdded(res,coll,opts) {
+  //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
+  //for (var i=0;i<days.length; i++) console.log(days[i].get('date'));
+  // need find instead of findWhere, since the date needs to be converted
+  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
+  //console.log('correspondingDay = '+correspondingDay.get('date'));
+  correspondingDay.get('reservations').add(res);
 }
 
+function handleReservationRemoved(res,coll,opts) {
+  //console.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
+  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
+  correspondingDay.get('reservations').remove(res);
+}
+
+function setCurrentYearMonth(currentYear,currentMonth) {
+  while (viewedReservations.length) // remove all viewed reservations
+    viewedReservations.pop();
+
+  var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
+  var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
+  var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
+  
+  // note: _.range(x,y) == [x..y-1] 
+  var previousMonthDates =_.range(nrOfDaysInPreviousMonth+1-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
+    return new Date(currentYear,currentMonth-1,day);
+  });
+  var currentMonthDates = _.range(1,nrOfDaysInCurrentMonth+1).map(function(day){
+    return new Date(currentYear,currentMonth,day);
+  });
+  var nextMonthDates = _.range(1,14).map(function(day){ // will never be more than 14
+    return new Date(currentYear,currentMonth+1,day);
+  });
+  
+  // dates contains all dates that are visible in the calendar page for (currentMonth,currentYear)
+  var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
+
+  $('.dayCell').each(function(ix) {
+    $(this).attr('date', util.showDate(dates[ix]));
+    setAttr( $(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
+  });
+  
+  for (var i=0; i<days.length; i++) {
+    days[i].set('date', dates[i]);
+  }
+  
+  viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
+  console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  viewedReservations.fetch();
+}
+
+/* Set boolean DOM attribute for jQuery object $elt according to HTML standard.
+ * (absence denotes false, attrName=AttrName denotes true) */
+function setAttr($elt, attrName, isSet) {
+  if (isSet) 
+    $elt.attr(attrName, attrName);
+  else
+    $elt.removeAttr(attrName);  
+}
 
 /***** Button handlers *****/
 
@@ -281,12 +281,22 @@ function prevMonthButton() {
   var currentYearMonth = new Date(yearMonth.year, yearMonth.month-1,1);
   selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
+
 function nextMonthButton() {
   console.log('Next month button pressed');
   var yearMonth = selection.get('yearMonth');
   var currentYearMonth = new Date(yearMonth.year, yearMonth.month+1,1);
   selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
+
+
+/***** Utils *****/
+
+function getNumberOfDaysInMonth(year,month) {
+  return (new Date(year,month + 1,0)).getDate(); 
+  // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
+}
+
 
 /***** Debug *****/
 
@@ -325,5 +335,5 @@ function testButton4() {
 function refreshButton() {
   console.log('Refresh button pressed');
   viewedReservations.fetch();
-  logviewedReservations();
+  logViewedReservations();
 }
