@@ -7,16 +7,28 @@
 // TODO: are selections okay like this, without a model of their own?
 
 
-
 console.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
 });
 
+
+/* Globals */
+
+var viewedReservations;
+
+var dayView;
+var reservationView;
+var days;
+
+var selection;
+
 var maanden = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
 
 
 /***** Backbone models *****/
+
+var Selection = Backbone.Model.extend({});
 
 var Reservation = Backbone.Model.extend({
   defaults: {
@@ -156,17 +168,7 @@ var ReservationView = Backbone.View.extend({
 });
 
 
-/* Globals */
-
-var viewedReservations;
-
-var dayView;
-var reservationView;
-var days;
-
-var Selection = Backbone.Model.extend({});
-var selection = new Selection();
-
+/***** Misc ****/
 
 //TODO: need full views here? Maybe not
 function handleReservationAdded(res,coll,opts) {
@@ -222,6 +224,8 @@ function setCurrentYearMonth(currentYear,currentMonth) {
 }
 
 function initialize() {
+  selection = new Selection();
+  
   // create dayCellViews
   var dayElts = $('.dayCell').toArray();
 
