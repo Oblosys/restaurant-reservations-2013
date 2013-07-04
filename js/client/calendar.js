@@ -5,7 +5,6 @@
 // TODO: selection change doesn't have the correct day
          // figure out whether to record selection as Day instead of div elt, or look it up
 
-// TODO: don't use .dayCell for header, and then update all selectors (remove .week)
 // TODO: rename viewedMonth to something with 'reservations'
 // TODO: are selections okay like this, without a model of their own?
 // TODO: maybe cache viewed months?
@@ -202,7 +201,7 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   });
   var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
 
-  $('#calendar .week .dayCell').each(function(ix) {
+  $('.dayCell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
     if (dates[ix].getMonth() == currentMonth) 
       $(this).attr('isCurrentMonth', 'isCurrentMonth');
@@ -221,9 +220,9 @@ function setCurrentYearMonth(currentYear,currentMonth) {
 
 function initialize() {
   // create dayCellViews
-  var dayElts = $('#calendar .week .dayCell').toArray();
+  var dayElts = $('.dayCell').toArray();
 
-  days = $('#calendar .week .dayCell').map(function(ix) {
+  days = $('.dayCell').map(function(ix) {
     $(this).attr('id','dayCell-'+ix);
     var day = new Day({date: new Date()});
     new DayCellView({model: day, el: dayElts[ix]}); // DayCellViews are not stored in a var, has not been necessary yet.

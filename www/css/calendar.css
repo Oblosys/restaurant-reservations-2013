@@ -34,6 +34,7 @@ body {
   display: table;
   border-collapse: collapse;
   text-align: center;
+  margin-top: 4px;
 }
 .weekHeader {
   display: table-row;
@@ -43,7 +44,8 @@ body {
 .week {
   display: table-row;
 }
-.weekHeader .dayCell {
+.dayName {
+  display: table-cell;
   height: 20px;
   color: black;
   background-color: white;
@@ -58,10 +60,10 @@ body {
 .dayCell[selected]{
   background-color: #7af;
 }
-.week .dayCell:not([isCurrentMonth]){
+.dayCell:not([isCurrentMonth]){
   color: #777;
 }
-.week .dayCell:not([isCurrentMonth])[selected]{
+.dayCell:not([isCurrentMonth])[selected]{
   background-color: #7af;
 }
 .dayCellContent {
