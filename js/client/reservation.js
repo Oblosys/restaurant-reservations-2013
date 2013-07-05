@@ -1,6 +1,6 @@
 /* global util:false */
 
-console.log('executing reservation.js');
+util.log('executing reservation.js');
 $(document).ready(function() {
   initialize();
 });
@@ -47,7 +47,7 @@ var Reservations = Backbone.Collection.extend({
 /***** Init ****/
 
 function initialize() {
-  console.log('initializing');
+  util.log('initializing');
   
   restaurantInfo = new RestaurantInfo();
   restaurantInfo.fetch({success: function() {
@@ -161,10 +161,10 @@ function initialize() {
 /***** Utils *****/
 
 function isValidReservation(res) {
-  return res.get('date') != '' &&
-         res.get('time') != '' &&
-         res.get('name') != '' &&
-         res.get('nrOfPeople') != 0;
+  return res.get('date') !== '' &&
+         res.get('time') !== '' &&
+         res.get('name') !== '' &&
+         res.get('nrOfPeople') !== 0;
 }
 
 function setLabelOn($label, model, prop, setMsg, unsetMsg) {
@@ -180,13 +180,13 @@ function setLabelOn($label, model, prop, setMsg, unsetMsg) {
 /***** Disenabling *****/
 
 function disenableConfirmButton() {
-  //console.log('valid:'+isValidReservation(currentReservation));
+  //util.log('valid:'+isValidReservation(currentReservation));
   document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
 }
 
 /* can be called before buttons are set up, so needs to work correctly in that case */
 function disenableTimeButtons() {
-  console.log('disenableTimeButtons');
+  util.log('disenableTimeButtons');
   var curDate = currentReservation.get('date');
   var curTime = currentReservation.get('time');
   var curNr = currentReservation.get('nrOfPeople');
@@ -198,7 +198,7 @@ function disenableTimeButtons() {
       nrOfPeopleAtTime[t] = 0;
     nrOfPeopleAtTime[t] += res.get('nrOfPeople');
   });
-  //console.log(nrOfPeopleAtTime);
+  //util.log(nrOfPeopleAtTime);
   var $timeButtons = $('.TimeButtons input');
   $timeButtons.each(function() {
     var tm = $(this).val();
@@ -246,22 +246,22 @@ function log() {
 }
 
 function testButton1() {
-  console.log('Test button 1 pressed');
+  util.log('Test button 1 pressed');
   log();
 }
 function testButton2() {
   currentReservation.clear();
 
-  console.log('Test button 2 pressed, create');
+  util.log('Test button 2 pressed, create');
 }
 function testButton3() {
-  console.log('Test button 3 pressed, remove');
+  util.log('Test button 3 pressed, remove');
   disenableTimeButtons();
 }
 function testButton4() {
-  console.log('Test button 4 pressed, fetch');
+  util.log('Test button 4 pressed, fetch');
   reservationsThisWeek.fetch();
 }
 function refreshButton() {
-  console.log('Refresh button pressed');
+  util.log('Refresh button pressed');
 }

@@ -1,6 +1,6 @@
 /* global util:false */
 
-console.log('executing calendar.js');
+util.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
 });
@@ -49,10 +49,10 @@ var Day = Backbone.Model.extend({
    
     // need to propagate all change events from reservation collection 
     var day = this;
-    reservations.on('change', function() {/*console.log('change');*/ day.trigger('change');}); // child reservation change, propagated to collection  
-    reservations.on('add',    function() {/*console.log('add');*/    day.trigger('change');});  
-    reservations.on('remove', function() {/*console.log('remove');*/ day.trigger('change');});
-    reservations.on('reset',  function() {/*console.log('reset');*/  day.trigger('change');});    
+    reservations.on('change', function() {/*util.log('change');*/ day.trigger('change');}); // child reservation change, propagated to collection  
+    reservations.on('add',    function() {/*util.log('add');*/    day.trigger('change');});  
+    reservations.on('remove', function() {/*util.log('remove');*/ day.trigger('change');});
+    reservations.on('reset',  function() {/*util.log('reset');*/  day.trigger('change');});    
   }// not synced, so no url
 });
 
@@ -72,7 +72,7 @@ var DayCellView = Backbone.View.extend({
   //selectDay: function() {selectDay(this.model);},
   
   initialize: function() {
-    console.log('init view ');
+    util.log('init view ');
     var dayModel = this.model;
     $(this.el).click( function() { selectDay(dayModel); } );
 
@@ -80,16 +80,13 @@ var DayCellView = Backbone.View.extend({
     this.listenTo(selection, "change:day", this.renderSelection);
     // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
   },
-  test: function() {
-    alert('test');
-  },
 
   renderSelection: function(selectionModel, newDay) {
-    //console.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
+    //util.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
     setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
   },
   render: function() {
-    //console.log('rendering');
+    //util.log('rendering');
     var cellDate = this.model.get('date');
     var reservationsForCell = this.model.get('reservations');
     var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople');}, 0);
@@ -119,14 +116,14 @@ var DayView = Backbone.View.extend({
   // Rather than having a subview for each reservation line, we render their selection here. 
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function(selectionModel, newReservation) {
-    //console.log('selected reservation changed '+newReservation.get("time")+':'+newReservation.get('name')+' prev:'+previousRes.attr('time')+':'+previousRes.attr('name'));
+    //util.log('selected reservation changed '+newReservation.get("time")+':'+newReservation.get('name')+' prev:'+previousRes.attr('time')+':'+previousRes.attr('name'));
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) 
       setAttr($($reservationLines[i]), 'selected', viewedDayReservations.at(i) === newReservation );
   },
   render: function() {
-    console.log('rendering dayView');
+    util.log('rendering dayView');
     var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations'); // is a Day
     var html = '<div id="selectedDayLabel">Reserveringen voor '+date.getDate()+' '+monthNames[date.getMonth()]+'</div>'+
@@ -152,7 +149,7 @@ var ReservationView = Backbone.View.extend({
     this.listenTo(selection, "change:reservation", this.render);
   },
   render: function() {
-    console.log('rendering reservationView');
+    util.log('rendering reservationView');
     var reservation = selection.get('reservation'); // doesn't have its own model
     var html = '';
     var time = '';
@@ -230,16 +227,16 @@ function setYearMonth() {
 
 //TODO: need full views here? Maybe not
 function handleReservationAdded(res,coll,opts) {
-  //console.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  //for (var i=0;i<days.length; i++) console.log(days[i].get('date'));
+  //util.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
+  //for (var i=0;i<days.length; i++) util.log(days[i].get('date'));
   // need find instead of findWhere, since the date needs to be converted
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  //console.log('correspondingDay = '+correspondingDay.get('date'));
+  //util.log('correspondingDay = '+correspondingDay.get('date'));
   correspondingDay.get('reservations').add(res);
 }
 
 function handleReservationRemoved(res,coll,opts) {
-  //console.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
+  //util.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
   var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
   correspondingDay.get('reservations').remove(res);
 }
@@ -276,7 +273,7 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   }
   
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
-  //console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
   viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
 }
@@ -285,14 +282,14 @@ function setCurrentYearMonth(currentYear,currentMonth) {
 /***** Button handlers *****/
 
 function prevMonthButton() {
-  console.log('Prev month button pressed');
+  util.log('Prev month button pressed');
   var yearMonth = selection.get('yearMonth');
   var currentYearMonth = new Date(yearMonth.year, yearMonth.month-1,1);
   selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
 }
 
 function nextMonthButton() {
-  console.log('Next month button pressed');
+  util.log('Next month button pressed');
   var yearMonth = selection.get('yearMonth');
   var currentYearMonth = new Date(yearMonth.year, yearMonth.month+1,1);
   selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
@@ -323,35 +320,35 @@ function logViewedReservations() {
   $('#log').append( JSON.stringify(viewedReservations.models) +'<br/>');
 }
 function testButton1() {
-  console.log('Test button 1 pressed');
+  util.log('Test button 1 pressed');
   var martijnRes = viewedReservations.findWhere({name: 'Martijn'});
   //var newRes = new Reservation({name: 'a Name'});
   martijnRes.set('nrOfPeople',10);
-  //console.log(JSON.stringify(viewedReservations));
+  //util.log(JSON.stringify(viewedReservations));
 }
 
 function testButton2() {
-  console.log('Test button 2 pressed, create');
+  util.log('Test button 2 pressed, create');
 //  viewedReservations.create({name:'Ieniemienie', date: '1-6-2013', nrOfPeople: 2});
   while (viewedReservations.length)
     viewedReservations.pop();
   viewedReservations.url = '/query/range?start=1-7-2013&end=11-8-2013';
 }
 function testButton3() {
-  console.log('Test button 3 pressed, remove');
+  util.log('Test button 3 pressed, remove');
   //viewedReservations.remove(viewedReservations.findWhere({name: 'Ieniemienie'}));
-  //console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
   viewedReservations.fetch();
-  console.log( 'viewedReservations.length '+viewedReservations.length );
-//  console.log(JSON.stringify(viewedReservations));
+  util.log( 'viewedReservations.length '+viewedReservations.length );
+//  util.log(JSON.stringify(viewedReservations));
 }
 function testButton4() {
-  console.log('Test button 4 pressed');
+  util.log('Test button 4 pressed');
   viewedReservations.fetch();
-//  console.log(JSON.stringify(viewedReservations));
+//  util.log(JSON.stringify(viewedReservations));
 }
 function refreshButton() {
-  console.log('Refresh button pressed');
+  util.log('Refresh button pressed');
   viewedReservations.fetch();
   logViewedReservations();
 }

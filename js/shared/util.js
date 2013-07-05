@@ -3,6 +3,13 @@
   // todo: how to do imports in imported modules? On client require is not defined 
   var _ = require('underscore');
 
+  var debug = false;
+  
+  function log(msg) {
+    if (debug)
+      console.log(msg);
+  }
+
   // NOTE: replicated objects are only cloned on top-level
   function replicate(n,x) {
     var xs = [];
@@ -61,6 +68,7 @@
       throw 'Exception: Incorrect date: "'+dateStr+'"';
   }
 
+  exports.log = log;
   exports.replicate = replicate;
   exports.showJSON = showJSON;
   exports.showDate = showDate;
