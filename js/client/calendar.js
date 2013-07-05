@@ -201,7 +201,7 @@ function initialize() {
   viewedReservations.on("add", handleReservationAdded);
   viewedReservations.on("remove", handleReservationRemoved);
 
-  selection.on('change:yearMonth', setYearMonth);
+  selection.on('change:yearMonth', setSelectedYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 }
@@ -218,32 +218,16 @@ function selectReservation(selectedReservation) {
   selection.set('reservation',selectedReservation);
 }
 
-function setYearMonth() {
+// TODO: handle reservations + handlers (note: maybe this has been done already)
+function setSelectedYearMonth() {
   var yearMonth = selection.get('yearMonth');
-  $('#monthLabel').text(monthNames[yearMonth.month]+' '+yearMonth.year);
-  setCurrentYearMonth(yearMonth.year, yearMonth.month);
-  // TODO: handle reservations + handlers
-}
-
-//TODO: need full views here? Maybe not
-function handleReservationAdded(res,coll,opts) {
-  //util.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  //for (var i=0;i<days.length; i++) util.log(days[i].get('date'));
-  // need find instead of findWhere, since the date needs to be converted
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  //util.log('correspondingDay = '+correspondingDay.get('date'));
-  correspondingDay.get('reservations').add(res);
-}
-
-function handleReservationRemoved(res,coll,opts) {
-  //util.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  correspondingDay.get('reservations').remove(res);
-}
-
-function setCurrentYearMonth(currentYear,currentMonth) {
+  currentYear =yearMonth.year;
+  currentMonth = yearMonth.month;
   while (viewedReservations.length) // remove all viewed reservations
     viewedReservations.pop();
+
+  util.log( (new Date(currentYear,currentMonth-1,0)).getMonth() );
+  $('#monthLabel').text(monthNames[yearMonth.month]+' '+yearMonth.year);
 
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
@@ -276,6 +260,22 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
   viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
+}
+
+//TODO: need full views here? Maybe not
+function handleReservationAdded(res,coll,opts) {
+  //util.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
+  //for (var i=0;i<days.length; i++) util.log(days[i].get('date'));
+  // need find instead of findWhere, since the date needs to be converted
+  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
+  //util.log('correspondingDay = '+correspondingDay.get('date'));
+  correspondingDay.get('reservations').add(res);
+}
+
+function handleReservationRemoved(res,coll,opts) {
+  //util.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
+  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
+  correspondingDay.get('reservations').remove(res);
 }
 
 
