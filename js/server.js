@@ -7,8 +7,9 @@
 //         comment not fixed width font
 //         warning on navigate? (and cancel)
 //         selection after save
-//         resort after time change
+//         re-sort after time change
 //         date change (might be trickier)
+// TODO: check IE and iOS and windows, etc.
 // TODO: make some log functions for collections and models
 // TODO: maybe cache viewed months?
 // LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
