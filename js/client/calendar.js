@@ -140,10 +140,12 @@ var DayView = Backbone.View.extend({
   },
   render: function() {
     console.log('rendering dayView');
+    var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations'); // is a Day
-    var html = '';
+    var html = '<div id="selectedDayLabel">Reserveringen voor '+date.getDate()+' '+monthNames[date.getMonth()]+'</div>'+
+               '<div id="reservationsPerDay">';
     reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
-    html += '';
+    html += '</div>';
     this.$el.html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {

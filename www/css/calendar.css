@@ -69,17 +69,21 @@ body {
   color: blue;
 }
 
-.dayView {
-  margin-top: 10px;
+#selectedDayLabel {
+  margin-top: 7px;
+  margin-bottom: 2px;
+  font-size: 90%; 
+}
+#reservationsPerDay {
   height: 100px;
   overflow: auto;
   border: solid black 1px;
 }
-.dayView .reservationLine {
+#reservationsPerDay .reservationLine {
   border-bottom: solid #999 1px;
   padding-left: 2px;
 }
-.dayView .reservationLine[selected]{
+#reservationsPerDay .reservationLine[selected]{
   background-color: #7af;
 }
 
