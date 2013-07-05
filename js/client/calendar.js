@@ -144,24 +144,55 @@ var DayView = Backbone.View.extend({
 var ReservationView = Backbone.View.extend({
   tagName: "div",
   className: "reservationView",
+  
+  isEditing: false,
 
-  initialize: function() { //
-    this.listenTo(selection, "change:reservation", this.render);
+  initialize: function() {
+    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ this.setModel(newSelection);});
+    
+    var view = this;
+    
+    this.$('#editButton').click(function() {view.isEditing = true; view.render();});
+    this.$('#cancelButton').click(function() {view.isEditing = false; view.render();});
+    this.$('#saveButton').click(function() {view.saveModel(); view.isEditing = false; view.render();});
+    
+  },
+  setModel: function(res) {
+    this.stopListening(this.model, "change");
+    this.model = res;
+    this.listenTo(this.model, "change", this.render);
+    this.render();
+  },
+  saveModel: function() {
+    this.model.set({ time: this.$('#timeSelector').val()   
+                   , name: this.$('#nameField').val()   
+                   , nrOfPeople: parseInt(this.$('#nrOfPeopleSelector').val())   
+                   , comment: this.$('#commentArea').val() });
+    this.model.save();
   },
   render: function() {
     util.log('rendering reservationView');
-    var reservation = selection.get('reservation'); // doesn't have its own model
+    
+    this.$('.nonEditable').toggle(!this.isEditing); // show either .nonEditable
+    this.$('.editable').toggle(this.isEditing);   // or .editable
+    
+    var reservation = this.model; 
     var html = '';
     var time = '';
     var name = '';
     var nrOfPeople = '';
     var comment = ''; 
     
-    if (reservation) { 
+    if (reservation) {
       time = reservation.get('time');
       name = reservation.get('name');
       nrOfPeople = reservation.get('nrOfPeople');
       comment = reservation.get('comment');
+
+      this.$('#timeSelector').attr('value', time);
+      this.$('#nameField').attr('value', name);
+      this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
+      this.$('#commentArea').attr('value', comment);
     }  
     html += 'Time: <span class="info">'+time+'</span><br/>';
     html += 'Name: <span class="info">'+name+'</span><br/>';
@@ -170,7 +201,7 @@ var ReservationView = Backbone.View.extend({
     html += comment;
     html += '</div>';
     
-    this.$el.html(html);
+    this.$(".nonEditable > #reservationPres").html(html);
     return this;
   }
 });

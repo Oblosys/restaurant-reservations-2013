@@ -3,7 +3,7 @@
   // todo: how to do imports in imported modules? On client require is not defined 
   var _ = require('underscore');
 
-  var debug = false;
+  var debug = true;
   
   function log(msg) {
     if (debug)
