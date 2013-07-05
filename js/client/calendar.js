@@ -221,12 +221,13 @@ function selectReservation(selectedReservation) {
 // TODO: handle reservations + handlers (note: maybe this has been done already)
 function setSelectedYearMonth() {
   var yearMonth = selection.get('yearMonth');
-  currentYear =yearMonth.year;
-  currentMonth = yearMonth.month;
+  var currentYear =yearMonth.year;
+  var currentMonth = yearMonth.month;
   while (viewedReservations.length) // remove all viewed reservations
     viewedReservations.pop();
 
-  util.log( (new Date(currentYear,currentMonth-1,0)).getMonth() );
+  $('#prevMonthButton').attr('value', monthNames[(new Date(currentYear,currentMonth-1,1)).getMonth()] );
+  $('#nextMonthButton').attr('value', monthNames[(new Date(currentYear,currentMonth+1,1)).getMonth()] );
   $('#monthLabel').text(monthNames[yearMonth.month]+' '+yearMonth.year);
 
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);

@@ -20,6 +20,9 @@ body {
   width: 100%;
   margin-bottom: 3px;
 }
+.MonthSelectionBar input[type=button] {
+  width: 80px;
+}
 #monthLabel {
   font-size: 140%;
   width: 100%;
