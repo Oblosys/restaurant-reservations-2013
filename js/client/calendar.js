@@ -1,23 +1,10 @@
 /* global util:false */
 
-// TODO: check events in views and remove commented code afterwards (e.g. "click .button.edit" etc.)
-
 console.log('executing calendar.js');
 $(document).ready(function(){
-  v = new example_view({el:$("#example")});
   initialize();
 });
 
-
-var example_view = Backbone.View.extend({
-  events: {
-    'click div' : 'alertdd'
-  },
-  example_event : function(event) {
-    alert('ja');
-    //need to get the data-name here
-  } 
-});
 
 /***** Globals *****/
 
