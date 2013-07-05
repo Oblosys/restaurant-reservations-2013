@@ -188,20 +188,20 @@ var ReservationView = Backbone.View.extend({
       name = reservation.get('name');
       nrOfPeople = reservation.get('nrOfPeople');
       comment = reservation.get('comment');
-
-      this.$('#timeSelector').attr('value', time);
-      this.$('#nameField').attr('value', name);
-      this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
-      this.$('#commentArea').attr('value', comment);
     }  
-    html += 'Time: <span class="info">'+time+'</span><br/>';
     html += 'Name: <span class="info">'+name+'</span><br/>';
+    html += 'Time: <span class="info">'+time+'</span><br/>';
     html += 'Nr. of people: <span class="info">'+nrOfPeople+'</span><br/>';
     html += 'Comment:<br/><div class="commentView info">';
     html += comment;
     html += '</div>';
-    
     this.$(".nonEditable > #reservationPres").html(html);
+    
+    this.$('#timeSelector').attr('value', time);
+    this.$('#nameField').attr('value', name);
+    this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
+    this.$('#commentArea').attr('value', comment);
+    
     return this;
   }
 });

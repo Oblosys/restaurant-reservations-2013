@@ -106,7 +106,7 @@ body {
   float: right;
 }
 .reservationView #nameField {
-  width: 100%;
+  width: 200px;
   margin-bottom: 4px;
 }
 .reservationView #commentLabel {
