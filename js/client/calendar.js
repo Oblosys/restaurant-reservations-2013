@@ -1,10 +1,5 @@
 /* global util:false */
 
-// TODO: do id and handler setting for cells in init rather than in setCurrentYearMonth
-// TODO: selection change doesn't have the correct day
-         // figure out whether to record selection as Day instead of div elt, or look it up
-
-// TODO: are selections okay like this, without a model of their own?
 // TODO: check events in views and remove commented code afterwards (e.g. "click .button.edit" etc.)
 
 console.log('executing calendar.js');
@@ -29,8 +24,8 @@ var monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli'
 
 var Selection = Backbone.Model.extend({
   // attributes: yearMonth :: {year :: Int, month :: Int}
-  //             day :: Day() 
-  //             reservation :: Reservation()
+  //             day :: Day
+  //             reservation :: Reservation
 });
 
 var Reservation = Backbone.Model.extend({
@@ -70,15 +65,15 @@ var Day = Backbone.Model.extend({
 var DayCellView = Backbone.View.extend({
   tagName: "div",
   className: "dayCell",
+
   events: {
-//     "click .icon":          "open",
+//     "click .dayNr":         "open",
 //     "click .button.edit":   "openEditDialog",
 //     "click .button.delete": "destroy"
   },
 
   initialize: function() {
     console.log('init view ');
-    //var el =  this.el;
     var dayModel = this.model;
     $(this.el).click( function() { selectDay(dayModel); } );
 
@@ -107,7 +102,6 @@ var DayCellView = Backbone.View.extend({
 var DayView = Backbone.View.extend({  
   tagName: "div",
   className: "dayView",
-  events: {},
 
   initialize: function() {
     this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
@@ -123,7 +117,7 @@ var DayView = Backbone.View.extend({
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function(selectionModel, newReservation) {
     //console.log('selected reservation changed '+newReservation.get("time")+':'+newReservation.get('name')+' prev:'+previousRes.attr('time')+':'+previousRes.attr('name'));
-    var $reservationLines = $('#dayView .reservationLine');
+    var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) 
       setAttr($($reservationLines[i]), 'selected', viewedDayReservations.at(i) === newReservation );
@@ -148,7 +142,6 @@ var DayView = Backbone.View.extend({
 var ReservationView = Backbone.View.extend({
   tagName: "div",
   className: "reservationView",
-  events: {},
 
   initialize: function() { //
     this.listenTo(selection, "change:reservation", this.render);
