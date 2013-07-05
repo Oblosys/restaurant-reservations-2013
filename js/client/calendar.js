@@ -289,8 +289,9 @@ function setCurrentYearMonth(currentYear,currentMonth) {
   }
   
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
-  console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedReservations.fetch();
+  //console.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
+  viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
+  // after all reservations have been fetched, we select the day again to select the first reservation of the day.
 }
 
 
