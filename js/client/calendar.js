@@ -4,9 +4,20 @@
 
 console.log('executing calendar.js');
 $(document).ready(function(){
+  v = new example_view({el:$("#example")});
   initialize();
 });
 
+
+var example_view = Backbone.View.extend({
+  events: {
+    'click div' : 'alertdd'
+  },
+  example_event : function(event) {
+    alert('ja');
+    //need to get the data-name here
+  } 
+});
 
 /***** Globals *****/
 
@@ -66,12 +77,13 @@ var DayCellView = Backbone.View.extend({
   tagName: "div",
   className: "dayCell",
 
-  events: {
-//     "click .dayNr":         "open",
-//     "click .button.edit":   "openEditDialog",
-//     "click .button.delete": "destroy"
-  },
-
+  // Alternative way to bind click event. Harder to debug, since typos in handler do not cause errors.
+  // Use only when many events are bound to different children of the view. 
+  //events: {
+  //   "click":         "selectDay"
+  //},
+  //selectDay: function() {selectDay(this.model);},
+  
   initialize: function() {
     console.log('init view ');
     var dayModel = this.model;
@@ -81,6 +93,10 @@ var DayCellView = Backbone.View.extend({
     this.listenTo(selection, "change:day", this.renderSelection);
     // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
   },
+  test: function() {
+    alert('test');
+  },
+
   renderSelection: function(selectionModel, newDay) {
     //console.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
     setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
