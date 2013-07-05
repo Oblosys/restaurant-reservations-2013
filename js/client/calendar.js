@@ -15,7 +15,7 @@ var dayView;
 var reservationView;
 var days;
 
-var monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 
 /***** Backbone models *****/
@@ -126,7 +126,7 @@ var DayView = Backbone.View.extend({
     util.log('rendering dayView');
     var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations'); // is a Day
-    var html = '<div id="selectedDayLabel">Reserveringen voor '+date.getDate()+' '+monthNames[date.getMonth()]+'</div>'+
+    var html = '<div id="selectedDayLabel">Reservations on '+monthNames[date.getMonth()]+' '+date.getDate()+'</div>'+
                '<div id="reservationsPerDay">';
     reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
     html += '</div>';

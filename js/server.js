@@ -1,7 +1,6 @@
 /**
  * Web server for reservations app
  */
-// TODO: choose Dutch or English, or support multiple languages
 // TODO: make some log functions for collections and models
 // TODO: maybe cache viewed months?
 // LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
