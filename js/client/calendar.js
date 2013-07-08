@@ -107,7 +107,7 @@ var DayView = Backbone.View.extend({
     this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
     this.listenTo(selection, "change:reservation", this.renderSelection);
   },
-  setModel: function(model) {
+  setModel: function(model) { // is a Day
     this.stopListening(this.model, "change");
     this.model = model;
     this.listenTo(this.model, "change", this.render);
@@ -116,16 +116,17 @@ var DayView = Backbone.View.extend({
   // Rather than having a subview for each reservation line, we render their selection here. 
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function(selectionModel, newReservation) {
-    //util.log('selected reservation changed '+newReservation.get("time")+':'+newReservation.get('name')+' prev:'+previousRes.attr('time')+':'+previousRes.attr('name'));
+    //util.log('renderSelection');
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) 
       setAttr($($reservationLines[i]), 'selected', viewedDayReservations.at(i) === newReservation );
+    //util.log('end renderSelection');
   },
   render: function() {
-    util.log('rendering dayView');
+    //util.log('rendering dayView');
     var date = this.model.get('date');
-    var reservationsForDay = this.model.get('reservations'); // is a Day
+    var reservationsForDay = this.model.get('reservations');
     var html = '<div id="selectedDayLabel">Reservations on '+monthNames[date.getMonth()]+' '+date.getDate()+'</div>'+
                '<div id="reservationsPerDay">';
     reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
@@ -136,6 +137,7 @@ var DayView = Backbone.View.extend({
         selectReservation(reservationsForDay.models[ix]);
       });
     });
+    //util.log('end rendering dayView');
     return this;
   }
 });
@@ -157,9 +159,11 @@ var ReservationView = Backbone.View.extend({
     
   },
   setModel: function(res) {
-    this.stopListening(this.model, "change");
+    if (this.model)
+      this.stopListening(this.model, "change");
     this.model = res;
-    this.listenTo(this.model, "change", this.render);
+    if (this.model)
+      this.listenTo(this.model, "change", this.render);
     this.render();
   },
   startEditing: function() {
@@ -254,6 +258,7 @@ function selectDay(selectedDay) {
 }
 
 function selectReservation(selectedReservation) {
+//  util.log('selected: '+selectedReservation);
   if (reservationView && reservationView.isEditing ) {
     if (confirm('Save changes to reservation?'))
       reservationView.saveModel();
