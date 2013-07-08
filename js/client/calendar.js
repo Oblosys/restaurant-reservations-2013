@@ -104,7 +104,7 @@ var DayView = Backbone.View.extend({
   className: "dayView",
 
   initialize: function() {
-    this.listenTo(selection, "change:day", function(selectionModel, newSelection){ this.setModel(newSelection);});
+    this.listenTo(selection, "change:day", function(selectionModel, newSelectedDay){ this.setModel(newSelectedDay); });
     this.listenTo(selection, "change:reservation", this.renderSelection);
   },
   setModel: function(model) { // is a Day
@@ -115,12 +115,17 @@ var DayView = Backbone.View.extend({
   },
   // Rather than having a subview for each reservation line, we render their selection here. 
   // This is slightly less elegant, but saves the complication of having another view.
-  renderSelection: function(selectionModel, newReservation) {
+  renderSelection: function() {
     util.log('renderSelection');
+    var newReservation = selection.get('reservation');
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
-    for (var i=0; i<$reservationLines.length; i++) 
-      setAttr($($reservationLines[i]), 'selected', viewedDayReservations.at(i) === newReservation );
+    for (var i=0; i<$reservationLines.length; i++) {
+      var isSelected = viewedDayReservations.at(i) === newReservation;
+      setAttr($($reservationLines[i]), 'selected', isSelected );
+      if (isSelected)
+        $($reservationLines[i]).scrollMinimal();
+    } 
     //util.log('end renderSelection');
   },
   render: function() {
@@ -138,6 +143,7 @@ var DayView = Backbone.View.extend({
       });
     });
     //util.log('end rendering dayView');
+    this.renderSelection();
     return this;
   }
 });
@@ -384,7 +390,7 @@ function testButton2() {
   viewedReservations.url = '/query/range?start=1-7-2013&end=11-8-2013';
 }
 function testButton3() {
-  util.log('Test button 3 pressed, remove');
+  util.log('Test button 3 pressed, fetch');
   //viewedReservations.remove(viewedReservations.findWhere({name: 'Ieniemienie'}));
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
   viewedReservations.fetch();
@@ -393,7 +399,7 @@ function testButton3() {
 }
 function testButton4() {
   util.log('Test button 4 pressed');
-  viewedReservations.fetch();
+  dayView.renderSelection(null, selection.get('reservation'));
 //  util.log(JSON.stringify(viewedReservations));
 }
 function refreshButton() {

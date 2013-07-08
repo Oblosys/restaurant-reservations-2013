@@ -2,13 +2,9 @@
  * Web server for reservations app
  */
 // TODO: inline todos
-// TODO: deselect reservation on choosing empty day?
 // TODO: editable reservations: 
-//         comment not fixed width font
 //         offer to cancel on unintended navigation?
 //         check if reservation is dirty before offering save
-//         selection after save
-//         re-sort after time change
 //         date change (might be trickier)
 // TODO: check IE and iOS and windows, etc.
 // TODO: make some log functions for collections and models
