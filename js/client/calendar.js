@@ -49,7 +49,7 @@ var Day = Backbone.Model.extend({
    
     // need to propagate all change events from reservation collection 
     var day = this;
-    reservations.on('change', function() {/*util.log('change');*/ day.trigger('change');}); // child reservation change, propagated to collection  
+    reservations.on('change', function() {/*util.log('change');*/ day.get('reservations').sort(); day.trigger('change');}); // child reservation change, propagated to collection  
     reservations.on('add',    function() {/*util.log('add');*/    day.trigger('change');});  
     reservations.on('remove', function() {/*util.log('remove');*/ day.trigger('change');});
     reservations.on('reset',  function() {/*util.log('reset');*/  day.trigger('change');});    
@@ -116,7 +116,7 @@ var DayView = Backbone.View.extend({
   // Rather than having a subview for each reservation line, we render their selection here. 
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function(selectionModel, newReservation) {
-    //util.log('renderSelection');
+    util.log('renderSelection');
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) 
@@ -124,7 +124,7 @@ var DayView = Backbone.View.extend({
     //util.log('end renderSelection');
   },
   render: function() {
-    //util.log('rendering dayView');
+    util.log('rendering dayView');
     var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations');
     var html = '<div id="selectedDayLabel">Reservations on '+monthNames[date.getMonth()]+' '+date.getDate()+'</div>'+
@@ -150,7 +150,7 @@ var ReservationView = Backbone.View.extend({
   isEditing: false,
 
   initialize: function() {
-    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ this.setModel(newSelection);});
+    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ util.log('ReservationView change:reservation'); this.setModel(newSelection);});
     
     var view = this;
     this.$('#editButton').click(function() {view.startEditing();});
@@ -167,7 +167,6 @@ var ReservationView = Backbone.View.extend({
     this.render();
   },
   startEditing: function() {
-    util.log(this);
     this.isEditing = true;
     this.render();
   },
