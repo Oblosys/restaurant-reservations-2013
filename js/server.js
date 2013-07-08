@@ -5,7 +5,8 @@
 // TODO: deselect reservation on choosing empty day?
 // TODO: editable reservations: 
 //         comment not fixed width font
-//         warning on navigate? (and cancel)
+//         offer to cancel on unintended navigation?
+//         check if reservation is dirty before offering save
 //         selection after save
 //         re-sort after time change
 //         date change (might be trickier)

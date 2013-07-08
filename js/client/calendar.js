@@ -151,16 +151,24 @@ var ReservationView = Backbone.View.extend({
     this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ this.setModel(newSelection);});
     
     var view = this;
-    
-    this.$('#editButton').click(function() {view.isEditing = true; view.render();});
-    this.$('#cancelButton').click(function() {view.isEditing = false; view.render();});
-    this.$('#saveButton').click(function() {view.saveModel(); view.isEditing = false; view.render();});
+    this.$('#editButton').click(function() {view.startEditing();});
+    this.$('#cancelButton').click(function() {view.stopEditing();});
+    this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
     
   },
   setModel: function(res) {
     this.stopListening(this.model, "change");
     this.model = res;
     this.listenTo(this.model, "change", this.render);
+    this.render();
+  },
+  startEditing: function() {
+    util.log(this);
+    this.isEditing = true;
+    this.render();
+  },
+  stopEditing: function() {
+    this.isEditing = false;
     this.render();
   },
   saveModel: function() {
@@ -246,6 +254,11 @@ function selectDay(selectedDay) {
 }
 
 function selectReservation(selectedReservation) {
+  if (reservationView && reservationView.isEditing ) {
+    if (confirm('Save changes to reservation?'))
+      reservationView.saveModel();
+    reservationView.stopEditing();
+  }
   selection.set('reservation',selectedReservation);
 }
 
