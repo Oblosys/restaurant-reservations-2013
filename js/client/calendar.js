@@ -162,7 +162,7 @@ var ReservationView = Backbone.View.extend({
     this.$('#editButton').click(function() {view.startEditing();});
     this.$('#cancelButton').click(function() {view.stopEditing();});
     this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
-    
+    this.render();
   },
   setModel: function(res) {
     if (this.model)
