@@ -9,6 +9,7 @@
 // TODO: check IE and iOS and windows, etc.
 // TODO: make some log functions for collections and models
 // TODO: maybe cache viewed months?
+// TODO: check http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html
 // LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
 
 
