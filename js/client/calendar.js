@@ -159,6 +159,7 @@ var ReservationView = Backbone.View.extend({
     this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ util.log('ReservationView change:reservation'); this.setModel(newSelection);});
     
     var view = this;
+    this.$('#deleteButton').click(function() {view.deleteReservation();});
     this.$('#editButton').click(function() {view.startEditing();});
     this.$('#cancelButton').click(function() {view.stopEditing();});
     this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
@@ -171,6 +172,13 @@ var ReservationView = Backbone.View.extend({
     if (this.model)
       this.listenTo(this.model, "change", this.render);
     this.render();
+  },
+  deleteReservation: function() {
+    if (confirm('Are you sure you wish to delete this reservation?')) {
+      var reservation = this.model;
+      this.setModel(null);
+      reservation.destroy();
+    }
   },
   startEditing: function() {
     this.isEditing = true;
@@ -252,10 +260,17 @@ function initialize() {
   selection.on('change:yearMonth', setSelectedYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
+
+  setInterval(refresh, 2000);
 }
 
 
 /***** Event handlers *****/
+
+function refresh() {
+  util.log('refresh');
+  viewedReservations.fetch();
+}
 
 function selectDay(selectedDay) {
   selection.set('day', selectedDay);

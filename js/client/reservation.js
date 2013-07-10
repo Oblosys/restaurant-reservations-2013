@@ -8,6 +8,8 @@ $(document).ready(function() {
 
 /***** Globals *****/
 
+var refreshInterval = 5000; // in milliseconds
+
 var restaurantInfo;
 
 var reservationsThisWeek;
@@ -137,8 +139,6 @@ function initialize() {
     });
   });
   
-  
-  
   reservationsThisWeek = new Reservations();
   var lastDay = new Date(today); 
   // Just assume first day is today, even it's midnight and a new day starts while making the reservation
@@ -154,6 +154,39 @@ function initialize() {
     currentReservation.trigger('change:name');       // clear ui text field (in case of a reload)  
     currentReservation.trigger('change:nrOfPeople'); // and disenable buttons according to newly fetched reservations
     // would be nice to just trigger 'change', but that does not trigger the sub events
+  }});
+  
+  setInterval(refresh, refreshInterval);
+}
+
+
+/***** Event handlers *****/
+
+function refresh() {
+  util.log('refresh');
+  reservationsThisWeek.fetch();
+}
+
+
+/***** Button handlers *****/
+
+/*
+ * Could be improved by also having a check for availability at server side.
+ * */
+function confirmButton() {
+  var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
+  reservationsThisWeek.fetch({success: function() {    
+    if (isValidReservation(currentReservation)) {
+      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
+      newReservation.save();
+      currentReservation.clear();
+      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
+            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
+    }
+    else {
+      alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
+//      console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
+    }
   }});
 }
 
@@ -210,30 +243,6 @@ function disenableTimeButtons() {
         currentReservation.set('time','');
     }
   });
-}
-
-
-/***** Button handlers *****/
-
-/*
- * Could be improved by also having a check for availability at server side.
- * */
-function confirmButton() {
-  var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
-  reservationsThisWeek.fetch({success: function() {    
-    if (isValidReservation(currentReservation)) {
-      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
-      newReservation.save();
-      currentReservation.clear();
-      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
-            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
-    }
-    else {
-      alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
-//      console.error('confirmButton: invalid reservation '+JSON.stringify(currentReservation));
-    }
-  }});
-  //log();
 }
 
 
