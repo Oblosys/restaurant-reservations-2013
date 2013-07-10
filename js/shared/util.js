@@ -80,25 +80,27 @@
 // in Browser, exports is bound to global util variable.
 
 
-// Extend jQuery objects with a method to scroll a minimum amount to make the object visible.
-// Copied from http://stackoverflow.com/questions/4217962/scroll-to-an-element-using-jquery
-jQuery.fn.scrollMinimal = function(smooth) {
-  var cTop = this.offset().top;
-  var cHeight = this.outerHeight(true);
-  var windowTop = $(window).scrollTop();
-  var visibleHeight = $(window).height();
-
-  if (cTop < windowTop) {
-    if (smooth) {
-      $('body').animate({'scrollTop': cTop}, 'slow', 'swing');
-    } else {
-      $(window).scrollTop(cTop);
+if (typeof jQuery != 'undefined') {
+  // Extend jQuery objects with a method to scroll a minimum amount to make the object visible.
+  // Copied from http://stackoverflow.com/questions/4217962/scroll-to-an-element-using-jquery
+  jQuery.fn.scrollMinimal = function(smooth) {
+    var cTop = this.offset().top;
+    var cHeight = this.outerHeight(true);
+    var windowTop = $(window).scrollTop();
+    var visibleHeight = $(window).height();
+  
+    if (cTop < windowTop) {
+      if (smooth) {
+        $('body').animate({'scrollTop': cTop}, 'slow', 'swing');
+      } else {
+        $(window).scrollTop(cTop);
+      }
+    } else if (cTop + cHeight > windowTop + visibleHeight) {
+      if (smooth) {
+        $('body').animate({'scrollTop': cTop - visibleHeight + cHeight}, 'slow', 'swing');
+      } else {
+        $(window).scrollTop(cTop - visibleHeight + cHeight);
+      }
     }
-  } else if (cTop + cHeight > windowTop + visibleHeight) {
-    if (smooth) {
-      $('body').animate({'scrollTop': cTop - visibleHeight + cHeight}, 'slow', 'swing');
-    } else {
-      $(window).scrollTop(cTop - visibleHeight + cHeight);
-    }
-  }
-};
+  };
+}
