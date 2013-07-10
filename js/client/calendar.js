@@ -8,6 +8,7 @@ $(document).ready(function(){
 
 /***** Globals *****/
 
+var refreshInterval = 5000; // in milliseconds
 var viewedReservations;
 
 var selection;
@@ -261,7 +262,7 @@ function initialize() {
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 
-  setInterval(refresh, 2000);
+  setInterval(refresh, refreshInterval);
 }
 
 
