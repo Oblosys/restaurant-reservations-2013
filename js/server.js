@@ -5,9 +5,10 @@
 
 var restaurantInfo = { maxNrOfPeople: 12 };
 
-var _ = require('underscore')
-  , Backbone = require('backbone')
-  , util = require('./shared/util.js')
+var _ =             require('underscore')
+  , Backbone =      require('backbone')
+  , mysql =         require('mysql')
+  , util =          require('./shared/util.js')
   , genericServer = require('./genericServer.js')
   , app;
 
@@ -79,5 +80,24 @@ app.get('/query/range', function(req, res) {
   }));
 });
 
+function testSql() {
+  var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'noneshallpass'
+  });
 
+  connection.connect();
+  connection.query('USE Hello');
+  
+  var queryStr = 'SELECT * FROM rel WHERE Identifier=3';
+  connection.query(queryStr, function(err, rows, fields) {
+    if (err) throw err;
+    util.log('SQL output for '+queryStr+' ('+rows.length+' lines)');
+    for (var i=0; i<rows.length; i++)
+      util.log(rows[i]);
+  });
+  connection.end();
+}
+//testSql();
 genericServer.createServer(app);
