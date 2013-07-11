@@ -228,6 +228,8 @@ var ReservationView = Backbone.View.extend({
     this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
     this.$('#commentArea').attr('value', comment);
     
+    util.setAttr(this.$('#deleteButton'), 'disabled', !this.model); // disable if no reservation selected
+    util.setAttr(this.$('#editButton'), 'disabled', !this.model); // disable if no reservation selected
     return this;
   }
 });
