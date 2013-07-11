@@ -90,6 +90,8 @@ function testSql() {
   connection.connect();
   connection.query('USE Hello');
   
+  // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
+  // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
   var queryStr = 'SELECT * FROM rel WHERE Identifier=3';
   connection.query(queryStr, function(err, rows, fields) {
     if (err) throw err;
