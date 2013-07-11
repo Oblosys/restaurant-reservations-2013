@@ -84,7 +84,7 @@ var DayCellView = Backbone.View.extend({
 
   renderSelection: function(selectionModel, newDay) {
     //util.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
-    setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
+    util.setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
   },
   render: function() {
     //util.log('rendering');
@@ -123,7 +123,7 @@ var DayView = Backbone.View.extend({
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) {
       var isSelected = viewedDayReservations.at(i) === newReservation;
-      setAttr($($reservationLines[i]), 'selected', isSelected );
+      util.setAttr($($reservationLines[i]), 'selected', isSelected );
       if (isSelected)
         $($reservationLines[i]).scrollMinimal();
     } 
@@ -320,7 +320,7 @@ function setSelectedYearMonth() {
 
   $('.dayCell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
-    setAttr( $(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
+    util.setAttr( $(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
   });
   
   for (var i=0; i<days.length; i++) {
@@ -368,15 +368,6 @@ function nextMonthButton() {
 
 
 /***** Utils *****/
-
-/* Set boolean DOM attribute for jQuery object $elt according to HTML standard.
- * (absence denotes false, attrName=AttrName denotes true) */
-function setAttr($elt, attrName, isSet) {
-  if (isSet) 
-    $elt.attr(attrName, attrName);
-  else
-    $elt.removeAttr(attrName);  
-}
 
 function getNumberOfDaysInMonth(year,month) {
   return (new Date(year,month + 1,0)).getDate(); 

@@ -68,11 +68,22 @@
       throw 'Exception: Incorrect date: "'+dateStr+'"';
   }
 
+  /* Set boolean DOM attribute for jQuery object $elt according to HTML standard.
+   * (absence denotes false, attrName=AttrName denotes true) */
+  function setAttr($elt, attrName, isSet) {
+    if (isSet) 
+      $elt.attr(attrName, attrName);
+    else
+      $elt.removeAttr(attrName);  
+  }
+
+
   exports.log = log;
   exports.replicate = replicate;
   exports.showJSON = showJSON;
   exports.showDate = showDate;
   exports.readDate = readDate;
+  exports.setAttr = setAttr;
 
 })(typeof exports == 'undefined'? this.util={}: exports);
 // Module for loading by Node.js as well as browser.

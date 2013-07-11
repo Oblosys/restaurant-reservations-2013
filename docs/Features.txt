@@ -10,3 +10,6 @@ Dynamic, updates reflected after auto refresh
 Reservation app
 Dynamic, cannot make reservations for time slots that are full
 Updated real-time (auto refresh)
+
+
+(Shared utils between server and clients)

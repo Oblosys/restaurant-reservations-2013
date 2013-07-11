@@ -5,7 +5,11 @@
 //         date change (might be trickier)
 // TODO: check IE and iOS and windows, etc.
 // TODO: make some log functions for collections and models
+- at least, check util.log arg for collection or model and print elts or props (prevents hanging when cyclic models are logged)
 // TODO: maybe cache viewed months?
 // TODO: check http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html
-// LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
+
+- Share model between client and server code?
+
+/ LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
  
