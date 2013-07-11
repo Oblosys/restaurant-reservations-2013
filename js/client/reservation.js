@@ -73,10 +73,7 @@ function initialize() {
   $nrOfPeopleButtons.each(function(i) {
     var $button = $(this);
     currentReservation.on('change:nrOfPeople', function(r,newNrOfPeople) {
-      if (newNrOfPeople == i+1)
-        $button.attr('selected','selected');
-      else
-        $button.removeAttr('selected');
+      util.setAttr($button, 'selected', newNrOfPeople == i+1);
       disenableTimeButtons();
     });
 
@@ -102,11 +99,7 @@ function initialize() {
     buttonDate.setDate( today.getDate() + i );
     var $button = $(this);
     currentReservation.on('change:date', function(r,newDate) {
-      if (newDate == util.showDate(buttonDate))
-        $button.attr('selected','selected');
-      else
-        $button.removeAttr('selected');
-      
+      util.setAttr($button, 'selected', newDate == util.showDate(buttonDate));
       disenableTimeButtons();
     });
     
@@ -129,10 +122,7 @@ function initialize() {
    
     var $button = $(this);
     currentReservation.on('change:time', function(r,newTime) {
-      if (newTime == timeLabels[i])
-        $button.attr('selected','selected');
-      else
-        $button.removeAttr('selected');
+      util.setAttr($button, 'selected', newTime == timeLabels[i]);
     });
     $(this).click(function() {
       currentReservation.set('time', timeLabels[i]);
@@ -236,9 +226,9 @@ function disenableTimeButtons() {
   $timeButtons.each(function() {
     var tm = $(this).val();
     if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.get('maxNrOfPeople'))
-      $(this).removeAttr('disabled');
+      util.setAttr($(this), 'disabled', false);
     else {
-      $(this).attr('disabled','disabled');
+      util.setAttr($(this), 'disabled', true);
       if (curTime==tm)
         currentReservation.set('time','');
     }
