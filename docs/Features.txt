@@ -1,0 +1,12 @@
+Node
+Backbone
+Underscore
+jQuery
+
+Calendar
+Viewing and basic editing of reservations
+Dynamic, updates reflected after auto refresh
+
+Reservation app
+Dynamic, cannot make reservations for time slots that are full
+Updated real-time (auto refresh)
