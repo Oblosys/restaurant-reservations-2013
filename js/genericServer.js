@@ -173,6 +173,7 @@ function checkTableExistence(c, tableName, exists, notExists) {
   });
 }
 
+// todo: init database when nonexistent
 // todo: find nice way to express continuation stuff with mysql (check internet)
 // todo: varchar size. fix in ui
 // todo case sensitivity: either use case sensitive, or convert types to lowercase
