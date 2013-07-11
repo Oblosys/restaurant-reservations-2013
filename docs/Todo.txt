@@ -6,6 +6,7 @@
 // TODO: check IE and iOS and windows, etc.
 // TODO: make some log functions for collections and models
 - at least, check util.log arg for collection or model and print elts or props (prevents hanging when cyclic models are logged)
+- add type prop to each backbone object and put all set properties in a json object
 // TODO: maybe cache viewed months?
 // TODO: check http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html
 

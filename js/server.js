@@ -51,32 +51,38 @@ function makeLotOfReservations(n) {
 function initDb() {
   util.log('initDb');
   // todo: clear db
-  var lotOfReservations = makeLotOfReservations(20);
+  //genericServer.resetDb();
+  
+  // TODO: creates lot of connections, and fails if argument is too large
+  var lotOfReservations = makeLotOfReservations(10);
 
   for (var i=0; i<lotOfReservations.length; i++) {
-    genericServer.createModelSql('reservation', lotOfReservations[i]);
+    genericServer.createModelSql(null, 'reservation', lotOfReservations[i]);
   }
 }
 
 app.get('/reset', function(req, res) {  
   initDb();
-  res.send('Database was reset with initial values.');
+  res.send('Database was filled with initial values.');
 });
 app.get('/query/restaurantInfo', function(req, res) {  
   res.send(restaurantInfo);
 });
 app.get('/query/range', function(req, res) {
-  var allReservations = genericServer.root.reservation.models;
+  var allReservations = genericServer.getAllModels('reservation', function(allReservations) {
+    // TODO: use sql select
+    //console.log(JSON.stringify(genericServer.root));
+    var startDate = util.readDate(req.query.start);
+    var endDate = util.readDate(req.query.end);
+    console.log('Returning reservations between '+ startDate + ' and ' + endDate);
+    
+    res.send(_.filter(allReservations, function(reservation) { 
+      var date = util.readDate(reservation.date);
+      return date >= startDate && date <= endDate;
+    }));
+    
+  });
 
-  //console.log(JSON.stringify(genericServer.root));
-  var startDate = util.readDate(req.query.start);
-  var endDate = util.readDate(req.query.end);
-  console.log('Returning reservations between '+ startDate + ' and ' + endDate);
-  
-  res.send(_.filter(allReservations, function(reservation) { 
-    var date = util.readDate(reservation.date);
-    return date >= startDate && date <= endDate;
-  }));
 });
 
 function testSql() {
