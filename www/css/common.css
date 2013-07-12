@@ -41,22 +41,21 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   border-top: solid black 1px; 
   border-bottom: solid black 1px; 
 }
-#menu > * {
-  display:inline;
+#menu > a {
   text-align: center;
-  background-color: grey;
   padding-left: 20px;
   color: white;
 }
-#menu > div {
+#menu > a[selected] {
   font-weight: bold;
+  text-decoration: none;
 }
 #menu > #copyright { /* Include parent to make it more specific than rule above */
   float: right;
   padding-top: 2px; 
   padding-right: 10px;
   font-size: 13px;
-  color: #ddd;
+  color: #eee;
   font-weight: normal;
 }
 #copyright * {
