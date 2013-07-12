@@ -51,13 +51,13 @@ function makeLotOfReservations(n) {
 function initDb() {
   util.log('initDb');
   // todo: clear db
-  //genericServer.resetDb();
+  //genericServer.db.resetDb();
   
   // TODO: creates lot of connections, and fails if argument is too large
   var lotOfReservations = makeLotOfReservations(10);
 
   for (var i=0; i<lotOfReservations.length; i++) {
-    genericServer.createModelSql(null, 'reservation', lotOfReservations[i]);
+    genericServer.db.createModelSql(null, 'reservation', lotOfReservations[i]);
   }
 }
 
@@ -69,9 +69,8 @@ app.get('/query/restaurantInfo', function(req, res) {
   res.send(restaurantInfo);
 });
 app.get('/query/range', function(req, res) {
-  var allReservations = genericServer.getAllModels('reservation', function(allReservations) {
+  var allReservations = genericServer.db.getAllModels('reservation', function(allReservations) {
     // TODO: use sql select
-    //console.log(JSON.stringify(genericServer.root));
     var startDate = util.readDate(req.query.start);
     var endDate = util.readDate(req.query.end);
     console.log('Returning reservations between '+ startDate + ' and ' + endDate);

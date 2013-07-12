@@ -1,4 +1,9 @@
 // TODO: inline todos
+// use success/fail continuations instead of explicit html stuff in db-mysql and db-json 
+// Fix json to work with new module structure
+// 
+// Push instead of poll?
+// Keyboard navigation with arrows + view focus with tab and shift-tab 
 // TODO: editable reservations: 
 //         offer to cancel on unintended navigation?
 //         check if reservation is dirty before offering save
