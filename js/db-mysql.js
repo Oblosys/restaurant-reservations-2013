@@ -30,11 +30,11 @@ function checkTableExistence(c, tableName, exists, notExists) {
 }
 
 // todo: init database when nonexistent
-// todo: find nice way to express continuation stuff with mysql (check internet)
+// todo: give error when model type is not found? in json we should just return empty. makes sense for lists (not for readModel)
+// todo: use object also for other params beside continuations? {type=.., id=} might be good since we don't call them often in the code so not much extra typing
+// todo: express checkTableExistence with continuations
 // todo: varchar size. fix in ui
 // todo case sensitivity: either use case sensitive, or convert types to lowercase
-// todo adapt json version for contiuation based results
-// todo: also for json version
 // todo: Fix this error:   [Error: Can't set headers after they are sent.]
 function resetDb() {
   var c = connectAndUse('ReservationsDb');
@@ -47,9 +47,8 @@ function resetDb() {
   });
   c.end();
 }
-
 // todo: also for json
-function getAllModels(type, success) {
+function getAllModels(type, cont) {
   var c = connectAndUse('ReservationsDb');
   
   // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
@@ -58,12 +57,14 @@ function getAllModels(type, success) {
   c.query(queryStr, function(err, rows, fields) {
     if (err) throw err;
     util.log('SQL output for '+queryStr+' ('+rows.length+' lines)');
-    success(rows);
+    cont.success(rows);
   });  
   c.end();
 }
+// todo: incorrect id for read does not call error
+// todo: call cont.err instead of throw
 // TODO: escaping + check if table exists
-function readModel(res, type, id) {
+function readModel(type, id, cont) {
   console.log('\nREAD: type:'+type+' id:'+id);
   var c = connectAndUse('ReservationsDb');
   
@@ -76,23 +77,23 @@ function readModel(res, type, id) {
           if (err) throw err;
           util.log('SQL output for '+queryStr+' ('+rows.length+' lines)');
           if (rows.length==1) {
-            res.send(rows[0]);
+            cont.success(rows[0]);
           }
           else if (rows.length<1)
-            writeError(res, 404,'Unknown id: '+id+' for type \''+type+'\'');
+            cont.error(404,'Unknown id: '+id+' for type \''+type+'\'');
           else
-            writeError(res, 500,'Multiple ids: '+id+' for type \''+type+'\''); // won't occur, because of PRIMARY KEY constraint
+            cont.error(500,'Multiple ids: '+id+' for type \''+type+'\''); // won't occur, because of PRIMARY KEY constraint
           c.end();
         });      
       },
       function(){
-        writeError(res, 404,'Unknown type \''+type+'\'');
+        cont.error(404,'Unknown type \''+type+'\'');
         c.end();
       } );
 }
 
 // todo: what if object already has an id?
-function createModel(res, type, newModel) {
+function createModel(type, newModel, cont) {
   console.log('\nCREATE: type:'+type);
   console.log('content: '+JSON.stringify(newModel));
   
@@ -100,22 +101,23 @@ function createModel(res, type, newModel) {
   
   checkTableExistence(c, type, 
     function(){
-      c.query('INSERT INTO '+type+' SET ?', newModel, function(err, result) {
+      var queryStr = 'INSERT INTO '+type+' SET ?';
+      c.query(queryStr, newModel, function(err, result) {
         if (err) throw err;
 
-        if (res)
-          res.send({id: result.insertId});
+        if (cont.success)
+          cont.success({id: result.insertId});
       });
       c.end();
     },
     function(){
-      writeError(res, 404,'Unknown type \''+type+'\'');
+      cont.error(404,'Unknown type \''+type+'\'');
       c.end();
     });
   
 }
 
-function updateModel(res, type, id, newModel) {
+function updateModel(type, id, newModel, cont) {
   console.log('\nUPDATE: type:'+type+' id:'+id);
   console.log('content: '+JSON.stringify(newModel));
 
@@ -125,23 +127,21 @@ function updateModel(res, type, id, newModel) {
     function(){
       var newModelNoId = _.clone(newModel);
       delete newModelNoId.id;
-      c.query('UPDATE '+type+' SET ? WHERE id='+id, newModelNoId, function(err, result) {
+      var queryStr = 'UPDATE '+type+' SET ? WHERE id='+id;
+      c.query(queryStr, newModelNoId, function(err, result) {
         if (err) throw err;
 
-        for (var i=0; i<result.length; i++)
-          util.log(result[i]);
-
-        if (res)
-          res.send({});
+        if (cont.success)
+          cont.success({});
       });
       c.end();
     },
     function(){
-      writeError(res, 404,'Unknown type \''+type+'\'');
+      cont.error(404,'Unknown type \''+type+'\'');
       c.end();
     });
 }
-function deleteModel(res, type, id) {
+function deleteModel(type, id, cont) {
   console.log('\nDELETE: type:'+type+' id:'+id);
 
   var c = connectAndUse('ReservationsDb');
@@ -150,21 +150,14 @@ function deleteModel(res, type, id) {
       function(){
 
       var queryStr = 'DELETE FROM '+type+' WHERE id='+id;
-        c.query(queryStr, function(err, rows, fields) {
+        c.query(queryStr, function(err, result) {
           if (err) throw err;
-          util.log('SQL output for '+queryStr+' ('+rows.length+' lines)');
-          if (rows.length==1) {
-            res.send(rows[0]);
-          }
-          else if (rows.length<1)
-            writeError(res, 404,'Unknown id: '+id+' for type \''+type+'\'');
-          else
-            writeError(res, 500,'Multiple ids: '+id+' for type \''+type+'\''); // won't occur, because of PRIMARY KEY constraint
+          cont.success(); // delete doesn't return anything
           c.end();
         });      
       },
       function(){
-        writeError(res, 404,'Unknown type \''+type+'\'');
+        cont.error(404,'Unknown type \''+type+'\'');
         c.end();
       } );
 }

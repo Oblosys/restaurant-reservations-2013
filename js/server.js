@@ -57,7 +57,12 @@ function initDb() {
   var lotOfReservations = makeLotOfReservations(10);
 
   for (var i=0; i<lotOfReservations.length; i++) {
-    genericServer.db.createModelSql(null, 'reservation', lotOfReservations[i]);
+    genericServer.db.createModel('reservation', lotOfReservations[i], {
+      success: function() {},
+      error: function(nr, msg) {
+        util.log('ERROR: '+nr+': '+msg);
+      }
+    });
   }
 }
 
@@ -69,17 +74,20 @@ app.get('/query/restaurantInfo', function(req, res) {
   res.send(restaurantInfo);
 });
 app.get('/query/range', function(req, res) {
-  var allReservations = genericServer.db.getAllModels('reservation', function(allReservations) {
-    // TODO: use sql select
-    var startDate = util.readDate(req.query.start);
-    var endDate = util.readDate(req.query.end);
-    console.log('Returning reservations between '+ startDate + ' and ' + endDate);
-    
-    res.send(_.filter(allReservations, function(reservation) { 
-      var date = util.readDate(reservation.date);
-      return date >= startDate && date <= endDate;
-    }));
-    
+  var allReservations = genericServer.db.getAllModels('reservation', {
+    success: function(allReservations) {
+      // TODO: use sql select
+      var startDate = util.readDate(req.query.start);
+      var endDate = util.readDate(req.query.end);
+      console.log('Returning reservations between '+ startDate + ' and ' + endDate);
+      
+      res.send(_.filter(allReservations, function(reservation) { 
+        var date = util.readDate(reservation.date);
+        return date >= startDate && date <= endDate;
+      }));},
+      error: function(nr, msg) {
+        util.log('ERROR: '+nr+': '+msg);
+      }
   });
 
 });

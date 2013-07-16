@@ -1,4 +1,5 @@
-var util =     require('./shared/util.js');
+var _        = require('underscore')
+  , util =     require('./shared/util.js');
 
 /* Basic CRUD server that stores models in root.<modelname>.models and keeps track of id counter */
 var root = 
@@ -8,24 +9,28 @@ var root =
 
 // todo: maybe create html errors? (need to pass res)
 
-function readModel(type, id) {
+function resetDb() {
+  root = {};
+}
+
+function readModel(type, id, cont) {
   console.log('\nREAD: type:'+type+' id:'+id);
   
   if (!root.hasOwnProperty(type))
-    console.error('Unknown type: '+type);
+    cont.error(404, 'Unknown type: '+type);
   else {
     var models = _.where(root[type].models, {id: id});
     if (models.length==1)
-      return models[0];
+      cont.success(models[0]);
     else if (models.length<1)
-      console.error('Unknown id: '+id+' for type '+type);
+      cont.error(404, 'Unknown id: '+id+' for type '+type);
     else
-      console.error('Multiple ids: '+id+' for type '+type);
+      cont.error(500, 'Multiple ids: '+id+' for type '+type);
   }
 }
 
 // todo: what if object already has an id?
-function createModel(type, newModel) {
+function createModel(type, newModel, cont) {
   console.log('\nCREATE: type:'+type);
   console.log('content: '+JSON.stringify(newModel));
   
@@ -37,47 +42,53 @@ function createModel(type, newModel) {
   newModel.id = id;
   root[type].models.push(newModel);
   //console.log('root: '+JSON.stringify(root));
-  return {id: id};
+  if (cont.success)
+    cont.success({id: id});
 }
 
-function updateModel(type, id, newModel) {
+function updateModel(type, id, newModel, cont) {
   console.log('\nUPDATE: type:'+type+' id:'+id);
   console.log('content: '+JSON.stringify(newModel));
 
   if (!root.hasOwnProperty(type))
-    console.error('Unknown type: '+type);
+    cont.error(404, 'Unknown type: '+type);
   else {
     var models = _.where(root[type].models, {id: id});
     if (models.length==1) {
       var ix = root[type].models.indexOf(models[0]);
       root[type].models[ix] = newModel;
+      cont.success({});
     }
     else if (models.length<1)
-      console.error('Unknown id: '+id+' for type '+type);
+      cont.error(404, 'Unknown id: '+id+' for type '+type);
     else
-      console.error('Multiple ids: '+id+' for type '+type);
+      cont.error(500, 'Multiple ids: '+id+' for type '+type);
   }
-  //console.log('root: '+JSON.stringify(root));
-  return {};
 }
-function deleteModel(type, id) {
+function deleteModel(type, id, cont) {
   console.log('\nDELETE: type:'+type+' id:'+id);
 
   if (!root.hasOwnProperty(type))
-    console.error('Unknown type: '+type);
+    cont.error(404, 'Unknown type: '+type);
   else {
     var models = _.where(root[type].models, {id: id});
     if (models.length==1) {
       var ix = root[type].models.indexOf(models[0]);
       root[type].models.splice(ix,1);
+      cont.success({});
     }
     else if (models.length<1)
-      console.error('Unknown id: '+id+' for type '+type);
+      cont.error(404, 'Unknown id: '+id+' for type '+type);
     else
-      console.error('Multiple ids: '+id+' for type '+type);
+      cont.error(500, 'Multiple ids: '+id+' for type '+type);
   }
-  //console.log('root: '+JSON.stringify(root));
-  return {};
+}
+
+function getAllModels(type, cont) {
+  if (!root.hasOwnProperty(type))
+    cont.success([]);
+  else 
+    cont.success(root[type].models);
 }
 
 exports.resetDb = resetDb;

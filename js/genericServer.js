@@ -9,11 +9,12 @@ var portNr = process.argv[2] || 8200
   , express  = require('express')  
   , _        = require('underscore')
   , Backbone = require('backbone')
-  , db       = require('./db-mysql')
+//  , db       = require('./db-mysql')
+  , db       = require('./db-json')
   , util     = require('./shared/util.js')
   , app;
 
-function writeError(res, nr, msg){
+function writeError(res, nr, msg) {
   console.error('ERROR '+nr+': '+msg);
   res.writeHead(nr, {'Content-Type': 'text/plain'});
   res.write(msg);
@@ -37,17 +38,37 @@ function createApplication() {
   app.use(express.bodyParser());
 
   app.get('/model/:type/:id', function(req, res) {
-    db.readModel(res, req.params.type, req.params.id);
+    db.readModel(req.params.type, req.params.id, {
+      success: function(resp) {res.send(resp);},
+      error: function(nr,msg){
+        writeError(res, nr, msg);
+      }
+    });
   });
   app.post('/model/:type', function(req, res) { 
     console.log(req.body);
-    res.send(db.createModel(res, req.params.type, req.body));
+    db.createModel(req.params.type, req.body, {
+      success: function(resp) {res.send(resp);},
+      error: function(nr,msg){
+        writeError(res, nr, msg);
+      }
+    });
   });
   app.put('/model/:type/:id', function(req, res) {
-    res.send(db.updateModel(res, req.params.type, req.params.id, req.body));
+    db.updateModel(req.params.type, req.params.id, req.body, {
+      success: function(resp) {res.send(resp);},
+      error: function(nr,msg){
+        writeError(res, nr, msg);
+      }
+    });
   });
   app.del('/model/:type/:id', function(req, res) {
-    res.send(db.deleteModel(res, req.params.type, req.params.id));
+    db.deleteModel(req.params.type, req.params.id, {
+      success: function(resp) {res.send(resp);},
+      error: function(nr,msg){
+        writeError(res, nr, msg);
+      }
+    });
   });
   
   return app;
