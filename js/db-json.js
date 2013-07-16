@@ -1,6 +1,8 @@
 var _        = require('underscore')
   , util =     require('./shared/util.js');
 
+var dbInfo = {}; // dummy object, not used for json database
+
 /* Basic CRUD server that stores models in root.<modelname>.models and keeps track of id counter */
 var root = 
   { //reservation: { idCounter: 10, models: [{id: "reservation-1", name: "Pino", date: "4-6-2013"},{id: "reservation-2", name: "Tommie", date: "5-6-2013"}]}
@@ -91,6 +93,7 @@ function getAllModels(type, cont) {
     cont.success(root[type].models);
 }
 
+exports.dbInfo = dbInfo;
 exports.resetDb = resetDb;
 exports.getAllModels = getAllModels;
 exports.createModel = createModel;

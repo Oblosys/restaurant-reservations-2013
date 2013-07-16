@@ -12,6 +12,11 @@ var _ =             require('underscore')
   , genericServer = require('./genericServer.js')
   , app;
 
+genericServer.db.dbInfo.host = 'localhost';
+genericServer.db.dbInfo.user = 'root';
+genericServer.db.dbInfo.password = 'noneshallpass';
+genericServer.db.dbInfo.dbName = 'reservations_db';
+
 app = genericServer();
 
 

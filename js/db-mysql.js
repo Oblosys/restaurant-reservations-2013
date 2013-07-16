@@ -2,13 +2,18 @@ var _        = require('underscore')
   , mysql    = require('mysql')
   , util     = require('./shared/util.js');
 
-
+var dbInfo = { // default values
+    host     : 'localhost',
+    user     : 'root',
+    password : '',
+    dbName   : 'nodeserver_db'
+};
 
 function connectAndUse(tableName) {
   var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'noneshallpass'
+    host     : dbInfo.host,
+    user     : dbInfo.user,
+    password : dbInfo.password
   });
 
   util.log('connecting');
@@ -37,7 +42,7 @@ function checkTableExistence(c, tableName, exists, notExists) {
 // todo case sensitivity: either use case sensitive, or convert types to lowercase
 // todo: Fix this error:   [Error: Can't set headers after they are sent.]
 function resetDb() {
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
   c.query('DROP TABLE Reservation', function(err, result) {
     if (err) throw err;
     c.query('CREATE TABLE Reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
@@ -49,7 +54,7 @@ function resetDb() {
 }
 // todo: also for json
 function getAllModels(type, cont) {
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
   
   // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
   // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
@@ -66,7 +71,7 @@ function getAllModels(type, cont) {
 // TODO: escaping + check if table exists
 function readModel(type, id, cont) {
   console.log('\nREAD: type:'+type+' id:'+id);
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
   
   checkTableExistence(c, type, 
       function(){
@@ -97,7 +102,7 @@ function createModel(type, newModel, cont) {
   console.log('\nCREATE: type:'+type);
   console.log('content: '+JSON.stringify(newModel));
   
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
   
   checkTableExistence(c, type, 
     function(){
@@ -121,7 +126,7 @@ function updateModel(type, id, newModel, cont) {
   console.log('\nUPDATE: type:'+type+' id:'+id);
   console.log('content: '+JSON.stringify(newModel));
 
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
   
   checkTableExistence(c, type, 
     function(){
@@ -144,7 +149,7 @@ function updateModel(type, id, newModel, cont) {
 function deleteModel(type, id, cont) {
   console.log('\nDELETE: type:'+type+' id:'+id);
 
-  var c = connectAndUse('ReservationsDb');
+  var c = connectAndUse(dbInfo.dbName);
 
   checkTableExistence(c, type, 
       function(){
@@ -162,18 +167,19 @@ function deleteModel(type, id, cont) {
       } );
 }
 /*
-//DROP TABLE Reservation;
-DROP DATABASE ReservationsDb;
-CREATE DATABASE ReservationsDb;
+//DROP TABLE reservation;
+DROP DATABASE reservations_db;
+CREATE DATABASE reservations_db;
 USE ReservationsDb;
 
-DROP TABLE Reservation;
-CREATE TABLE Reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));
-INSERT INTO Reservation SET name='Martijn', nrOfPeople='3', date='11-7-2013', time='20:00';
-INSERT INTO Reservation SET name='Pino', nrOfPeople='2', date='11-7-2013', time='21:00';
+DROP TABLE reservation;
+CREATE TABLE reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrofpeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));
+INSERT INTO reservation SET name='Martijn', nrOfPeople='3', date='11-7-2013', time='20:00';
+INSERT INTO reservation SET name='Pino', nrOfPeople='2', date='11-7-2013', time='21:00';
 
  */
 
+exports.dbInfo = dbInfo;
 exports.resetDb = resetDb;
 exports.getAllModels = getAllModels;
 exports.createModel = createModel;
