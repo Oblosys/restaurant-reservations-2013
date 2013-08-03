@@ -20,7 +20,7 @@
     <td><input type="button" id="prevMonthButton" onClick="prevMonthButton()"></td><td id="monthLabel">Maand</td><td><input type="button" id="nextMonthButton" onClick="nextMonthButton()"></td>
   </tr></table>
 </td></tr>
-<tr><td><div class="month">
+<tr><td><div class="month" tabindex="0">
 <div class="weekHeader"><div class="dayName">Mo</div><div class="dayName">Tu</div><div class="dayName">We</div><div class="dayName">Th</div><div class="dayName">Fr</div><div class="dayName">Sa</div><div class="dayName">Su</div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
@@ -29,7 +29,10 @@
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 <div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
 </div></td></tr>
-<tr><td><div id="dayView" class="dayView"></div></td></tr>
+<tr><td><div id="dayView" class="dayView">
+  <div id="selectedDayLabel"></div>
+  <div id="reservationsPerDay"></div>
+</div></td></tr>
 <tr><td><div id="reservationView" class="reservationView">
   <div class="nonEditable">
     <input type="button" id="editButton" value="Edit"></input><input type="button" id="deleteButton" value="Delete"></input>
