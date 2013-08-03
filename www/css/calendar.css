@@ -29,38 +29,42 @@ body {
   text-align: center;
 }
 
+.weekHeader {
+  background-color: #888;
+  color: white;
+  width: 100%;
+}
+
+.dayName {
+  height: 20px;
+  color: black;
+  background-color: white;
+  text-align: center;
+}
+.dayName, .dayCell {
+  width: 52px;
+}
+
 .month {
   display: table;
   border-collapse: collapse;
   text-align: center;
-  margin-top: 4px;
   margin-left:auto;
   margin-right:auto;
-}
-
-.weekHeader {
-  display: table-row;
-  background-color: #888;
-  color: white;
-}
-
-.dayName {
-  display: table-cell;
-  height: 20px;
-  color: black;
-  background-color: white;
 }
 
 .week {
   display: table-row;
 }
-
 .dayCell {
   display: table-cell;
-  width: 52px;
   height: 44px;
   border: solid 1px black;
   background-color: #eee;
+}
+.month:focus {
+  border: solid 1px black;
+  outline: solid 1px blue;
 }
 .dayCell[selected]{
   background-color: #7af;
@@ -83,6 +87,10 @@ body {
   height: 100px;
   overflow: auto;
   border: solid black 1px;
+}
+#reservationsPerDay:focus {
+  border: solid 1px black;
+  outline: solid 1px blue;
 }
 #reservationsPerDay .reservationLine {
   border-bottom: solid #999 1px;
