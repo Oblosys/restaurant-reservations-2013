@@ -2,25 +2,50 @@ var _        = require('underscore')
   , mysql    = require('mysql')
   , util     = require('./shared/util.js');
 
-var dbInfo = { // default values
+var dbInfo = { // default values, override these in server module
     host     : 'localhost',
     user     : 'root',
     password : '',
-    dbName   : 'nodeserver_db'
+    name     : 'nodeserver_db'
 };
 
-function connectAndUse(tableName) {
+//todo: init database when nonexistent
+//todo: give error when model type is not found? in json we should just return empty. makes sense for lists (not for readModel)
+//todo: use object also for other params beside continuations? {type=.., id=} might be good since we don't call them often in the code so not much extra typing
+//todo: express checkTableExistence with continuations
+//todo: varchar size. fix in ui
+//todo case sensitivity: either use case sensitive, or convert types to lowercase
+//todo: Fix this error:   [Error: Can't set headers after they are sent.]
+
+
+
+function connect() {
   var connection = mysql.createConnection({
     host     : dbInfo.host,
     user     : dbInfo.user,
     password : dbInfo.password
   });
 
-  util.log('connecting');
+  //util.log('connecting');
   connection.connect();
-  util.log('using '+tableName);
-  connection.query('USE '+tableName);
   return connection;
+}
+
+function initDb() {
+  var connection = connect();
+  connection.query('CREATE DATABASE IF NOT EXISTS '+dbInfo.name);
+}
+
+function connectAndUse() {
+  var connection = connect();
+  connection.query('USE '+dbInfo.name);
+  return connection;
+}
+
+function createTableIfNotExists(c, tableName) {
+  c.query('CREATE TABLE '+tableName+' (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
+    if (err) throw err;
+  });
 }
 
 function checkTableExistence(c, tableName, exists, notExists) {
@@ -34,15 +59,8 @@ function checkTableExistence(c, tableName, exists, notExists) {
   });
 }
 
-// todo: init database when nonexistent
-// todo: give error when model type is not found? in json we should just return empty. makes sense for lists (not for readModel)
-// todo: use object also for other params beside continuations? {type=.., id=} might be good since we don't call them often in the code so not much extra typing
-// todo: express checkTableExistence with continuations
-// todo: varchar size. fix in ui
-// todo case sensitivity: either use case sensitive, or convert types to lowercase
-// todo: Fix this error:   [Error: Can't set headers after they are sent.]
 function resetDb() {
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
   c.query('DROP TABLE Reservation', function(err, result) {
     if (err) throw err;
     c.query('CREATE TABLE Reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
@@ -52,9 +70,9 @@ function resetDb() {
   });
   c.end();
 }
-// todo: also for json
+
 function getAllModels(type, cont) {
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
   
   // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
   // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
@@ -71,7 +89,7 @@ function getAllModels(type, cont) {
 // TODO: escaping + check if table exists
 function readModel(type, id, cont) {
   console.log('\nREAD: type:'+type+' id:'+id);
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
   
   checkTableExistence(c, type, 
       function(){
@@ -102,7 +120,7 @@ function createModel(type, newModel, cont) {
   console.log('\nCREATE: type:'+type);
   console.log('content: '+JSON.stringify(newModel));
   
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
   
   checkTableExistence(c, type, 
     function(){
@@ -119,14 +137,13 @@ function createModel(type, newModel, cont) {
       cont.error(404,'Unknown type \''+type+'\'');
       c.end();
     });
-  
 }
 
 function updateModel(type, id, newModel, cont) {
   console.log('\nUPDATE: type:'+type+' id:'+id);
   console.log('content: '+JSON.stringify(newModel));
 
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
   
   checkTableExistence(c, type, 
     function(){
@@ -146,10 +163,11 @@ function updateModel(type, id, newModel, cont) {
       c.end();
     });
 }
+
 function deleteModel(type, id, cont) {
   console.log('\nDELETE: type:'+type+' id:'+id);
 
-  var c = connectAndUse(dbInfo.dbName);
+  var c = connectAndUse();
 
   checkTableExistence(c, type, 
       function(){
@@ -180,6 +198,7 @@ INSERT INTO reservation SET name='Pino', nrOfPeople='2', date='11-7-2013', time=
  */
 
 exports.dbInfo = dbInfo;
+exports.initDb = initDb;
 exports.resetDb = resetDb;
 exports.getAllModels = getAllModels;
 exports.createModel = createModel;

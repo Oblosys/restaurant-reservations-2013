@@ -15,7 +15,7 @@ var _ =             require('underscore')
 genericServer.db.dbInfo.host = 'localhost';
 genericServer.db.dbInfo.user = 'root';
 genericServer.db.dbInfo.password = 'noneshallpass';
-genericServer.db.dbInfo.dbName = 'reservations_db';
+genericServer.db.dbInfo.name = 'reservations_db';
 
 app = genericServer();
 

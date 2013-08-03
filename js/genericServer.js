@@ -83,6 +83,7 @@ function createServer(app) {
   });
   */
 
+  db.initDb();
   http.createServer(app).listen(portNr, function() {
     console.log('Server running at http://127.0.0.1:'+portNr+'/');
   });
