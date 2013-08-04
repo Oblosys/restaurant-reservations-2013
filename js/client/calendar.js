@@ -5,10 +5,10 @@ $(document).ready(function(){
   initialize();
 });
 
-
+// TODO: id reservationView + class res. view?  fix missing closing tag. use id for month.
 /***** Globals *****/
 
-var refreshInterval = 5000; // in milliseconds
+var refreshInterval = 500000; // in milliseconds
 var viewedReservations;
 
 var selection;
@@ -125,9 +125,8 @@ var DayView = Backbone.View.extend({
       var isSelected = viewedDayReservations.at(i) === newReservation;
       util.setAttr($($reservationLines[i]), 'selected', isSelected );
       if (isSelected)
-        $($reservationLines[i]).scrollMinimal();
+        $('#reservationsPerDay').scrollMinimal($($reservationLines[i]));
     } 
-    //util.log('end renderSelection');
   },
   render: function() {
     util.log('rendering dayView');
@@ -253,7 +252,7 @@ function initialize() {
   
   reservationView = new ReservationView({el: document.getElementById('reservationView')});
   
-  var today = new Date();
+  var today = new Date(2013,6,31);
   
   viewedReservations = new Reservations();
   viewedReservations.on("add", handleReservationAdded);
@@ -263,6 +262,9 @@ function initialize() {
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
 
+  $(".month").focus();
+  $(".month").keydown(monthKeyHandler);
+  $("#reservationsPerDay").keydown(reservationsPerDayKeyHandler);
   setInterval(refresh, refreshInterval);
 }
 
@@ -350,6 +352,46 @@ function handleReservationRemoved(res,coll,opts) {
   correspondingDay.get('reservations').remove(res);
 }
 
+function monthKeyHandler(event) {
+  if (event.keyCode >= 37 && event.keyCode <= 40) {
+    event.preventDefault();
+    switch (event.keyCode) {
+    case 37:
+      util.log('day left');
+      break;
+    case 38:
+      util.log('day up');
+      break;
+    case 39:
+      util.log('day right');
+      break;
+    case 40:
+      util.log('day down');
+      break;
+    }
+  }
+}
+
+function reservationsPerDayKeyHandler(event) {
+  if (event.keyCode == 38 || event.keyCode == 40) {
+    var selectedIx = selection.get('day').get('reservations').indexOf( selection.get('reservation') );
+
+    switch (event.keyCode) {
+    case 38:
+      util.log('reservation up');
+      selectedIx = selectedIx > 0 ? selectedIx - 1 : 0;
+      break;
+    case 40:
+      util.log('reservation down');
+      var nrOfReservations = selection.get('day').get('reservations').length;
+      selectedIx = selectedIx < nrOfReservations -1 ? selectedIx + 1 : nrOfReservations - 1;
+      break;
+    }
+    
+    selectReservation( selection.get('day').get('reservations').at(selectedIx) );
+    event.preventDefault();
+  }
+}
 
 /***** Button handlers *****/
 
