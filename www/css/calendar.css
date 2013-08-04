@@ -86,6 +86,7 @@ body {
 #reservationsPerDay {
   height: 100px;
   overflow: auto;
+  position: relative; /* need this for scrollMinimal to work */
   border: solid black 1px;
 }
 #reservationsPerDay:focus {
