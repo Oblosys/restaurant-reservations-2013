@@ -3,7 +3,7 @@
   // todo: how to do imports in imported modules? On client require is not defined 
   var _ = require('underscore');
 
-  var debug = true;
+  var debug = true; // set to false on deployment
   
   function log(msg) {
     if (debug)
@@ -77,7 +77,7 @@
       $elt.removeAttr(attrName);  
   }
 
-
+  exports.debug = debug;
   exports.log = log;
   exports.replicate = replicate;
   exports.showJSON = showJSON;
