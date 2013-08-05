@@ -22,7 +22,7 @@ var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
 
 var Selection = Backbone.Model.extend({
   // attributes: yearMonth :: {year :: Int, month :: Int}
-  //             day :: Day
+  //             day :: Int
   //             reservation :: Reservation
 });
 
@@ -73,8 +73,8 @@ var DayCellView = Backbone.View.extend({
   
   initialize: function() {
     util.log('init view ');
-    var dayModel = this.model;
-    $(this.el).click( function() { selectDay(dayModel); } );
+    var dayIndex = this.model.get('index');
+    $(this.el).click( function() { selectDay(dayIndex); } );
 
     this.listenTo(this.model, "change", this.render);
     this.listenTo(selection, "change:day", this.renderSelection);
@@ -83,7 +83,7 @@ var DayCellView = Backbone.View.extend({
 
   renderSelection: function(selectionModel, newDay) {
     //util.log('selection changed '+this.model.get('date')+' ',selectionModel,' '+newDay.get('date')+' '+$(selection.previous('day')).attr('date'));
-    util.setAttr(this.$el, 'selected', this.model.get('date') == newDay.get('date'));
+    util.setAttr(this.$el, 'selected', this.model.get('index') == newDay);
   },
   render: function() {
     //util.log('rendering');
@@ -104,7 +104,7 @@ var DayView = Backbone.View.extend({
   className: "dayView",
 
   initialize: function() {
-    this.listenTo(selection, "change:day", function(selectionModel, newSelectedDay){ this.setModel(newSelectedDay); });
+    this.listenTo(selection, "change:day", function(selectionModel, newSelectedIndex){ this.setModel(days[newSelectedIndex]); });
     this.listenTo(selection, "change:reservation", this.renderSelection);
   },
   setModel: function(model) { // is a Day
@@ -242,7 +242,7 @@ function initialize() {
 
   days = $('.dayCell').map(function(ix) {
     $(this).attr('id','dayCell-'+ix);
-    var day = new Day({date: new Date()});
+    var day = new Day({index: ix, date: new Date()});
     new DayCellView({model: day, el: dayElts[ix]}); // DayCellViews are not stored in a var, has not been necessary yet.
     return day;
   });
@@ -261,8 +261,9 @@ function initialize() {
 
   selection.on('change:yearMonth', setSelectedYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
-  selection.set('day', _.find(days, function(day) {return util.showDate(day.get('date'))==util.showDate(today);}));
-
+  
+  var dayDates = _.map(days, function(day) {return util.showDate(day.get('date'));});
+  selection.set('day', _.indexOf(dayDates, util.showDate(today)));
   $(".month").focus();
   $(".month").keydown(monthKeyHandler);
   $("#reservationsPerDay").keydown(reservationsPerDayKeyHandler);
@@ -288,7 +289,7 @@ function refresh() {
 
 function selectDay(selectedDay) {
   selection.set('day', selectedDay);
-  selectReservation(selectedDay.get('reservations').at(0));
+  selectReservation(days[selectedDay].get('reservations').at(0));
 }
 
 function selectReservation(selectedReservation) {
@@ -342,7 +343,7 @@ function setSelectedYearMonth() {
   
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
+  viewedReservations.fetch({success: function() {days[selectDay(selection.get('day'))];}});
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
 }
 
@@ -362,33 +363,48 @@ function handleReservationRemoved(res,coll,opts) {
   correspondingDay.get('reservations').remove(res);
 }
 
+// todo: set initial day + handle month jumps
 function monthKeyHandler(event) {
   util.log('monthKeyHandler');
-  util.log(selection.get('day').get('date'));
   if (event.keyCode >= 37 && event.keyCode <= 40) {
-    var selectedIx = viewedReservations.indexOf( selection.get('day') );
-    util.log('selectedIx: '+ selectedIx);
+    var selectedIndex = selection.get('day');
+    //util.log('selectedIx: '+ selectedIx);
     switch (event.keyCode) {
     case 37:
       util.log('day left');
+      selectedIndex -= 1;
       break;
     case 38:
       util.log('day up');
+      selectedIndex -= 7;
       break;
     case 39:
       util.log('day right');
+      selectedIndex += 1;
       break;
     case 40:
       util.log('day down');
+      selectedIndex += 7;
       break;
     }
+    var yearMonth = selection.get('yearMonth');
+    if (selectedIndex < 0) {
+      selectedIndex += 6*7;
+      selection.set('yearMonth', {year: yearMonth.year, month: yearMonth.month - 1});
+    }
+    else if (selectedIndex >= 6*7) {
+      selectedIndex -= 6*7;
+      selection.set('yearMonth', {year: yearMonth.year, month: yearMonth.month + 1});
+    }
+    selectDay(selectedIndex);
     event.preventDefault();
   }
 }
 
 function reservationsPerDayKeyHandler(event) {
   if (event.keyCode == 38 || event.keyCode == 40) {
-    var selectedIx = selection.get('day').get('reservations').indexOf( selection.get('reservation') );
+    var selectedDay = days[selection.get('day')];
+    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
 
     switch (event.keyCode) {
     case 38:
@@ -397,12 +413,12 @@ function reservationsPerDayKeyHandler(event) {
       break;
     case 40:
       util.log('reservation down');
-      var nrOfReservations = selection.get('day').get('reservations').length;
+      var nrOfReservations = selectedDay.get('reservations').length;
       selectedIx = selectedIx < nrOfReservations -1 ? selectedIx + 1 : nrOfReservations - 1;
       break;
     }
     
-    selectReservation( selection.get('day').get('reservations').at(selectedIx) );
+    selectReservation( selectedDay.get('reservations').at(selectedIx) );
     event.preventDefault();
   }
 }
