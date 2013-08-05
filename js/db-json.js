@@ -9,10 +9,27 @@ var root =
   //, book:        { idCounter:100, models: [{id: "book-1", title: "Oblomov"},{id: "book-2", title: "War and peace"}]}            
   };
 
+var changeHandler = null;
+
 // todo: maybe create html errors? (need to pass res)
 
-function resetDb() {
+function initDb() {
   root = {};
+}
+
+function onChange(newChangeHandler) {
+  changeHandler = newChangeHandler;
+}
+
+function dbChanged() {
+  if (changeHandler)
+    changeHandler();
+}
+
+function resetDb(cont) {
+  root = {};
+  if (cont)
+    cont();
 }
 
 function readModel(type, id, cont) {
@@ -44,8 +61,10 @@ function createModel(type, newModel, cont) {
   newModel.id = id;
   root[type].models.push(newModel);
   //console.log('root: '+JSON.stringify(root));
-  if (cont.success)
+  if (cont.success) {
+    dbChanged();
     cont.success({id: id});
+  }
 }
 
 function updateModel(type, id, newModel, cont) {
@@ -59,7 +78,10 @@ function updateModel(type, id, newModel, cont) {
     if (models.length==1) {
       var ix = root[type].models.indexOf(models[0]);
       root[type].models[ix] = newModel;
-      cont.success({});
+      if (cont.success) {
+        dbChanged();
+        cont.success({});
+      }
     }
     else if (models.length<1)
       cont.error(404, 'Unknown id: '+id+' for type '+type);
@@ -77,7 +99,10 @@ function deleteModel(type, id, cont) {
     if (models.length==1) {
       var ix = root[type].models.indexOf(models[0]);
       root[type].models.splice(ix,1);
-      cont.success({});
+      if (cont.success) {
+        dbChanged();
+        cont.success();
+      }
     }
     else if (models.length<1)
       cont.error(404, 'Unknown id: '+id+' for type '+type);
@@ -94,6 +119,8 @@ function getAllModels(type, cont) {
 }
 
 exports.dbInfo = dbInfo;
+exports.initDb = initDb;
+exports.onChange = onChange;
 exports.resetDb = resetDb;
 exports.getAllModels = getAllModels;
 exports.createModel = createModel;
