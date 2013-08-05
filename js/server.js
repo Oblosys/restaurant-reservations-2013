@@ -123,7 +123,7 @@ function testSql() {
 
 var server = genericServer.createServer(app);
 
-var io = socketIO.listen(server);
+var io = socketIO.listen(server, { log: false });
 
 genericServer.db.onChange(function(){
   util.log('Push refresh event');
