@@ -57,7 +57,7 @@ function makeLotOfReservations(n) {
 function initDb() {
   util.log('initDb');
   // todo: clear db
-  //genericServer.db.resetDb();
+  genericServer.db.resetDb();
   
   // TODO: creates lot of connections, and fails if argument is too large
   var lotOfReservations = makeLotOfReservations(10);
