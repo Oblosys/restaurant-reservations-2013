@@ -251,7 +251,9 @@ function initialize() {
   
   reservationView = new ReservationView({el: document.getElementById('reservationView')});
   
-  var today = new Date(2013,6,31);
+  var today = new Date();
+  if (util.debug)
+    today = new Date(2013,7,4);
   
   viewedReservations = new Reservations();
   viewedReservations.on("add", handleReservationAdded);
