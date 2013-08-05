@@ -84,14 +84,19 @@ function createServer(app) {
   */
 
   db.initDb();
-  http.createServer(app).listen(portNr, function() {
+  return http.createServer(app);
+}
+
+// By providing a listen function, we can listen to the port specified in this module.
+function listen(server) {
+  server.listen(portNr, function() {
     console.log('Server running at http://127.0.0.1:'+portNr+'/');
   });
 }
-
 
 //todo: why module.exports?
 exports = module.exports = createApplication;
 exports.version = '0.1.0';
 exports.createServer = createServer;
+exports.listen = listen;
 exports.db = db;
