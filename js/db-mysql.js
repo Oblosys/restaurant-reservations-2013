@@ -71,16 +71,21 @@ function checkTableExistence(c, tableName, exists, notExists) {
   });
 }
 
-function resetDb() {
+function resetDb(cont) {
   var c = connectAndUse();
-  c.query('DROP TABLE Reservation', function(err, result) {
+  c.query('DROP TABLE IF EXISTS reservation', function(err, result) {
+    //util.log('dropped');
     if (err) throw err;
-    c.query('CREATE TABLE Reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
-      if (err) throw err;
-    });
     
+    c.query('CREATE TABLE reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
+      //util.log('created');
+      if (err) throw err;
+      c.end();
+      if (cont) {
+        cont();
+      }
+    });
   });
-  c.end();
   dbChanged();
 }
 
