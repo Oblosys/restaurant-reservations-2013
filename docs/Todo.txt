@@ -1,8 +1,11 @@
 // fix nonexisting database
+// maybe turn off socket.io debug info
+
+// -find a way to open a socket to node.oblomov.com (instead of server.oblomov.com:8200)
 
 // TODO: inline todos
 // use success/fail continuations instead of explicit html stuff in db-mysql and db-json 
-// Fix db-json (create/listen split, resetDb cont.)
+// check c.end() calls. Make sure that connection is closed in function that creates it.
 // 
 
 // Keyboard navigation with arrows + view focus with tab and shift-tab 
