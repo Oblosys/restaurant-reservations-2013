@@ -9,6 +9,8 @@ var dbInfo = { // default values, override these in server module
     name     : 'nodeserver_db'
 };
 
+var changeHandler = null;
+
 //todo: init database when nonexistent
 //todo: give error when model type is not found? in json we should just return empty. makes sense for lists (not for readModel)
 //todo: use object also for other params beside continuations? {type=.., id=} might be good since we don't call them often in the code so not much extra typing
@@ -34,6 +36,16 @@ function connect() {
 function initDb() {
   var connection = connect();
   connection.query('CREATE DATABASE IF NOT EXISTS '+dbInfo.name);
+}
+
+
+function onChange(newChangeHandler) {
+  changeHandler = newChangeHandler;
+}
+
+function dbChanged() {
+  if (changeHandler)
+    changeHandler();
 }
 
 function connectAndUse() {
@@ -69,6 +81,7 @@ function resetDb() {
     
   });
   c.end();
+  dbChanged();
 }
 
 function getAllModels(type, cont) {
@@ -128,8 +141,10 @@ function createModel(type, newModel, cont) {
       c.query(queryStr, newModel, function(err, result) {
         if (err) throw err;
 
-        if (cont.success)
+        if (cont.success) {
+          dbChanged();
           cont.success({id: result.insertId});
+        }
       });
       c.end();
     },
@@ -153,8 +168,10 @@ function updateModel(type, id, newModel, cont) {
       c.query(queryStr, newModelNoId, function(err, result) {
         if (err) throw err;
 
-        if (cont.success)
+        if (cont.success) {
+          dbChanged();
           cont.success({});
+        }
       });
       c.end();
     },
@@ -175,7 +192,11 @@ function deleteModel(type, id, cont) {
       var queryStr = 'DELETE FROM '+type+' WHERE id='+id;
         c.query(queryStr, function(err, result) {
           if (err) throw err;
-          cont.success(); // delete doesn't return anything
+          
+          if (cont.success) {
+            dbChanged();
+            cont.success(); // delete doesn't return anything
+          }
           c.end();
         });      
       },
@@ -199,6 +220,7 @@ INSERT INTO reservation SET name='Pino', nrOfPeople='2', date='11-7-2013', time=
 
 exports.dbInfo = dbInfo;
 exports.initDb = initDb;
+exports.onChange = onChange;
 exports.resetDb = resetDb;
 exports.getAllModels = getAllModels;
 exports.createModel = createModel;
