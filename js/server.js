@@ -39,15 +39,16 @@ var someReservations =
    ];
 
 function makeLotOfReservations(n) {
-  var today = new Date();
+  var d = new Date();
+  d.setMonth( d.getMonth() - 1 );
   var templatess = _.flatten(util.replicate(n,someReservations), true); // array of arrays (lists of reservations per day)
   var reservations = [];
   var id = 0;
   for (var i=0; i<templatess.length; i++) {
     for (var j=0; j<templatess[i].length; j++) {
       var reservation = _.clone(templatess[i][j]);
-      reservation.id='reservation-'+id++;
-      reservation.date=util.showDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()+i));
+      reservation.id=id++;
+      reservation.date=util.showDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()+i));
       reservations.push(reservation);
     }
   }
@@ -57,19 +58,19 @@ function makeLotOfReservations(n) {
 function initDb() {
   util.log('initDb');
   // todo: clear db
-  genericServer.db.resetDb();
-  
-  // TODO: creates lot of connections, and fails if argument is too large
-  var lotOfReservations = makeLotOfReservations(10);
+  genericServer.db.resetDb( function() {
+    // TODO: creates lot of connections, and fails if argument is too large
+    var lotOfReservations = makeLotOfReservations(10);
 
-  for (var i=0; i<lotOfReservations.length; i++) {
-    genericServer.db.createModel('reservation', lotOfReservations[i], {
-      success: function() {},
-      error: function(nr, msg) {
-        util.log('ERROR: '+nr+': '+msg);
-      }
-    });
-  }
+    for (var i=0; i<lotOfReservations.length; i++) {
+      genericServer.db.createModel('reservation', lotOfReservations[i], {
+        success: function() {},
+        error: function(nr, msg) {
+          util.log('ERROR: '+nr+': '+msg);
+        }
+      });
+    }    
+  });  
 }
 
 app.get('/reset', function(req, res) {  
