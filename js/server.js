@@ -10,6 +10,7 @@ var _ =             require('underscore')
   , mysql =         require('mysql')
   , util =          require('./shared/util.js')
   , genericServer = require('./genericServer.js')
+  , socketIO =      require('socket.io')
   , app;
 
 genericServer.db.dbInfo.host = 'localhost';
@@ -119,4 +120,15 @@ function testSql() {
   connection.end();
 }
 
-genericServer.createServer(app);
+var server = genericServer.createServer(app);
+
+var io = socketIO.listen(server);
+
+// test path to generate refresh events
+app.get('/socket', function(req, res) {  
+  console.log('broadcasting');
+  io.sockets.emit('refresh', null);
+  res.send('Event broadcasted on '+new Date());
+});
+
+genericServer.listen( server ); // when using socket.io, listen returns immediately

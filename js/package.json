@@ -8,5 +8,6 @@
   , "underscore": "1.x"
   , "backbone": "1.x"
   , "mysql": "2.0.0-alpha8"
+  , "socket.io": "0.9"
   }
 }

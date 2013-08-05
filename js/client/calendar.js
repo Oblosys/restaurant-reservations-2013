@@ -1,4 +1,4 @@
-/* global util:false */
+/* global util:false, io:false */
 
 util.log('executing calendar.js');
 $(document).ready(function(){
@@ -8,7 +8,6 @@ $(document).ready(function(){
 // TODO: id reservationView + class res. view?  fix missing closing tag. use id for month.
 /***** Globals *****/
 
-var refreshInterval = 500000; // in milliseconds
 var viewedReservations;
 
 var selection;
@@ -265,14 +264,22 @@ function initialize() {
   $(".month").focus();
   $(".month").keydown(monthKeyHandler);
   $("#reservationsPerDay").keydown(reservationsPerDayKeyHandler);
-  setInterval(refresh, refreshInterval);
+  initRefreshSocket();
 }
 
+/* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
+ * but triggers a backbone fetch. */
+function initRefreshSocket() {
+  var socket = io.connect('http://localhost');
+  socket.on('refresh', function (data) {
+    util.log('Refresh pushed');
+    refresh();
+  });
+}
 
 /***** Event handlers *****/
 
 function refresh() {
-  util.log('refresh');
   viewedReservations.fetch();
 }
 
@@ -353,8 +360,11 @@ function handleReservationRemoved(res,coll,opts) {
 }
 
 function monthKeyHandler(event) {
+  util.log('monthKeyHandler');
+  util.log(selection.get('day').get('date'));
   if (event.keyCode >= 37 && event.keyCode <= 40) {
-    event.preventDefault();
+    var selectedIx = viewedReservations.indexOf( selection.get('day') );
+    util.log('selectedIx: '+ selectedIx);
     switch (event.keyCode) {
     case 37:
       util.log('day left');
@@ -369,6 +379,7 @@ function monthKeyHandler(event) {
       util.log('day down');
       break;
     }
+    event.preventDefault();
   }
 }
 
