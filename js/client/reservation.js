@@ -174,12 +174,20 @@ function refresh() {
 function confirmButton() {
   var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
   reservationsThisWeek.fetch({success: function() {    
+    // NOTE: make sure not to block this with an alert. On Firefox, if fetch success does not complete, the fetch 
+    // network communication does not finish, and fetches in other open windows/tabs will not be executed.
     if (isValidReservation(currentReservation)) {
       newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
-      newReservation.save();
-      currentReservation.clear();
-      alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
-            ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
+      newReservation.save({},{
+        success: function(){
+          alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+
+              ', on '+newReservation.get('date')+' at '+newReservation.get('time')+' has been confirmed.');
+          currentReservation.clear();
+        },
+        error: function() {
+          alert('Reservation failed: server error');
+        }
+      });
     }
     else {
       alert('Reservation failed: the selected time ('+newReservation.get('date')+' at '+newReservation.get('time')+') is no longer available.');
