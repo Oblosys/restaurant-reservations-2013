@@ -87,11 +87,12 @@ app.get('/query/range', function(req, res) {
       var startDate = util.readDate(req.query.start);
       var endDate = util.readDate(req.query.end);
       console.log('Returning reservations between '+ startDate + ' and ' + endDate);
-      
-      res.send(_.filter(allReservations, function(reservation) { 
+      var reservationsInRange = _.filter(allReservations, function(reservation) { 
         var date = util.readDate(reservation.date);
         return date >= startDate && date <= endDate;
-      }));},
+      });
+      //util.log(reservationsInRange);
+      res.send( reservationsInRange );},
       error: function(nr, msg) {
         util.log('ERROR: '+nr+': '+msg);
       }
