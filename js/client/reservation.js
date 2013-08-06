@@ -1,4 +1,4 @@
-/* global util:false */
+/* global util:false, io:false */
 
 util.log('executing reservation.js');
 $(document).ready(function() {
@@ -8,7 +8,6 @@ $(document).ready(function() {
 
 /***** Globals *****/
 
-var refreshInterval = 5000; // in milliseconds
 
 var restaurantInfo;
 
@@ -146,14 +145,23 @@ function initialize() {
     // would be nice to just trigger 'change', but that does not trigger the sub events
   }});
   
-  setInterval(refresh, refreshInterval);
+  initRefreshSocket();
 }
 
+/* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
+ * but triggers a backbone fetch. */
+function initRefreshSocket() {
+  var socket = io.connect('http://'+location.host);
+  socket.on('refresh', function (data) {
+    util.log('Refresh pushed');
+    refresh();
+  });
+}
 
 /***** Event handlers *****/
 
 function refresh() {
-  util.log('refresh');
+  util.log('fetching');
   reservationsThisWeek.fetch();
 }
 
@@ -184,10 +192,11 @@ function confirmButton() {
 /***** Utils *****/
 
 function isValidReservation(res) {
-  return res.get('date') !== '' &&
-         res.get('time') !== '' &&
-         res.get('name') !== '' &&
-         res.get('nrOfPeople') !== 0;
+  return _.isString(res.get('date'))       && res.get('date') !== '' &&
+         _.isString(res.get('time'))       && res.get('time') !== '' &&
+         _.isString(res.get('name'))       && res.get('name') !== '' &&
+         _.isNumber(res.get('nrOfPeople')) && res.get('nrOfPeople') !== 0;
+  // note: a !== '' means !_.isString(a) || a!='', so we need the isString explicitly
 }
 
 function setLabelOn($label, model, prop, setMsg, unsetMsg) {
