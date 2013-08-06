@@ -157,7 +157,7 @@ var ReservationView = Backbone.View.extend({
     this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ util.log('ReservationView change:reservation'); this.setModel(newSelection);});
     
     var view = this;
-    this.$('#deleteButton').click(function() {view.deleteReservation();});
+    this.$('#deleteButton').click(function() {deleteReservation(view.model);});
     this.$('#editButton').click(function() {view.startEditing();});
     this.$('#cancelButton').click(function() {view.stopEditing();});
     this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
@@ -170,13 +170,6 @@ var ReservationView = Backbone.View.extend({
     if (this.model)
       this.listenTo(this.model, "change", this.render);
     this.render();
-  },
-  deleteReservation: function() {
-    if (confirm('Are you sure you wish to delete this reservation?')) {
-      var reservation = this.model;
-      this.setModel(null);
-      reservation.destroy();
-    }
   },
   startEditing: function() {
     this.isEditing = true;
@@ -252,8 +245,7 @@ function initialize() {
   reservationView = new ReservationView({el: document.getElementById('reservationView')});
   
   var today = new Date();
-  if (util.debug)
-    today = new Date(2013,7,4);
+  //today = new Date(2013,7,4);
   
   viewedReservations = new Reservations();
   viewedReservations.on("add", handleReservationAdded);
@@ -273,7 +265,7 @@ function initialize() {
 /* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
  * but triggers a backbone fetch. */
 function initRefreshSocket() {
-  util.log(location.host);
+  //util.log(location.host);
   var socket = io.connect('http://'+location.host);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
@@ -402,7 +394,11 @@ function monthKeyHandler(event) {
 }
 
 function reservationsPerDayKeyHandler(event) {
-  if (event.keyCode == 38 || event.keyCode == 40) {
+  util.log('keyCode '+event.keyCode);
+  if (event.keyCode == 8) {
+    deleteReservation( selection.get('reservation') );
+    event.preventDefault();    
+  } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
     var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
 
@@ -420,6 +416,20 @@ function reservationsPerDayKeyHandler(event) {
     
     selectReservation( selectedDay.get('reservations').at(selectedIx) );
     event.preventDefault();
+  }
+}
+
+function deleteReservation(reservation) {
+  if (confirm('Are you sure you wish to delete this reservation?')) {
+    var selectedDay = days[selection.get('day')];
+    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
+    console.log('index:'+selectedIx);
+    reservation.destroy();
+    var nrOfRemainingRess = selectedDay.get('reservations').length;
+        
+    var newSelection = nrOfRemainingRess == 0 ? null 
+                                              : selectedDay.get('reservations').at( Math.min(selectedIx, nrOfRemainingRess-1) );
+    selection.set('reservation', newSelection );  
   }
 }
 

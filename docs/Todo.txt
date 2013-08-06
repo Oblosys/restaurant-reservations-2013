@@ -2,7 +2,7 @@
 // maybe turn off socket.io debug info
 
 // -find a way to open a socket to node.oblomov.com (instead of server.oblomov.com:8200)
-
+// When deleting an edited reservation, the next one is being edited. better to cancel editing
 // TODO: inline todos
 // use success/fail continuations instead of explicit html stuff in db-mysql and db-json 
 // check c.end() calls. Make sure that connection is closed in function that creates it.
