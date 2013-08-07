@@ -406,19 +406,23 @@ function reservationsPerDayKeyHandler(event) {
   } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
     var selectedIx = selection.get('reservation');
-
-    switch (event.keyCode) {
-    case 38:
-      util.log('reservation up: '+selectedIx);
-      selectedIx = selectedIx > 0 ? selectedIx - 1 : 0;
-      break;
-    case 40:
-      util.log('reservation down: '+selectedIx);
-      var nrOfReservations = selectedDay.get('reservations').length;
-      selectedIx = selectedIx < nrOfReservations -1 ? selectedIx + 1 : nrOfReservations - 1;
-      break;
-    }
+    var nrOfReservations = selectedDay.get('reservations').length;
     
+    if (selectedIx==-1) {
+      if (nrOfReservations > 0)
+        selectedIx = 0;  // when selection was -1 and we have reservations, select first one, otherwise keep it at -1
+    } else {
+      switch (event.keyCode) {
+      case 38:
+        //util.log('reservation up: '+selectedIx);
+        selectedIx = selectedIx > 0 ? selectedIx - 1 : 0;
+        break;
+      case 40:
+        //util.log('reservation down: '+selectedIx);
+        selectedIx = selectedIx < nrOfReservations -1 ? selectedIx + 1 : nrOfReservations - 1;
+        break;
+      }
+    }
     selectReservation( selectedIx );
     event.preventDefault();
   }
