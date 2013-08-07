@@ -23,7 +23,7 @@ var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
 var Selection = Backbone.Model.extend({
   // attributes: yearMonth :: {year :: Int, month :: Int}
   //             day :: Int (index in days)
-  //             reservation :: Reservation
+  //             reservation :: Int (index in Day.reservations, -1 is no selection)
 });
 
 var Reservation = Backbone.Model.extend({
@@ -117,11 +117,11 @@ var DayView = Backbone.View.extend({
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function() {
     util.log('renderSelection');
-    var newReservation = selection.get('reservation');
+    var reservationIndex = selection.get('reservation');
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) {
-      var isSelected = viewedDayReservations.at(i) === newReservation;
+      var isSelected = i === reservationIndex; // -1 is no selection
       util.setAttr($($reservationLines[i]), 'selected', isSelected );
       if (isSelected)
         $('#reservationsPerDay').scrollMinimal($($reservationLines[i]));
@@ -137,7 +137,7 @@ var DayView = Backbone.View.extend({
     this.$el.find('#reservationsPerDay').html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
-        selectReservation(reservationsForDay.models[ix]);
+        selectReservation(ix);
       });
     });
     //util.log('end rendering dayView');
@@ -154,8 +154,11 @@ var ReservationView = Backbone.View.extend({
   isEditing: false,
 
   initialize: function() {
-    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){
-      util.log('ReservationView change:reservation'); this.setModel(newSelection);
+    this.listenTo(selection, "change:reservation", function(selectionModel, newSelectionIndex){
+      util.log('ReservationView change:reservation '+newSelectionIndex);
+      var selectedDay = days[selection.get('day')];
+      var selectedReservation = newSelectionIndex > 0 ? selectedDay.get('reservations').at(newSelectionIndex) : null;
+      this.setModel( selectedReservation );
     });
     
     var view = this;
@@ -283,17 +286,17 @@ function refresh() {
 
 function selectDay(selectedDay) {
   selection.set('day', selectedDay);
-  selectReservation(days[selectedDay].get('reservations').at(0));
+  selectReservation(0);
 }
 
-function selectReservation(selectedReservation) {
+function selectReservation(selectedReservationIndex) {
 //  util.log('selected: '+selectedReservation);
   if (reservationView && reservationView.isEditing ) {
     if (confirm('Save changes to reservation?'))
       reservationView.saveModel();
     reservationView.stopEditing();
   }
-  selection.set('reservation',selectedReservation);
+  selection.set('reservation',selectedReservationIndex);
 }
 
 // TODO: handle reservations + handlers (note: maybe this has been done already)
@@ -402,21 +405,21 @@ function reservationsPerDayKeyHandler(event) {
     event.preventDefault();    
   } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
-    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
+    var selectedIx = selection.get('reservation');
 
     switch (event.keyCode) {
     case 38:
-      util.log('reservation up');
+      util.log('reservation up: '+selectedIx);
       selectedIx = selectedIx > 0 ? selectedIx - 1 : 0;
       break;
     case 40:
-      util.log('reservation down');
+      util.log('reservation down: '+selectedIx);
       var nrOfReservations = selectedDay.get('reservations').length;
       selectedIx = selectedIx < nrOfReservations -1 ? selectedIx + 1 : nrOfReservations - 1;
       break;
     }
     
-    selectReservation( selectedDay.get('reservations').at(selectedIx) );
+    selectReservation( selectedIx );
     event.preventDefault();
   }
 }
