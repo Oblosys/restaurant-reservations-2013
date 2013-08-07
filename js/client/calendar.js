@@ -13,7 +13,7 @@ var viewedReservations;
 var selection;
 var dayView;
 var reservationView;
-var days;
+var days; // array of Days, one for each calendar cell
 
 var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -22,7 +22,7 @@ var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
 
 var Selection = Backbone.Model.extend({
   // attributes: yearMonth :: {year :: Int, month :: Int}
-  //             day :: Int
+  //             day :: Int (index in days)
   //             reservation :: Reservation
 });
 
@@ -45,9 +45,9 @@ var Day = Backbone.Model.extend({
   defaults: {},
   initialize: function() {
     var reservations = new Reservations();
-    this.set('reservations', reservations); // not in defaults, because then all days will share reservations
+    this.set('reservations', reservations); // not in defaults, because then all days will share a single reservations collection 
    
-    // need to propagate all change events from reservation collection 
+    // need to propagate all change events from reservations collection 
     var day = this;
     reservations.on('change', function() {/*util.log('change');*/ day.get('reservations').sort(); day.trigger('change');}); // child reservation change, propagated to collection  
     reservations.on('add',    function() {/*util.log('add');*/    day.trigger('change');});  
@@ -154,7 +154,9 @@ var ReservationView = Backbone.View.extend({
   isEditing: false,
 
   initialize: function() {
-    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){ util.log('ReservationView change:reservation'); this.setModel(newSelection);});
+    this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){
+      util.log('ReservationView change:reservation'); this.setModel(newSelection);
+    });
     
     var view = this;
     this.$('#deleteButton').click(function() {deleteReservation(view.model);});
