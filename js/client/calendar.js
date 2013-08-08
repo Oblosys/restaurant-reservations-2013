@@ -401,7 +401,7 @@ function monthKeyHandler(event) {
 function reservationsPerDayKeyHandler(event) {
   util.log('keyCode '+event.keyCode);
   if (event.keyCode == 8) {
-    deleteReservation( selection.get('reservation') );
+    deleteReservation( days[selection.get('day')].get('reservations').at(selection.get('reservation')) );
     event.preventDefault();    
   } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
@@ -429,15 +429,15 @@ function reservationsPerDayKeyHandler(event) {
 }
 
 function deleteReservation(reservation) {
-  if (confirm('Are you sure you wish to delete this reservation?')) {
+  if (confirm('Are you sure you wish to delete the reservation for '+reservation.get('name')+'?') ) {
     var selectedDay = days[selection.get('day')];
-    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
+    var selectedIx = selection.get('reservation');
     console.log('index:'+selectedIx);
     reservation.destroy();
     var nrOfRemainingRess = selectedDay.get('reservations').length;
-        
-    var newSelection = nrOfRemainingRess == 0 ? null 
-                                              : selectedDay.get('reservations').at( Math.min(selectedIx, nrOfRemainingRess-1) );
+    util.log(nrOfRemainingRess+' '+selectedIx)
+    var newSelection = nrOfRemainingRess == 0 ? null : Math.min(selectedIx, nrOfRemainingRess-1);
+    util.log('New selection:'+newSelection);
     selection.set('reservation', newSelection );  
   }
 }
