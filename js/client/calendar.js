@@ -449,7 +449,12 @@ function deleteReservation(reservation) {
   if (confirm('Are you sure you wish to delete the reservation for '+reservation.get('name')+'?') ) {
     var selectedDay = days[selection.get('day')];
     var selectedIx = selection.get('reservation');
-    console.log('index:'+selectedIx);
+    if ( reservationView && reservationView.isEditing &&               
+         selectedDay.get('reservations').at(selectedIx) == reservation )
+   // if we're editing and the reservation to be deleted is the one edited (== the selected reservation) then
+   // stop editing. (second check not yet necessary, since we can only deleted the selected reservation)
+      reservationView.stopEditing();
+    //console.log('index:'+selectedIx);
     reservation.destroy();
     var nrOfRemainingRess = selectedDay.get('reservations').length;
     util.log(nrOfRemainingRess+' '+selectedIx)
