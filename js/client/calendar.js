@@ -157,10 +157,11 @@ var ReservationView = Backbone.View.extend({
   isEditing: false,
 
   initialize: function() {
-    this.listenTo(selection, "change:day change:reservation", function(selectionModel, newSelectionIndex){
-      util.log('ReservationView change:reservation '+newSelectionIndex);
+    this.listenTo(selection, "change:day change:reservation", function(){
       var selectedDay = days[selection.get('day')];
-      var selectedReservation = newSelectionIndex >= 0 ? selectedDay.get('reservations').at(newSelectionIndex) : null;
+      var selectedReservationIndex = selection.get('reservation');
+      util.log('ReservationView reservationIndex '+selectedReservationIndex);
+      var selectedReservation = selectedReservationIndex >= 0 ? selectedDay.get('reservations').at(selectedReservationIndex) : null;
       this.setModel( selectedReservation );
     });
     
@@ -287,21 +288,32 @@ function refresh() {
   viewedReservations.fetch();
 }
 
-function selectDay(selectedDayIndex) {
-  selection.set('day', selectedDayIndex);
+function isNavigationAllowed() {
+  if (reservationView && reservationView.isEditing ) {
+    if (confirm('Save changes to reservation?')) {
+      reservationView.saveModel();
+      reservationView.stopEditing();
+      return true;
+    }
+    else
+      return false; // user pressed cancel, so no navigation
+  } else
+    return true; // no editing, so always allow navigation
+}
 
-  // select first reservation, if there is one
-  selectReservation( days[selectedDayIndex].get('reservations').length > 0 ? 0 : -1 ); 
+function selectDay(selectedDayIndex) {
+  if (isNavigationAllowed()) {
+    selection.set('day', selectedDayIndex);
+
+    // select first reservation, if there is one
+    selectReservation( days[selectedDayIndex].get('reservations').length > 0 ? 0 : -1 );
+  }
 }
 
 function selectReservation(selectedReservationIndex) {
 //  util.log('selected: '+selectedReservation);
-  if (reservationView && reservationView.isEditing ) {
-    if (confirm('Save changes to reservation?'))
-      reservationView.saveModel();
-    reservationView.stopEditing();
-  }
-  selection.set('reservation',selectedReservationIndex);
+  if (isNavigationAllowed())
+    selection.set('reservation',selectedReservationIndex);
 }
 
 // TODO: handle reservations + handlers (note: maybe this has been done already)
