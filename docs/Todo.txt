@@ -22,5 +22,5 @@
 
 - Share model between client and server code?
 
-/ LATER: check if update on reservation is handled correctly in reservation and in calendar (not a normal scenario yet)
- 
+
+
