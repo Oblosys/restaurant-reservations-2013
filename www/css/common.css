@@ -62,3 +62,16 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   text-decoration: none;
   color: #ddd;
 }
+
+#description {
+  background-color: #eee;
+  color: black;
+  width: 500px;
+  margin-left:20px;
+  padding: 0px 10px 10px 10px;
+  border: solid black 1px;
+}
+#description h2 {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}

@@ -2,6 +2,7 @@
 
 util.log('executing calendar.js');
 $(document).ready(function(){
+  //$('#description').load("description.html");
   initialize();
 });
 
