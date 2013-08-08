@@ -22,9 +22,11 @@ var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
 /***** Backbone models *****/
 
 var Selection = Backbone.Model.extend({
-  // attributes: yearMonth :: {year :: Int, month :: Int}
-  //             day :: Int (index in days)
-  //             reservation :: Int (index in Day.reservations, -1 is no selection)
+  defaults: {
+    yearMonth: {},  // :: {year :: Int, month :: Int, set by initialize()}
+    day:0,          // :: Int (index in days, set by initialize())
+    reservation: -1 // :: Int (index in Day.reservations, -1 is no selection)
+  }
 });
 
 var Reservation = Backbone.Model.extend({
@@ -155,10 +157,10 @@ var ReservationView = Backbone.View.extend({
   isEditing: false,
 
   initialize: function() {
-    this.listenTo(selection, "change:reservation", function(selectionModel, newSelectionIndex){
+    this.listenTo(selection, "change:day change:reservation", function(selectionModel, newSelectionIndex){
       util.log('ReservationView change:reservation '+newSelectionIndex);
       var selectedDay = days[selection.get('day')];
-      var selectedReservation = newSelectionIndex > 0 ? selectedDay.get('reservations').at(newSelectionIndex) : null;
+      var selectedReservation = newSelectionIndex >= 0 ? selectedDay.get('reservations').at(newSelectionIndex) : null;
       this.setModel( selectedReservation );
     });
     
@@ -261,7 +263,7 @@ function initialize() {
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   
   var dayDates = _.map(days, function(day) {return util.showDate(day.get('date'));});
-  selection.set('day', _.indexOf(dayDates, util.showDate(today)));
+  selectDay(dayDates.indexOf(util.showDate(today)));
   $(".month").focus();
   $(".month").keydown(monthKeyHandler);
   $("#reservationsPerDay").keydown(reservationsPerDayKeyHandler);
@@ -285,9 +287,11 @@ function refresh() {
   viewedReservations.fetch();
 }
 
-function selectDay(selectedDay) {
-  selection.set('day', selectedDay);
-  selectReservation(0);
+function selectDay(selectedDayIndex) {
+  selection.set('day', selectedDayIndex);
+
+  // select first reservation, if there is one
+  selectReservation( days[selectedDayIndex].get('reservations').length > 0 ? 0 : -1 ); 
 }
 
 function selectReservation(selectedReservationIndex) {
