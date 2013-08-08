@@ -40,7 +40,7 @@ var someReservations =
 
 function makeLotOfReservations(n) {
   var d = new Date();
-  d.setMonth( d.getMonth() - 1 );
+  d.setDate( d.getDate() - 15 );
   var templatess = _.flatten(util.replicate(n,someReservations), true); // array of arrays (lists of reservations per day)
   var reservations = [];
   var id = 0;
@@ -60,7 +60,7 @@ function initDb() {
   // todo: clear db
   genericServer.db.resetDb( function() {
     // TODO: creates lot of connections, and fails if argument is too large
-    var lotOfReservations = makeLotOfReservations(10);
+    var lotOfReservations = makeLotOfReservations(15);
 
     for (var i=0; i<lotOfReservations.length; i++) {
       genericServer.db.createModel('reservation', lotOfReservations[i], {
