@@ -166,6 +166,8 @@ var ReservationView = Backbone.View.extend({
     this.$('#editButton').click(function() {view.startEditing();});
     this.$('#cancelButton').click(function() {view.stopEditing();});
     this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
+    this.$('#dateChangeButton').click(function() {view.dateChange();});
+    this.$('#cancelDateChangeButton').click(function() {view.cancelDateChange();});
     this.render();
   },
   setModel: function(res) {
@@ -190,6 +192,12 @@ var ReservationView = Backbone.View.extend({
                    , nrOfPeople: parseInt(this.$('#nrOfPeopleSelector').val())   
                    , comment: this.$('#commentArea').val() });
     this.model.save();
+  },
+  dateChange: function() {
+    this.$('#dateChangeOverlay').show();
+  },
+  cancelDateChange: function() {
+    this.$('#dateChangeOverlay').hide();
   },
   render: function() {
     util.log('rendering reservationView');
@@ -466,16 +474,20 @@ function deleteReservation(reservation) {
 
 function prevMonthButton() {
   util.log('Prev month button pressed');
-  var yearMonth = selection.get('yearMonth');
-  var currentYearMonth = new Date(yearMonth.year, yearMonth.month-1,1);
-  selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
+  if (isNavigationAllowed()) {
+    var yearMonth = selection.get('yearMonth');
+    var currentYearMonth = new Date(yearMonth.year, yearMonth.month-1,1);
+    selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
+  }
 }
 
 function nextMonthButton() {
   util.log('Next month button pressed');
-  var yearMonth = selection.get('yearMonth');
-  var currentYearMonth = new Date(yearMonth.year, yearMonth.month+1,1);
-  selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
+  if (isNavigationAllowed()) {
+    var yearMonth = selection.get('yearMonth');
+    var currentYearMonth = new Date(yearMonth.year, yearMonth.month+1,1);
+    selection.set('yearMonth', {year: currentYearMonth.getFullYear(), month: currentYearMonth.getMonth()});
+  }
 }
 
 
