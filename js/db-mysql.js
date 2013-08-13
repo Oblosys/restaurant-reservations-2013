@@ -221,6 +221,11 @@ CREATE TABLE reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name 
 INSERT INTO reservation SET name='Martijn', nrOfPeople='3', date='11-7-2013', time='20:00';
 INSERT INTO reservation SET name='Pino', nrOfPeople='2', date='11-7-2013', time='21:00';
 
+
+grant select on reservations_db for guest users:
+GRANT SELECT ON reservations_db.* TO 'guest'@'%' IDENTIFIED BY 'welcome';
+they can access the db with:
+mysql -u guest --password=welcome -h server.oblomov.com reservations_db
  */
 
 exports.dbInfo = dbInfo;
