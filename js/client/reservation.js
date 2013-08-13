@@ -3,6 +3,9 @@
 util.log('executing reservation.js');
 $(document).ready(function() {
   initialize();
+  $('#description').load("description.html", function() {
+    $('#description').slideDown();
+  }); 
 });
 
 

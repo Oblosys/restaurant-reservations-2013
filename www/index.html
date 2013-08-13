@@ -15,7 +15,11 @@
 </head>
 <body>
 <div id="menu"><a href="index.html" selected="selected">Calendar</a><a href="reservation.html">Reservation</a><div id="copyright">&copy; 2013 <a href="http://www.oblomov.com">Oblomov&nbsp;Systems</a></div></div><br/>
-<!--  <div id="description"></div> -->
+
+<table><tr>
+<td id="descriptionPane"><div id="wrapper"><div id="description"></div></div></td>
+<td id="reservationsPane">
+
 <table id="calendar" class="roundedCorners">
 <tr><td>
   <table class="MonthSelectionBar"><tr>
@@ -56,6 +60,9 @@
   </div>
 </div></td></tr>
 </table>
+
+</td></tr></table>
+
 <br/>
 <div class="debugButtons">
 <input type="button" onclick="testButton1()" value="Test 1 (update)"></input>

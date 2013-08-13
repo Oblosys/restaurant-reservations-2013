@@ -63,15 +63,44 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   color: #ddd;
 }
 
+#descriptionPane {
+  vertical-align: top;
+  padding: 0px 10px 0px 30px;
+ }
+#wrapper { 
+/* Need this, since setting width on td does not work when one td has width 100%, so we need to have a width 
+   on a child, but description will be hidden at the start */
+  width: 500px;
+}
+#reservationsPane {
+  width: 100%;
+  height: 530px;
+  text-align: center;
+}
 #description {
+  display: none;
   background-color: #eee;
   color: black;
   width: 500px;
-  margin-left:20px;
+  height: 500px;
   padding: 0px 10px 10px 10px;
   border: solid black 1px;
 }
 #description h2 {
   margin-top: 10px;
   margin-bottom: 6px;
+}
+
+
+/* On an iPad, the rules below takes precedence over the rules above (order is important) */
+@media only screen and (device-width: 768px) {
+  #wrapper {
+    display:none;
+  }
+  }
+/* On an iPhone, the rules below takes precedence over the rules above (order is important) */
+@media only screen and (device-width: 320px) {
+  #wrapper {
+    display:none;
+  }
 }

@@ -2,8 +2,10 @@
 
 util.log('executing calendar.js');
 $(document).ready(function(){
-  //$('#description').load("description.html");
   initialize();
+  $('#description').load("description.html", function() {
+    $('#description').slideDown();
+  }); 
 });
 
 // TODO: id reservationView + class res. view?  fix missing closing tag. use id for month.
@@ -194,9 +196,11 @@ var ReservationView = Backbone.View.extend({
     this.model.save();
   },
   dateChange: function() {
+    this.isChangingDate = true;
     this.$('#dateChangeOverlay').show();
   },
   cancelDateChange: function() {
+    this.isChangingDate = false;
     this.$('#dateChangeOverlay').hide();
   },
   render: function() {
@@ -306,6 +310,10 @@ function isNavigationAllowed() {
 }
 
 function selectDay(selectedDayIndex) {
+  if (reservationView && reservationView.isChangingDate) {
+    alert('date change');
+    return;
+  }
   if (isNavigationAllowed()) {
     selection.set('day', selectedDayIndex);
 
