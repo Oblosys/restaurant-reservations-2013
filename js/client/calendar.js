@@ -136,7 +136,7 @@ var DayView = Backbone.View.extend({
     util.log('rendering dayView');
     var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations');
-    $('#selectedDayLabel').text('Reservations for '+monthNames[date.getMonth()]+' '+date.getDate())
+    $('#selectedDayLabel').text('Reservations for '+monthNames[date.getMonth()]+' '+date.getDate());
     var html = '';
     reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
     this.$el.find('#reservationsPerDay').html(html);
@@ -371,7 +371,7 @@ function setSelectedYearMonth() {
   
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedReservations.fetch({success: function() {days[selectDay(selection.get('day'))];}});
+  viewedReservations.fetch({success: function() {selectDay(days[selection.get('day')]);}});
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
 }
 
@@ -436,7 +436,7 @@ function reservationsPerDayKeyHandler(event) {
     event.preventDefault();    
   } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
-    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );;
+    var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
     var nrOfReservations = selectedDay.get('reservations').length;
     
     if (selectedIx==-1) {
@@ -471,7 +471,7 @@ function deleteReservation(reservation) {
     //console.log('index:'+selectedIx);
     reservation.destroy();
     var nrOfRemainingRess = selectedDay.get('reservations').length;
-    util.log(nrOfRemainingRess+' '+selectedIx)
+    //util.log(nrOfRemainingRess+' '+selectedIx);
     var newSelection = nrOfRemainingRess == 0 ? null 
                                               : selectedDay.get('reservations').at( Math.min(selectedIx, nrOfRemainingRess-1) );
     selection.set('reservation', newSelection );  
