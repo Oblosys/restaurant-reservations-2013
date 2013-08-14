@@ -1,7 +1,7 @@
 <h2>Reservations web app</h2>
-The web application on this page can be used to manage reservations at a fictitious restaurant. The calendar page is 
+The web application on this page can be used to manage reservations at a fictitious restaurant. The calendar page is intended for the restaurant, whereas clients can use the reservations page to make new reservations.
 <h2>Features</h2>
-Features
+In the calendar view, you can click on days, or use the arrow keys to view the reservations for that day. The blue numbers are the number of reservations for that day and the total number of people between parentheses. 
 Browsing/editing existing reservations, one interface for clients who make new reservation. 
 Dynamic interface, cannot make reservations for full time slots
 Real-time updates
@@ -15,9 +15,9 @@ Delete to delete reservation.
 <h2>Technical details</h2>
 <ul>
 <li>Client using JQuery, Backbone data model, Underscore
-<li>Server implemented with Node.js and express
+<li>Server implemented with Node.js and Express
 <li>Shared modules between client & server
-<li>Data storage layer for JSON or MySQL <tt>mysql -u guest --password=welcome -h server.oblomov.com reservations_db</tt>
+<li>Data storage layer for JSON or MySQL (database can be accessed with: <tt>mysql -u guest --password=welcome -h server.oblomov.com reservations_db</tt>)
 <li>Server push implemented with socket.io for real-time updates
 </ul>
 
