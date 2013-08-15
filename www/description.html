@@ -5,17 +5,14 @@ In the calendar view, you can click on days or use the arrow keys to view the re
 <p>
 The reservation view dynamically shows which time slots are still available. If you select the number of people and the date, only the buttons for available time slots are enabled. (The maximum number of customers per slot is 12.)
 <p>
-All information is updated in real time. If you open a second view in a seperate browser window (or on a mobile device) any edit operations on reservations, as well as newly made reservations immediately show up in all views.
+All information is updated in real time. If you open a second <a target="_blank" href="index.html">Calendar</a> or <a target="_blank" href="reservation.html">Reservation</a> page in a separate browser window (or on a mobile device), all edit operations on the reservations, as well as newly made reservations, immediately show up on all pages.
 
 <h2>Technical details</h2>
 <ul>
-<li>Client uses JQuery, Underscore and has a Backbone data model and views
+<li>Client uses JQuery, Underscore libraries and employs a Backbone data model and views
 <li>Layered selection model (selected day and selected reservation on that day)
 <li>Server is implemented with Node.js and Express
 <li>Shared modules between client & server
 <li>Data storage layer for JSON or MySQL (database can be accessed with: <tt>mysql -u guest --password=welcome -h server.oblomov.com reservations_db</tt>)
-<li>Server push implemented with socket.io for real-time updates
+<li>Server push implemented with socket.io library for real-time updates
 </ul>
-
-
- 
