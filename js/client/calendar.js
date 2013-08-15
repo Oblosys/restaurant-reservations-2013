@@ -1,5 +1,25 @@
 /* global util:false, io:false */
 
+
+/*
+ * viewedReservations is a Backbone collection that has the range of viewed calendar dates as its url
+ * (which is modified when changing the month.) An array of Day objects keeps track of the reservations for 
+ * each calendar cell. Add/remove listeners on viewedReservations take care of keeping reservations in the appropriate Day
+ * objects.
+ * 
+ * Day objects propagate all add/remove/change events on the reservations collection to the day event itself.
+ * 
+ * Each calendar cell (DayCellView) listens to its Day object, the list of reservations (DayView) listens to the
+ * the selected Day object, and the reservation view (ReservationView) listens to the currently selected Reservation. 
+ * 
+ * mention that Day propagates events from collection
+ * 
+ * mention selection
+ * 
+ * add  / remove
+ * why doesn't date change to next month not cause an addition in other calendar the views the next month?
+ * handle date change by remove/add? What if it is not inside the range? 
+ * */
 util.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
@@ -79,7 +99,19 @@ var DayCellView = Backbone.View.extend({
   initialize: function() {
     util.log('init view ');
     var dayIndex = this.model.get('index');
-    $(this.el).click( function() { selectDay(dayIndex); } );
+    $(this.el).click( function() { 
+      if (reservationView && reservationView.isChangingDate) { // handle date selection during reservation editing
+        var newDate = util.showDate( days[dayIndex].get('date') );
+        //alert('date change '+util.showDate(newDate));
+        util.log('old date: '+selection.get('reservation').get('date'));
+        selectDay(dayIndex);    
+        reservationView.stopDateChange();
+        util.log('new date: '+selection.get('reservation').get('date'));
+        $('#dateLabel').text(newDate);
+      }
+      else
+        selectDay(dayIndex);    
+    });
 
     this.listenTo(this.model, "change", this.render);
     this.listenTo(selection, "change:day", this.renderSelection);
@@ -121,7 +153,7 @@ var DayView = Backbone.View.extend({
   // Rather than having a subview for each reservation line, we render their selection here. 
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function() {
-    util.log('renderSelection');
+    util.log('DayView.renderSelection');
     var newReservation = selection.get('reservation');
     var $reservationLines = this.$('.reservationLine');
     var viewedDayReservations = this.model.get('reservations');
@@ -131,6 +163,7 @@ var DayView = Backbone.View.extend({
       if (isSelected)
         $('#reservationsPerDay').scrollMinimal($($reservationLines[i]));
     } 
+    //util.log('DayView.renderSelection end');
   },
   render: function() {
     util.log('rendering dayView');
@@ -157,7 +190,10 @@ var ReservationView = Backbone.View.extend({
   className: "reservationView",
   
   isEditing: false,
-
+  isChangingDate: false,
+  originalDate: '',
+  originalMonth: null,
+  
   initialize: function() {
     this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){
       util.log('ReservationView change:reservation'); this.setModel(newSelection);
@@ -166,10 +202,10 @@ var ReservationView = Backbone.View.extend({
     var view = this;
     this.$('#deleteButton').click(function() {deleteReservation(view.model);});
     this.$('#editButton').click(function() {view.startEditing();});
-    this.$('#cancelButton').click(function() {view.stopEditing();});
+    this.$('#cancelButton').click(function() {view.cancelEditing();});
     this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
-    this.$('#dateChangeButton').click(function() {view.dateChange();});
-    this.$('#cancelDateChangeButton').click(function() {view.cancelDateChange();});
+    this.$('#dateChangeButton').click(function() {view.startDateChange();});
+    this.$('#cancelDateChangeButton').click(function() {view.stopDateChange();});
     this.render();
   },
   setModel: function(res) {
@@ -181,6 +217,9 @@ var ReservationView = Backbone.View.extend({
     this.render();
   },
   startEditing: function() {
+    // save the original yearMonth and day selections, since a date change may change them (and we need to set them back on cancel)
+    this.selectedYearMonthBeforeEditing = selection.get('yearMonth');
+    this.selectedDayBeforeEditing = selection.get('day');
     this.isEditing = true;
     this.render();
   },
@@ -188,18 +227,26 @@ var ReservationView = Backbone.View.extend({
     this.isEditing = false;
     this.render();
   },
+  cancelEditing: function() {
+    this.isEditing = false;
+    selection.set('yearMonth', this.selectedYearMonthBeforeEditing);
+    selection.set('day', this.selectedDayBeforeEditing); // don't use selectDay, since we don't want to change selected reservation
+    this.render();
+  },
   saveModel: function() {
     this.model.set({ time: this.$('#timeSelector').val()   
+                   , date: this.$('#dateLabel').text()
                    , name: this.$('#nameField').val()   
                    , nrOfPeople: parseInt(this.$('#nrOfPeopleSelector').val())   
                    , comment: this.$('#commentArea').val() });
     this.model.save();
   },
-  dateChange: function() {
-    this.isChangingDate = true;
+  startDateChange: function() {
+    // changing the date is done by the click handler for DayCellView
+    this.isChangingDate = true; 
     this.$('#dateChangeOverlay').show();
   },
-  cancelDateChange: function() {
+  stopDateChange: function() {
     this.isChangingDate = false;
     this.$('#dateChangeOverlay').hide();
   },
@@ -212,12 +259,14 @@ var ReservationView = Backbone.View.extend({
     var reservation = this.model; 
     var html = '';
     var time = '';
+    var date = '';
     var name = '';
     var nrOfPeople = '';
     var comment = ''; 
     
     if (reservation) {
       time = reservation.get('time');
+      date = reservation.get('date');
       name = reservation.get('name');
       nrOfPeople = reservation.get('nrOfPeople');
       comment = reservation.get('comment');
@@ -231,6 +280,7 @@ var ReservationView = Backbone.View.extend({
     this.$(".nonEditable > #reservationPres").html(html);
     
     this.$('#timeSelector').attr('value', time);
+    this.$('#dateLabel').text(date);
     this.$('#nameField').attr('value', name);
     this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
     this.$('#commentArea').attr('value', comment);
@@ -265,9 +315,9 @@ function initialize() {
   //today = new Date(2013,7,4);
   
   viewedReservations = new Reservations();
-  viewedReservations.on("add", handleReservationAdded);
-  viewedReservations.on("remove", handleReservationRemoved);
-
+  viewedReservations.on('add',    function(res,coll,opts) { addReservationToDays(res);      });
+  viewedReservations.on('remove', function(res,coll,opts) { removeReservationFromDays(res); });
+  viewedReservations.on('change', function(res,opts)      { updateReservationInDays(res);   });
   selection.on('change:yearMonth', setSelectedYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
   
@@ -297,7 +347,7 @@ function refresh() {
 }
 
 function isNavigationAllowed() {
-  if (reservationView && reservationView.isEditing ) {
+  if (!(reservationView && reservationView.isChangingDate) &&reservationView && reservationView.isEditing ) {
     if (confirm('Save changes to reservation?')) {
       reservationView.saveModel();
       reservationView.stopEditing();
@@ -310,17 +360,14 @@ function isNavigationAllowed() {
 }
 
 function selectDay(selectedDayIndex) {
-  if (reservationView && reservationView.isChangingDate) {
-    alert('date change');
-    return;
-  }
   if (isNavigationAllowed()) {
     selection.set('day', selectedDayIndex);
 
     // select first reservation, if there is one
-    selectReservation( days[selectedDayIndex].get('reservations').length > 0 
-                     ? days[selectedDayIndex].get('reservations').at(0)
-                     : null );
+    if (!(reservationView && reservationView.isChangingDate))
+      selectReservation( days[selectedDayIndex].get('reservations').length > 0 
+                       ? days[selectedDayIndex].get('reservations').at(0)
+                       : null );
   }
 }
 
@@ -371,24 +418,8 @@ function setSelectedYearMonth() {
   
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
-  viewedReservations.fetch({success: function() {selectDay(days[selection.get('day')]);}});
+  viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
-}
-
-//TODO: need full views here? Maybe not
-function handleReservationAdded(res,coll,opts) {
-  //util.log('Reservation added '+res.get('name')+' date:'+res.get('date'));
-  //for (var i=0;i<days.length; i++) util.log(days[i].get('date'));
-  // need find instead of findWhere, since the date needs to be converted
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  //util.log('correspondingDay = '+correspondingDay.get('date'));
-  correspondingDay.get('reservations').add(res);
-}
-
-function handleReservationRemoved(res,coll,opts) {
-  //util.log('Reservation removed '+res.get('name')+' date:'+res.get('date'));
-  var correspondingDay = _.find(days, function(day){return util.showDate(day.get('date'))==res.get('date');});
-  correspondingDay.get('reservations').remove(res);
 }
 
 // todo: set initial day + handle month jumps
@@ -506,6 +537,37 @@ function getNumberOfDaysInMonth(year,month) {
   // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
 }
 
+// Return the day object from days array that corresponds to the argument date
+function getDayForDate(date) {
+  // have to use find instead of findWhere, since the date needs to be converted
+  return _(days).find(function(day){return util.showDate(day.get('date'))==date;});
+}
+
+function addReservationToDays(res) {
+  //util.log('addReservationToDays '+res.get('name')+' date:'+res.get('date'));
+  //for (var i=0;i<days.length; i++) util.log(days[i].get('date'));
+  var correspondingDay = getDayForDate( res.get('date') );
+  //util.log('correspondingDay = '+correspondingDay.get('date'));
+  correspondingDay.get('reservations').add(res);
+}
+
+function removeReservationFromDays(res) {
+  //util.log('removeReservationFromDays '+res.get('name')+' date:'+res.get('date'));
+  var correspondingDay = getDayForDate( res.get('date') );
+  correspondingDay.get('reservations').remove(res);
+}
+
+function updateReservationInDays(res) {
+  //util.log('updateReservationInDays '+res.get('name')+' date:'+res.get('date'));
+  //correspondingDay.get('reservations').remove(res);
+  if (res.changedAttributes().hasOwnProperty('date')) { // only have to do something if date changed
+    var oldDay = getDayForDate( res.previous('date') );
+    oldDay.get('reservations').remove(res);
+    var newDay = getDayForDate( res.get('date') );
+    newDay.get('reservations').add(res);
+  }
+}
+
 
 /***** Debug *****/
 
@@ -536,10 +598,10 @@ function testButton3() {
   util.log( 'viewedReservations.length '+viewedReservations.length );
 //  util.log(JSON.stringify(viewedReservations));
 }
-function testButton4() {
-  util.log('Test button 4 pressed');
-  dayView.renderSelection(null, selection.get('reservation'));
-//  util.log(JSON.stringify(viewedReservations));
+function resetButton() {
+  $.get('/reset', function() {
+    alert('Database has been reset.');
+    });
 }
 function refreshButton() {
   util.log('Refresh button pressed');
