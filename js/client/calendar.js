@@ -244,11 +244,11 @@ var ReservationView = Backbone.View.extend({
   startDateChange: function() {
     // changing the date is done by the click handler for DayCellView
     this.isChangingDate = true; 
-    this.$('#dateChangeOverlay').show();
+    $('.dateChangeOverlay').show();
   },
   stopDateChange: function() {
     this.isChangingDate = false;
-    this.$('#dateChangeOverlay').hide();
+    $('.dateChangeOverlay').hide();
   },
   render: function() {
     util.log('rendering reservationView');
@@ -461,6 +461,9 @@ function monthKeyHandler(event) {
 }
 
 function reservationsPerDayKeyHandler(event) {
+  if (reservationView && reservationView.isChangingDate)
+    return; // if we are changing the date, ignore any keys on this view
+  
   util.log('keyCode '+event.keyCode);
   if (event.keyCode == 8) {
     deleteReservation( selection.get('reservation') );

@@ -78,16 +78,23 @@ body {
   color: blue;
 }
 
+#dayView {
+  position: relative; /* necessary for overlay filling entire width and height */   
+}
+
 #selectedDayLabel {
   margin-top: 7px;
   margin-bottom: 2px;
   font-size: 90%; 
 }
+#reservationsPerDayWrapper { /* need a wrapper for showing the overlay */
+  border: solid black 1px;
+  position: relative; /* necessary for overlay filling entire width and height */   
+}
 #reservationsPerDay {
   height: 100px;
   overflow: auto;
   position: relative; /* need this for scrollMinimal to work */
-  border: solid black 1px;
 }
 #reservationsPerDay:focus {
   border: solid 1px black;
@@ -138,7 +145,7 @@ body {
   overflow: auto;
   border: solid black 1px;
 }
-.reservationView #dateChangeOverlay {
+.dateChangeOverlay {
   display: none; /* is shown by ReservationsView.dateChange() */
   position:absolute;
   left: 0px;
@@ -149,7 +156,7 @@ body {
   z-index: 1000;
   text-align: center;
 }
-.reservationView #dateChangeOverlay input {
+.reservationView .dateChangeOverlay input {
   margin-top:40px;
   float: none;  
 }

@@ -40,7 +40,10 @@
 </div></td></tr>
 <tr><td><div id="dayView" class="dayView">
   <div id="selectedDayLabel"></div>
-  <div id="reservationsPerDay" tabindex="0"></div>
+  <div id="reservationsPerDayWrapper">
+    <div id="reservationsPerDay" tabindex="0"></div>
+    <div class="dateChangeOverlay"></div>
+  </div>
 </div></td></tr>
 <tr><td><div id="reservationView" class="reservationView">
   <div class="nonEditable">
@@ -56,7 +59,7 @@
     <br/> 
     <div id="commentLabel">Comment:<br/>
     <textarea id="commentArea"></textarea><br/>
-    <div id="dateChangeOverlay"><br/>Please select a new date.<br/><input type="button" id="cancelDateChangeButton" value="Cancel"></input></div>
+    <div class="dateChangeOverlay"><br/>Please select a new date.<br/><input type="button" id="cancelDateChangeButton" value="Cancel"></input></div>
   </div>
 </div></td></tr>
 </table>
