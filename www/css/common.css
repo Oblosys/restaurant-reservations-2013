@@ -88,6 +88,10 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
 }
 #description h2 {
   margin-top: 10px;
+  margin-bottom: 3px;
+}
+#description ul {
+  margin-top: 0px;
   margin-bottom: 6px;
 }
 
