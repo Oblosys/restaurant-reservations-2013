@@ -11,7 +11,6 @@ fi
 
 $runServer >> nodeServerOutput.txt 2>&1 &
 
-
 # Wait a bit and show initial output to see if the server actually started
 # (cannot use $? because background shell command always exits succesfully)
 sleep 0.3
