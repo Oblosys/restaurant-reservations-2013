@@ -1,3 +1,4 @@
-# Should be run from project root directory.
+# Run from project root directory.
+cd ~/svn/Oblomov/JavaScript/Reservations
 svn update && ./scripts/restartServer
 
