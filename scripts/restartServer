@@ -1,8 +1,16 @@
-# not suitable for multiple servers yet, since killall will kill all node servers
-killall node
+runServer="/usr/local/bin/node js/server.js"
 cd ~/svn/Oblomov/JavaScript/Reservations
 
-/usr/local/bin/node js/server.js >> nodeServerOutput.txt 2>&1 &
+pid=`ps -ef | grep "${runServer}" | grep -v grep | awk '{print $2}'`
+if [ -n "$pid" ]; then
+echo 'Server was running. Terminating process '$pid
+kill $pid
+else
+echo 'Server was not running'
+fi
+
+$runServer >> nodeServerOutput.txt 2>&1 &
+
 
 # Wait a bit and show initial output to see if the server actually started
 # (cannot use $? because background shell command always exits succesfully)
