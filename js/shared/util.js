@@ -1,7 +1,9 @@
 (function(exports){
-  if (typeof require == 'undefined') require = function() {};
-  // todo: how to do imports in imported modules? On client require is not defined 
-  var _ = require('underscore');
+  if (typeof window == 'undefined') {
+    var _ = require('underscore');
+  } else {  // NOTE: take care that corresponding modules are included in the embedding html page
+    var _ = window._;
+  }
 
   var debug = true; // set to false on deployment
   
