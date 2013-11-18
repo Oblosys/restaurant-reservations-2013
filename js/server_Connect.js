@@ -44,11 +44,10 @@ function postHandler(req, res) { // simply write post data to reservation.json
   req.on('end', function () {
       console.log('Received '+postData);
       fs.writeFile(modelFileName, postData, function (data) {
-        // what do we do here?
         var freshId = 'res-'+ globalCounter++;
         console.log('created id: '+freshId);
         res.writeHead(200, {'Content-Type': 'application/json'});
-        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
+        // TODO: header does not get set, probably causes the Firefox "not well-formed" complaint
         res.write('{"id": "'+freshId+'"}');
         res.end();
       });
@@ -63,10 +62,8 @@ function putHandler(req, res) { // simply write post data to reservation.json
   req.on('end', function () {
       console.log('Received '+postData);
       fs.writeFile(modelFileName, postData, function (data) {
-        // what do we do here?
-        var freshId = 'res-'+ globalCounter++;
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        // TODO: header does not get set, probably causes the firefox "not well-formed" complaint
+    	  res.writeHead(200, {'Content-Type': 'application/json'});
+        // TODO: header does not get set, probably causes the Firefox "not well-formed" complaint
         // no response means id stays the same
         res.end();
       });
