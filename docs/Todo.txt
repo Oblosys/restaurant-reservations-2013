@@ -16,6 +16,9 @@ function setSelectedYearMonth() {
     // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
 
 
+From index.html
+  <!-- Non-optimal lib imports, would rather use required also on client (doesn't play well with backbone and underscore though) -->
+
 
 
 
