@@ -21,19 +21,22 @@ genericServer.db.dbInfo.name = 'reservations_db';
 app = genericServer();
 
 
+/** Dummy type signature to prevent buggy Eclipse warnings 
+ * @type Dummy
+ */
 var someReservations =
-  [  [ { time:'20:00', name:'Nathan', nrOfPeople:2, comment:'Nathan says hi' }
-     , { time:'20:00', name:'Tommy', nrOfPeople:3, comment:'' }
-     , { time:'20:00', name:'Paul', nrOfPeople:2, comment:'' }
+  [  [ { time:'20:00', name:'Nathan',  nrOfPeople:2, comment:'Nathan says hi' }
+     , { time:'20:00', name:'Tommy',   nrOfPeople:3, comment:'' }
+     , { time:'20:00', name:'Paul',    nrOfPeople:2, comment:'' }
      , { time:'20:30', name:'Bridget', nrOfPeople:3, comment:'' }
-     , { time:'20:30', name:'Nicole', nrOfPeople:4, comment:'' }
-     , { time:'22:00', name:'Ann', nrOfPeople:8, comment:'' }
+     , { time:'20:30', name:'Nicole',  nrOfPeople:4, comment:'' }
+     , { time:'22:00', name:'Ann',     nrOfPeople:8, comment:'' }
      ]
    , [ { time:'21:00', name:'Charlie', nrOfPeople:8, comment:'Dinner at nine' } 
      ]
-   , [ { time:'20:00', name:'Frank', nrOfPeople:8, comment:'' } 
+   , [ { time:'20:00', name:'Frank',   nrOfPeople:8, comment:'' } 
      ]
-   , [ { time:'18:00', name:'Sam', nrOfPeople:3, comment:'Would like the special menu' } 
+   , [ { time:'18:00', name:'Sam',     nrOfPeople:3, comment:'Would like the special menu' } 
      ]
    , []
    ];
