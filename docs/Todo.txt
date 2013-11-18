@@ -1,3 +1,25 @@
+// from comments in calendar.js
+ * mention that Day propagates events from collection
+ * 
+ * mention selection
+ * 
+ * add  / remove
+ * why doesn't date change to next month not cause an addition in other calendar the views the next month?
+ * handle date change by remove/add? What if it is not inside the range? 
+
+// TODO: id reservationView + class res. view?  fix missing closing tag. use id for month.
+
+// TODO: handle reservations + handlers (note: maybe this has been done already)
+function setSelectedYearMonth() {
+
+    this.listenTo(selection, "change:day", this.renderSelection);
+    // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
+
+
+
+
+
+
 // fix nonexisting database
 // maybe turn off socket.io debug info
 

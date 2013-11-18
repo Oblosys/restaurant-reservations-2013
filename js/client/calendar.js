@@ -12,13 +12,6 @@
  * Each calendar cell (DayCellView) listens to its Day object, the list of reservations (DayView) listens to the
  * the selected Day object, and the reservation view (ReservationView) listens to the currently selected Reservation. 
  * 
- * mention that Day propagates events from collection
- * 
- * mention selection
- * 
- * add  / remove
- * why doesn't date change to next month not cause an addition in other calendar the views the next month?
- * handle date change by remove/add? What if it is not inside the range? 
  * */
 util.log('executing calendar.js');
 $(document).ready(function(){
@@ -28,7 +21,6 @@ $(document).ready(function(){
   }); 
 });
 
-// TODO: id reservationView + class res. view?  fix missing closing tag. use id for month.
 /***** Globals *****/
 
 var viewedReservations;
@@ -115,7 +107,7 @@ var DayCellView = Backbone.View.extend({
 
     this.listenTo(this.model, "change", this.render);
     this.listenTo(selection, "change:day", this.renderSelection);
-    // causes lot of events on selection (one to each cell), but is elegant. TODO: optimize single event? 
+    // causes lot of events on selection (one to each cell), but is elegant. 
   },
 
   renderSelection: function(selectionModel, newDay) {
@@ -377,7 +369,6 @@ function selectReservation(selectedReservation) {
     selection.set('reservation',selectedReservation);
 }
 
-// TODO: handle reservations + handlers (note: maybe this has been done already)
 function setSelectedYearMonth() {
   var yearMonth = selection.get('yearMonth');
   var currentYear =yearMonth.year;
@@ -422,7 +413,6 @@ function setSelectedYearMonth() {
   // after all reservations have been fetched, we select the day again to select the first reservation of the day.
 }
 
-// todo: set initial day + handle month jumps
 function monthKeyHandler(event) {
   util.log('monthKeyHandler');
   if (event.keyCode >= 37 && event.keyCode <= 40) {
