@@ -81,7 +81,7 @@ app.get('/query/restaurantInfo', function(req, res) {
   res.send(restaurantInfo);
 });
 app.get('/query/range', function(req, res) {
-  var allReservations = genericServer.db.getAllModels('reservation', {
+  genericServer.db.getAllModels('reservation', {
     success: function(allReservations) {
       // TODO: use sql select
       var startDate = util.readDate(req.query.start);
