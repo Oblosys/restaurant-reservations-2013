@@ -17,7 +17,7 @@ util.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
   $('#description').load("description.html", function() {
-    $('#description').slideDown();
+    $('#description').show();
   }); 
 });
 
