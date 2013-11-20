@@ -35,6 +35,11 @@ function createApplication() {
   app.use('/js', express.static(__dirname ));
   app.use(express.static(__dirname + '/../www'));
 //  app.use(express.logger());
+  app.use(function(req, res, next) { // logger only seems to report in GMT, so we log by hand
+    var now = new Date();
+    console.log('\nRQ: ' + util.showDate(now) + ' ' + util.showTime(now) + ' (' + req.ip + ', "' + req.headers['user-agent'].slice(0,20) + '..") path:' + req.path);
+    next();
+  });
   app.use(express.bodyParser());
 
   app.get('/model/:type/:id', function(req, res) {
