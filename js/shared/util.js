@@ -20,6 +20,11 @@
     return xs;
   }
 
+  // pad integer with leading 0's when necessary 
+  function padZero(l, n) {
+    return ('0000000000000000000000'+n).slice(-l);
+  }
+
   // depth is to prevent hanging on circular objects
   function showJSON(json,indent,depth) {
     indent = indent || '';
@@ -58,8 +63,12 @@
     return str;
   }
   
+  function showTime(date) {
+    return padZero(2, date.getHours()) + ':' + padZero(2, date.getMinutes()) + ':' + padZero(2, date.getSeconds());
+  }
+
   function showDate(date) {
-    return date.getDate() + '-' + (date.getMonth()+1) + '-' + date.getFullYear();
+    return padZero(2, date.getDate()) + '-' + padZero(2, date.getMonth()+1) + '-' + padZero(4, date.getFullYear());
   }
 
   function readDate(dateStr) {
@@ -81,8 +90,10 @@
 
   exports.debug = debug;
   exports.log = log;
+  exports.padZero = padZero;
   exports.replicate = replicate;
   exports.showJSON = showJSON;
+  exports.showTime = showTime;
   exports.showDate = showDate;
   exports.readDate = readDate;
   exports.setAttr = setAttr;
