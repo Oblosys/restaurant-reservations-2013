@@ -131,7 +131,7 @@ var server = genericServer.createServer(app);
 var io = socketIO.listen(server, { log: false });
 
 genericServer.db.onChange(function(){
-  util.log('Push refresh event');
+  //util.log('Push refresh event');
   io.sockets.emit('refresh', null);
 });
 
