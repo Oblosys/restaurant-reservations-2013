@@ -398,9 +398,11 @@ function setSelectedYearMonth() {
   // dates contains all dates that are visible in the calendar page for (currentMonth,currentYear)
   var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
 
+  var todayStr = util.showDate(new Date());
   $('.dayCell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
-    util.setAttr( $(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
+    util.setAttr($(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
+    util.setAttr($(this), 'is-today', util.showDate(dates[ix]) == todayStr);
   });
   
   for (var i=0; i<days.length; i++) {

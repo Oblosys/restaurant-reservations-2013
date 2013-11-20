@@ -66,6 +66,13 @@ body {
   border: solid 1px black;
   outline: solid 1px blue;
 }
+.dayCell[is-today] .dayNr {
+  font-weight: bold;
+  color: #c00;
+}
+.dayCell[is-today] {
+  background-color: #ccc;
+}
 .dayCell[selected]{
   background-color: #7af;
 }
