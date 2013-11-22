@@ -66,7 +66,7 @@ body {
   border: solid 1px black;
   outline: solid 1px blue;
 }
-.day-cell[is-today] .dayNr {
+.day-cell[is-today] .day-nr {
   font-weight: bold;
   color: #c00;
 }
@@ -76,10 +76,10 @@ body {
 .day-cell[selected]{
   background-color: #7af;
 }
-.day-cell:not([isCurrentMonth]){
+.day-cell:not([is-current-month]){
   color: #777;
 }
-.dayCellContent {
+.day-cell-content {
   padding-top: 4px;
   font-size: 85%;
   color: blue;
@@ -107,11 +107,11 @@ reservations-per-day-wrapper { /* need a wrapper for showing the overlay */
   border: solid 1px black;
   outline: solid 1px blue;
 }
-#reservations-per-day .reservationLine {
+#reservations-per-day .reservation-line {
   border-bottom: solid #999 1px;
   padding-left: 2px;
 }
-#reservations-per-day .reservationLine[selected]{
+#reservations-per-day .reservation-line[selected]{
   background-color: #7af;
 }
 
@@ -146,7 +146,7 @@ reservations-per-day-wrapper { /* need a wrapper for showing the overlay */
 .reservation-view .info {
   color: blue;
 }
-.reservation-view .commentView {
+.reservation-view .comment-view {
   padding: 2px;
   height: 60px;
   overflow: auto;

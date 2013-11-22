@@ -120,8 +120,8 @@ var DayCellView = Backbone.View.extend({
     var reservationsForCell = this.model.get('reservations');
     var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople');}, 0);
     
-    this.$el.html('<div class="dayNr">'+cellDate.getDate()+'</div>'+
-                 '<div class="dayCellContent">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
+    this.$el.html('<div class="day-nr">'+cellDate.getDate()+'</div>'+
+                 '<div class="day-cell-content">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
                  '</div>');
     return this;
   }
@@ -147,7 +147,7 @@ var DayView = Backbone.View.extend({
   renderSelection: function() {
     util.log('DayView.renderSelection');
     var newReservation = selection.get('reservation');
-    var $reservationLines = this.$('.reservationLine');
+    var $reservationLines = this.$('.reservation-line');
     var viewedDayReservations = this.model.get('reservations');
     for (var i=0; i<$reservationLines.length; i++) {
       var isSelected = viewedDayReservations.at(i) === newReservation;
@@ -163,9 +163,9 @@ var DayView = Backbone.View.extend({
     var reservationsForDay = this.model.get('reservations');
     $('#selected-day-label').text('Reservations for '+monthNames[date.getMonth()]+' '+date.getDate());
     var html = '';
-    reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
+    reservationsForDay.each(function(res){html += '<div class="reservation-line">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
     this.$el.find('#reservations-per-day').html(html);
-    this.$el.find('.reservationLine').each(function(ix) {
+    this.$el.find('.reservation-line').each(function(ix) {
       $(this).click( function() {
         selectReservation(reservationsForDay.models[ix]);
       });
@@ -266,7 +266,7 @@ var ReservationView = Backbone.View.extend({
     html += 'Name: <span class="info">'+name+'</span><br/>';
     html += 'Time: <span class="info">'+time+'</span><br/>';
     html += 'Nr. of people: <span class="info">'+nrOfPeople+'</span><br/>';
-    html += 'Comment:<br/><div class="commentView info">';
+    html += 'Comment:<br/><div class="comment-view info">';
     html += comment;
     html += '</div>';
     this.$(".non-editable > #reservation-pres").html(html);
@@ -401,7 +401,7 @@ function setSelectedYearMonth() {
   var todayStr = util.showDate(new Date());
   $('.day-cell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
-    util.setAttr($(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
+    util.setAttr($(this), 'is-current-month', dates[ix].getMonth() == currentMonth);
     util.setAttr($(this), 'is-today', util.showDate(dates[ix]) == todayStr);
   });
   
