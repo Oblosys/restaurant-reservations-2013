@@ -1,6 +1,3 @@
-High priority:
-change names from camel case to dashed
-
 
 // from comments in calendar.js
  * mention that Day propagates events from collection
