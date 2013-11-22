@@ -30,7 +30,7 @@ body {
   width: 100%;
   
 }
-#confirmButton {
+#confirm-button {
   width: 100%;
 }
 input[type=button] {
@@ -43,6 +43,6 @@ input[type=button][selected] {
   background-color: #04f;
   color: white;
 }
-.NameLine, .NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #comment-area {
+.name-line, .nr-of-people-buttons, .small-day-buttons, .time-buttons, #comment-area {
   margin-bottom: 4px;
 }

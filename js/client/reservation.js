@@ -70,8 +70,8 @@ function initialize() {
   });
   
   ////// Number of people
-  setLabelOn($('#nrOfPeopleLabel'), currentReservation, 'nrOfPeople','Number of people: ', 'Please select nr. of people.');
-  var $nrOfPeopleButtons = $('.NrOfPeopleButtons input');
+  setLabelOn($('#nr-of-people-label'), currentReservation, 'nrOfPeople','Number of people: ', 'Please select nr. of people.');
+  var $nrOfPeopleButtons = $('.nr-of-people-buttons input');
   $nrOfPeopleButtons.each(function(i) {
     var $button = $(this);
     currentReservation.on('change:nrOfPeople', function(r,newNrOfPeople) {
@@ -92,9 +92,8 @@ function initialize() {
   var weekDay = today.getDay(); // 0 is Sunday
   for (var d=0; d<6; d++)
     dateLabels.push(dayLabels[(d+weekDay+2)%7]);
-  var $dateButtons = $('.LargeDayButtons input,.SmallDayButtons input');
+  var $dateButtons = $('.large-day-buttons input,.small-day-buttons input');
   $dateButtons.each(function(i) {
-    
     $(this).attr('value', dateLabels[i]);
  
     var buttonDate = new Date(today);
@@ -111,14 +110,14 @@ function initialize() {
   });
   
   ////// Time
-  setLabelOn($('#timeLabel'), currentReservation, 'time','Time: ', 'Please select a time.');
+  setLabelOn($('#time-label'), currentReservation, 'time','Time: ', 'Please select a time.');
   var timeLabels = [];
   for (var hr=18; hr<25; hr++) {
     timeLabels.push(hr+':00');
     timeLabels.push(hr+':30');
   }
   
-  var $timeButtons = $('.TimeButtons input');
+  var $timeButtons = $('.time-buttons input');
   $timeButtons.each(function(i) {
     $(this).attr('value', timeLabels[i]);
    
@@ -224,7 +223,7 @@ function setLabelOn($label, model, prop, setMsg, unsetMsg) {
 
 function disenableConfirmButton() {
   //util.log('valid:'+isValidReservation(currentReservation));
-  document.getElementById('confirmButton').disabled = !isValidReservation(currentReservation);
+  document.getElementById('confirm-button').disabled = !isValidReservation(currentReservation);
 }
 
 /* can be called before buttons are set up, so needs to work correctly in that case */
@@ -242,7 +241,7 @@ function disenableTimeButtons() {
     nrOfPeopleAtTime[t] += res.get('nrOfPeople');
   });
   //util.log(nrOfPeopleAtTime);
-  var $timeButtons = $('.TimeButtons input');
+  var $timeButtons = $('.time-buttons input');
   $timeButtons.each(function() {
     var tm = $(this).val();
     if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.get('maxNrOfPeople'))

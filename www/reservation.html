@@ -20,16 +20,15 @@
 <td id="description-pane"><div id="wrapper"><div id="description"></div></div></td>
 <td id="reservations-pane">
 
-
 <table id="main" class="rounded-corners">
 <tr><td>
-  <table class="NameLine"><tr>
+  <table class="name-line"><tr>
     <td>Name:</td><td><td><input type="text" id="name-field"></input></td>
   </tr></table>
 </td></tr>
-<tr><td id="nrOfPeopleLabel">Please select nr. of people:</td></tr>
+<tr><td id="nr-of-people-label">Please select nr. of people:</td></tr>
 <tr><td>
-  <table class="NrOfPeopleButtons"><tr>
+  <table class="nr-of-people-buttons"><tr>
     <td><input type="button" value="1"></input></td>
     <td><input type="button" value="2"></input></td>
     <td><input type="button" value="3"></input></td>
@@ -42,13 +41,13 @@
 </td></tr>
 <tr><td id="date-label">Please select a date:</td></tr>
 <tr><td>
-  <table class="LargeDayButtons"><tr>
+  <table class="large-day-buttons"><tr>
     <td><input type="button" value="Today"></input></td>
     <td><input type="button" value="Today"></input></td>
   </tr></table>
 </td></tr>
 <tr><td>
-  <table class="SmallDayButtons"><tr>
+  <table class="small-day-buttons"><tr>
     <td><input type="button" value="0"></input></td>
     <td><input type="button" value="0"></input></td>
     <td><input type="button" value="0"></input></td>
@@ -57,9 +56,9 @@
     <td><input type="button" value="0"></input></td>
   </tr></table>
 </td></tr>
-<tr><td id="timeLabel">Please select a time:</td></tr>
+<tr><td id="time-label">Please select a time:</td></tr>
 <tr><td>
-  <table class="TimeButtons">
+  <table class="time-buttons">
     <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
     <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
     <tr> <td><input type="button" value="0"></input></td><td><input type="button" value="0"></input></td> </tr>
@@ -70,8 +69,9 @@
 </td></tr>
 <tr><td>Comments:</td></tr>
 <tr><td><textarea id="comment-area"></textarea></td></tr>
-<tr><td><input type="button" id="confirmButton" value="Confirm" onclick="confirmButton()" ></input></td></tr>
+<tr><td><input type="button" id="confirm-button" value="Confirm" onclick="confirmButton()" ></input></td></tr>
 </table>
+
 <br/>
 <div class="debug-buttons">
 <input type="button" onclick="testButton1()" value="Test 1 (update)"></input>
@@ -80,7 +80,6 @@
 <input type="button" onclick="testButton4()" value="Test 4 (fetch)"></input>
 <input type="button" onclick="refreshButton()" value="Refresh"></input>
 </div>
-
 </td></tr></table>
 
 <div id="log"></div>
