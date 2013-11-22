@@ -102,9 +102,9 @@ reservations-per-day-wrapper { /* need a wrapper for showing the overlay */
   height: 100px;
   overflow: auto;
   position: relative; /* need this for scrollMinimal to work */
+  border: solid 1px black;
 }
 #reservations-per-day:focus {
-  border: solid 1px black;
   outline: solid 1px blue;
 }
 #reservations-per-day .reservation-line {
