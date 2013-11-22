@@ -59,11 +59,14 @@ var Reservations = Backbone.Collection.extend({
 });
 
 var Day = Backbone.Model.extend({
-  defaults: {},
+  defaults: function() { // use closure, so we create a new Reservations model for each Day object
+    return {
+      reservations: new Reservations()
+    };
+  },
   initialize: function() {
-    var reservations = new Reservations();
-    this.set('reservations', reservations); // not in defaults, because then all days will share a single reservations collection 
-   
+    var reservations = this.get('reservations');
+
     // need to propagate all change events from reservations collection 
     var day = this;
     reservations.on('change', function() {/*util.log('change');*/ day.get('reservations').sort(); day.trigger('change');}); // child reservation change, propagated to collection  
