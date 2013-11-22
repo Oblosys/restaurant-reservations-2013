@@ -61,11 +61,11 @@ function initialize() {
   currentReservation = new Reservation();
   
   ////// Name 
-  $('#nameField').keyup(function() {
+  $('#name-field').keyup(function() {
     currentReservation.set('name', $(this).val());  
   });
   currentReservation.on('change:name', function(r,newName) {
-    $('#nameField').val(newName); // only triggers change event if value actually changed, so no loops will
+    $('#name-field').val(newName); // only triggers change event if value actually changed, so no loops will
                                   // occur, even if we bind the handler above to .changed
   });
   
@@ -85,7 +85,7 @@ function initialize() {
   });
 
   ////// Date
-  setLabelOn($('#dateLabel'), currentReservation, 'date','Date: ', 'Please select a date.');
+  setLabelOn($('#date-label'), currentReservation, 'date','Date: ', 'Please select a date.');
   var today = new Date();
   var dayLabels = ['Zo','Ma','Di','Wo','Do','Vr','Za'];
   var dateLabels = ['Today ('+util.showDate(today)+')','Tomorrow'];
@@ -180,7 +180,7 @@ function confirmButton() {
     // NOTE: make sure not to block this with an alert. On Firefox, if fetch success does not complete, the fetch 
     // network communication does not finish, and fetches in other open windows/tabs will not be executed.
     if (isValidReservation(currentReservation)) {
-      newReservation.set('comment', $('#commentArea').val()); // comment area is not kept in model, since it may stay empty
+      newReservation.set('comment', $('#comment-area').val()); // comment area is not kept in model, since it may stay empty
       newReservation.save({},{
         success: function(){
           alert('Your reservation for '+newReservation.get('nrOfPeople')+' person'+(newReservation.get('nrOfPeople')=='1' ? '' : 's')+

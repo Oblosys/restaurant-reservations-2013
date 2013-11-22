@@ -23,10 +23,10 @@ body {
   width: 100%;
 }
 
-#nameField {
+#name-field {
   width: 100%;
 }
-#commentArea {
+#comment-area {
   width: 100%;
   
 }
@@ -43,6 +43,6 @@ input[type=button][selected] {
   background-color: #04f;
   color: white;
 }
-.NameLine, .NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #commentArea {
+.NameLine, .NrOfPeopleButtons, .SmallDayButtons, .TimeButtons, #comment-area {
   margin-bottom: 4px;
 }

@@ -16,32 +16,32 @@ body {
 #calendar td { /* setting width on cells doesn't work if they also set padding */
 }
 
-.MonthSelectionBar {
+.month-selection-bar {
   width: 100%;
   margin-bottom: 3px;
 }
-.MonthSelectionBar input[type=button] {
+.month-selection-bar input[type=button] {
   width: 80px;
 }
-#monthLabel {
+#month-label {
   font-size: 140%;
   width: 100%;
   text-align: center;
 }
 
-.weekHeader {
+.week-header {
   background-color: #888;
   color: white;
   width: 100%;
 }
 
-.dayName {
+.day-name {
   height: 20px;
   color: black;
   background-color: white;
   text-align: center;
 }
-.dayName, .dayCell {
+.day-name, .day-cell {
   width: 52px;
 }
 
@@ -56,7 +56,7 @@ body {
 .week {
   display: table-row;
 }
-.dayCell {
+.day-cell {
   display: table-cell;
   height: 44px;
   border: solid 1px black;
@@ -66,17 +66,17 @@ body {
   border: solid 1px black;
   outline: solid 1px blue;
 }
-.dayCell[is-today] .dayNr {
+.day-cell[is-today] .dayNr {
   font-weight: bold;
   color: #c00;
 }
-.dayCell[is-today] {
+.day-cell[is-today] {
   background-color: #ccc;
 }
-.dayCell[selected]{
+.day-cell[selected]{
   background-color: #7af;
 }
-.dayCell:not([isCurrentMonth]){
+.day-cell:not([isCurrentMonth]){
   color: #777;
 }
 .dayCellContent {
@@ -85,74 +85,74 @@ body {
   color: blue;
 }
 
-#dayView {
+#day-view {
   position: relative; /* necessary for overlay filling entire width and height */   
 }
 
-#selectedDayLabel {
+#selected-day-label {
   margin-top: 7px;
   margin-bottom: 2px;
   font-size: 90%; 
 }
-#reservationsPerDayWrapper { /* need a wrapper for showing the overlay */
+reservations-per-day-wrapper { /* need a wrapper for showing the overlay */
   border: solid black 1px;
   position: relative; /* necessary for overlay filling entire width and height */   
 }
-#reservationsPerDay {
+#reservations-per-day {
   height: 100px;
   overflow: auto;
   position: relative; /* need this for scrollMinimal to work */
 }
-#reservationsPerDay:focus {
+#reservations-per-day:focus {
   border: solid 1px black;
   outline: solid 1px blue;
 }
-#reservationsPerDay .reservationLine {
+#reservations-per-day .reservationLine {
   border-bottom: solid #999 1px;
   padding-left: 2px;
 }
-#reservationsPerDay .reservationLine[selected]{
+#reservations-per-day .reservationLine[selected]{
   background-color: #7af;
 }
 
-.reservationView {
+.reservation-view {
   margin-top: 10px;
   padding: 2px;
   border: solid black 1px;
   background-color: #eee;
   font-size: 90%;
 }
-.reservationView .editable {
+.reservation-view .editable {
   display: none;      /* to prevent fields and selectors flashing by while building page */
   position: relative; /* necessary for overlay filling entire width and height */ 
 } 
-.reservationView input[type=button] {
+.reservation-view input[type=button] {
   float: right;
 }
-.reservationView #dateChangeButton { /* Don't float date change button */
+.reservation-view #date-change-button { /* Don't float date change button */
   float: none;
 }
-.reservationView #nameField {
+.reservation-view #name-field {
   width: 200px;
   margin-bottom: 4px;
 }
-.reservationView #commentLabel {
+.reservation-view #comment-label {
   margin-top: 4px;
 }
-.reservationView #commentArea {
+.reservation-view #comment-area {
   width: 100%;
   height: 60px;
 }
-.reservationView .info {
+.reservation-view .info {
   color: blue;
 }
-.reservationView .commentView {
+.reservation-view .commentView {
   padding: 2px;
   height: 60px;
   overflow: auto;
   border: solid black 1px;
 }
-.dateChangeOverlay {
+.date-change-overlay {
   display: none; /* is shown by ReservationsView.dateChange() */
   position:absolute;
   left: 0px;
@@ -163,7 +163,7 @@ body {
   z-index: 1000;
   text-align: center;
 }
-.reservationView .dateChangeOverlay input {
+.reservation-view .date-change-overlay input {
   margin-top:40px;
   float: none;  
 }

@@ -79,7 +79,7 @@ var Day = Backbone.Model.extend({
 // Calendar cells
 var DayCellView = Backbone.View.extend({
   tagName: "div",
-  className: "dayCell",
+  className: "day-cell",
 
   // Alternative way to bind click event. Harder to debug, since typos in handler do not cause errors.
   // Use only when many events are bound to different children of the view. 
@@ -99,7 +99,7 @@ var DayCellView = Backbone.View.extend({
         selectDay(dayIndex);    
         reservationView.stopDateChange();
         util.log('new date: '+selection.get('reservation').get('date'));
-        $('#dateLabel').text(newDate);
+        $('#date-label').text(newDate);
       }
       else
         selectDay(dayIndex);    
@@ -130,7 +130,7 @@ var DayCellView = Backbone.View.extend({
 //List of reservations for the selected day
 var DayView = Backbone.View.extend({  
   tagName: "div",
-  className: "dayView",
+  className: "day-view",
 
   initialize: function() {
     this.listenTo(selection, "change:day", function(selectionModel, newSelectedIndex){ this.setModel(days[newSelectedIndex]); });
@@ -153,24 +153,24 @@ var DayView = Backbone.View.extend({
       var isSelected = viewedDayReservations.at(i) === newReservation;
       util.setAttr($($reservationLines[i]), 'selected', isSelected );
       if (isSelected)
-        $('#reservationsPerDay').scrollMinimal($($reservationLines[i]));
+        $('#reservations-per-day').scrollMinimal($($reservationLines[i]));
     } 
     //util.log('DayView.renderSelection end');
   },
   render: function() {
-    util.log('rendering dayView');
+    util.log('rendering DayView');
     var date = this.model.get('date');
     var reservationsForDay = this.model.get('reservations');
-    $('#selectedDayLabel').text('Reservations for '+monthNames[date.getMonth()]+' '+date.getDate());
+    $('#selected-day-label').text('Reservations for '+monthNames[date.getMonth()]+' '+date.getDate());
     var html = '';
     reservationsForDay.each(function(res){html += '<div class="reservationLine">'+res.get("time")+' : '+res.get('name')+' ('+res.get('nrOfPeople')+')</div>';});
-    this.$el.find('#reservationsPerDay').html(html);
+    this.$el.find('#reservations-per-day').html(html);
     this.$el.find('.reservationLine').each(function(ix) {
       $(this).click( function() {
         selectReservation(reservationsForDay.models[ix]);
       });
     });
-    //util.log('end rendering dayView');
+    //util.log('end rendering DayView');
     this.renderSelection();
     return this;
   }
@@ -179,7 +179,7 @@ var DayView = Backbone.View.extend({
 // Selected reservation
 var ReservationView = Backbone.View.extend({
   tagName: "div",
-  className: "reservationView",
+  className: "reservation-view",
   
   isEditing: false,
   isChangingDate: false,
@@ -192,12 +192,12 @@ var ReservationView = Backbone.View.extend({
     });
         
     var view = this;
-    this.$('#deleteButton').click(function() {deleteReservation(view.model);});
-    this.$('#editButton').click(function() {view.startEditing();});
-    this.$('#cancelButton').click(function() {view.cancelEditing();});
-    this.$('#saveButton').click(function() {view.saveModel(); view.stopEditing();});
-    this.$('#dateChangeButton').click(function() {view.startDateChange();});
-    this.$('#cancelDateChangeButton').click(function() {view.stopDateChange();});
+    this.$('#delete-button').click(function() {deleteReservation(view.model);});
+    this.$('#edit-button').click(function() {view.startEditing();});
+    this.$('#cancel-button').click(function() {view.cancelEditing();});
+    this.$('#save-button').click(function() {view.saveModel(); view.stopEditing();});
+    this.$('#date-change-button').click(function() {view.startDateChange();});
+    this.$('#cancel-date-change-button').click(function() {view.stopDateChange();});
     this.render();
   },
   setModel: function(res) {
@@ -226,26 +226,26 @@ var ReservationView = Backbone.View.extend({
     this.render();
   },
   saveModel: function() {
-    this.model.set({ time: this.$('#timeSelector').val()   
-                   , date: this.$('#dateLabel').text()
-                   , name: this.$('#nameField').val()   
-                   , nrOfPeople: parseInt(this.$('#nrOfPeopleSelector').val())   
-                   , comment: this.$('#commentArea').val() });
+    this.model.set({ time: this.$('#time-selector').val()   
+                   , date: this.$('#date-label').text()
+                   , name: this.$('#name-field').val()   
+                   , nrOfPeople: parseInt(this.$('#nr-of-people-selector').val())   
+                   , comment: this.$('#comment-area').val() });
     this.model.save();
   },
   startDateChange: function() {
     // changing the date is done by the click handler for DayCellView
     this.isChangingDate = true; 
-    $('.dateChangeOverlay').show();
+    $('.date-change-overlay').show();
   },
   stopDateChange: function() {
     this.isChangingDate = false;
-    $('.dateChangeOverlay').hide();
+    $('.date-change-overlay').hide();
   },
   render: function() {
-    util.log('rendering reservationView');
+    util.log('rendering ReservationView');
     
-    this.$('.nonEditable').toggle(!this.isEditing); // show either .nonEditable
+    this.$('.non-editable').toggle(!this.isEditing); // show either .non-editable
     this.$('.editable').toggle(this.isEditing);   // or .editable
     
     var reservation = this.model; 
@@ -269,16 +269,16 @@ var ReservationView = Backbone.View.extend({
     html += 'Comment:<br/><div class="commentView info">';
     html += comment;
     html += '</div>';
-    this.$(".nonEditable > #reservationPres").html(html);
+    this.$(".non-editable > #reservation-pres").html(html);
     
-    this.$('#timeSelector').attr('value', time);
-    this.$('#dateLabel').text(date);
-    this.$('#nameField').attr('value', name);
-    this.$('#nrOfPeopleSelector').attr('value', nrOfPeople);
-    this.$('#commentArea').attr('value', comment);
+    this.$('#time-selector').attr('value', time);
+    this.$('#date-label').text(date);
+    this.$('#name-field').attr('value', name);
+    this.$('#nr-of-people-selector').attr('value', nrOfPeople);
+    this.$('#comment-area').attr('value', comment);
     
-    util.setAttr(this.$('#deleteButton'), 'disabled', !this.model); // disable if no reservation selected
-    util.setAttr(this.$('#editButton'), 'disabled', !this.model); // disable if no reservation selected
+    util.setAttr(this.$('#delete-button'), 'disabled', !this.model); // disable if no reservation selected
+    util.setAttr(this.$('#edit-button'), 'disabled', !this.model); // disable if no reservation selected
     return this;
   }
 });
@@ -290,18 +290,18 @@ function initialize() {
   selection = new Selection();
   
   // create dayCellViews
-  var dayElts = $('.dayCell').toArray();
+  var dayElts = $('.day-cell').toArray();
 
-  days = $('.dayCell').map(function(ix) {
-    $(this).attr('id','dayCell-'+ix);
+  days = $('.day-cell').map(function(ix) {
+    $(this).attr('id','day-cell-'+ix);
     var day = new Day({index: ix, date: new Date()});
     new DayCellView({model: day, el: dayElts[ix]}); // DayCellViews are not stored in a var, has not been necessary yet.
     return day;
   });
   
-  dayView = new DayView({el: document.getElementById('dayView')});
+  dayView = new DayView({el: document.getElementById('day-view')});
   
-  reservationView = new ReservationView({el: document.getElementById('reservationView')});
+  reservationView = new ReservationView({el: document.getElementById('reservation-view')});
   
   var today = new Date();
   //today = new Date(2013,7,4);
@@ -317,7 +317,7 @@ function initialize() {
   selectDay(dayDates.indexOf(util.showDate(today)));
   $(".month").focus();
   $(".month").keydown(monthKeyHandler);
-  $("#reservationsPerDay").keydown(reservationsPerDayKeyHandler);
+  $("#reservations-per-day").keydown(reservationsPerDayKeyHandler);
   initRefreshSocket();
 }
 
@@ -339,7 +339,7 @@ function refresh() {
 }
 
 function isNavigationAllowed() {
-  if (!(reservationView && reservationView.isChangingDate) &&reservationView && reservationView.isEditing ) {
+  if (!(reservationView && reservationView.isChangingDate) && reservationView && reservationView.isEditing ) {
     if (confirm('Save changes to reservation?')) {
       reservationView.saveModel();
       reservationView.stopEditing();
@@ -376,9 +376,9 @@ function setSelectedYearMonth() {
   while (viewedReservations.length) // remove all viewed reservations
     viewedReservations.pop();
 
-  $('#prevMonthButton').attr('value', monthNames[(new Date(currentYear,currentMonth-1,1)).getMonth()] );
-  $('#nextMonthButton').attr('value', monthNames[(new Date(currentYear,currentMonth+1,1)).getMonth()] );
-  $('#monthLabel').text(monthNames[yearMonth.month]+' '+yearMonth.year);
+  $('#prev-month-button').attr('value', monthNames[(new Date(currentYear,currentMonth-1,1)).getMonth()] );
+  $('#next-month-button').attr('value', monthNames[(new Date(currentYear,currentMonth+1,1)).getMonth()] );
+  $('#month-label').text(monthNames[yearMonth.month]+' '+yearMonth.year);
 
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
@@ -399,7 +399,7 @@ function setSelectedYearMonth() {
   var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
 
   var todayStr = util.showDate(new Date());
-  $('.dayCell').each(function(ix) {
+  $('.day-cell').each(function(ix) {
     $(this).attr('date', util.showDate(dates[ix]));
     util.setAttr($(this), 'isCurrentMonth', dates[ix].getMonth() == currentMonth);
     util.setAttr($(this), 'is-today', util.showDate(dates[ix]) == todayStr);

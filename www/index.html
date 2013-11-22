@@ -21,44 +21,44 @@
 
 <table id="calendar" class="rounded-corners">
 <tr><td>
-  <table class="MonthSelectionBar"><tr>
-    <td><input type="button" id="prevMonthButton" onClick="prevMonthButton()"></td><td id="monthLabel">Maand</td><td><input type="button" id="nextMonthButton" onClick="nextMonthButton()"></td>
+  <table class="month-selection-bar"><tr>
+    <td><input type="button" id="prev-month-button" onClick="prevMonthButton()"></td><td id="month-label">Maand</td><td><input type="button" id="next-month-button" onClick="nextMonthButton()"></td>
   </tr></table>
 </td></tr>
 <tr><td>
-  <table class="weekHeader">
-    <tr><td class="dayName">Mo</td><td class="dayName">Tu</td><td class="dayName">We</td><td class="dayName">Th</td><td class="dayName">Fr</td><td class="dayName">Sa</td><td class="dayName">Su</td></tr>
+  <table class="week-header">
+    <tr><td class="day-name">Mo</td><td class="day-name">Tu</td><td class="day-name">We</td><td class="day-name">Th</td><td class="day-name">Fr</td><td class="day-name">Sa</td><td class="day-name">Su</td></tr>
   </table>
 <div class="month" tabindex="0">
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
-<div class="week"><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div><div class="dayCell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
+<div class="week"><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div><div class="day-cell"></div></div>
 </div></td></tr>
-<tr><td><div id="dayView" class="dayView">
-  <div id="selectedDayLabel"></div>
-  <div id="reservationsPerDayWrapper">
-    <div id="reservationsPerDay" tabindex="0"></div>
-    <div class="dateChangeOverlay"></div>
+<tr><td><div id="day-view" class="day-view">
+  <div id="selected-day-label"></div>
+  <div id="reservations-per-day-wrapper">
+    <div id="reservations-per-day" tabindex="0"></div>
+    <div class="date-change-overlay"></div>
   </div>
 </div></td></tr>
-<tr><td><div id="reservationView" class="reservationView">
-  <div class="nonEditable">
-    <input type="button" id="editButton" value="Edit"></input><input type="button" id="deleteButton" value="Delete"></input>
-    <div id="reservationPres"></div> 
+<tr><td><div id="reservation-view" class="reservation-view">
+  <div class="non-editable">
+    <input type="button" id="edit-button" value="Edit"></input><input type="button" id="delete-button" value="Delete"></input>
+    <div id="reservation-pres"></div> 
   </div>
   <div class="editable">
-    <input type="button" id="saveButton" value="Save"></input><input type="button" id="cancelButton" value="Cancel"></input>
-    Name:<input type="text" id="nameField"></input><br/>
-    Date:&nbsp;<span id="dateLabel"></span>&nbsp;<input type="button" id="dateChangeButton" value="Change date"></input><br/>
-    Time: <select id="timeSelector"><option>18:00</option><option>18:30</option><option>19:00</option><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option><option>21:30</option><option>22:00</option><option>22:30</option><option>23:00</option><option>23:30</option></select>
-    &nbsp;Nr. of people: <select id="nrOfPeopleSelector"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+    <input type="button" id="save-button" value="Save"></input><input type="button" id="cancel-button" value="Cancel"></input>
+    Name:<input type="text" id="name-field"></input><br/>
+    Date:&nbsp;<span id="date-label"></span>&nbsp;<input type="button" id="date-change-button" value="Change date"></input><br/>
+    Time: <select id="time-selector"><option>18:00</option><option>18:30</option><option>19:00</option><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option><option>21:30</option><option>22:00</option><option>22:30</option><option>23:00</option><option>23:30</option></select>
+    &nbsp;Nr. of people: <select id="nr-of-people-selector"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
     <br/> 
-    <div id="commentLabel">Comment:<br/>
-    <textarea id="commentArea"></textarea><br/>
-    <div class="dateChangeOverlay"><br/>Please select a new date.<br/><input type="button" id="cancelDateChangeButton" value="Cancel"></input></div>
+    <div id="comment-label">Comment:</div><br/>
+    <textarea id="comment-area"></textarea><br/>
+    <div class="date-change-overlay"><br/>Please select a new date.<br/><input type="button" id="cancel-date-change-button" value="Cancel"></input></div>
   </div>
 </div></td></tr>
 </table>
