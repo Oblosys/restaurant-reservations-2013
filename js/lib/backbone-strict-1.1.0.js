@@ -81,6 +81,17 @@
     // Bind an event to a `callback` function. Passing `"all"` will bind
     // the callback to all events fired.
     on: function(name, callback, context) {
+      
+      if (name.indexOf("change:")!=-1) {
+        var key = name.substring(7);
+        console.log('Change event on key '+name.substring(7));
+        if (this._declared) // todo: what do we do if it's not declared? + add this to other _declared checks?
+          if (!_(this._declared).contains(key))
+            throw new Error('on: Undeclared attribute \''+key+'\'.');
+
+        console.log(this._declared);
+      }
+      
       if (!eventsApi(this, 'on', name, [callback, context]) || !callback) return this;
       this._events || (this._events = {});
       var events = this._events[name] || (this._events[name] = []);
@@ -251,6 +262,7 @@
     if (options.collection) this.collection = options.collection;
     if (options.parse) attrs = this.parse(attrs, options) || {};
     attrs = _.defaults({}, attrs, _.result(this, 'defaults'));
+    this._declared = Object.keys(attrs);
     this.set(attrs, options);
     this.changed = {};
     this.initialize.apply(this, arguments);
@@ -286,6 +298,8 @@
 
     // Get the value of an attribute.
     get: function(attr) {
+//      if (!_(this._declared).contains(attr))
+//        throw new Error('get: Undeclared attribute \''+attr+'\'.');
       return this.attributes[attr];
     },
 
@@ -297,6 +311,8 @@
     // Returns `true` if the attribute contains a value that is not null
     // or undefined.
     has: function(attr) {
+      if (!_(this._declared).contains(attr))
+        throw new Error('has: Undeclared attribute \''+attr+'\'.');
       return this.get(attr) != null;
     },
 
@@ -314,7 +330,14 @@
       } else {
         (attrs = {})[key] = val;
       }
-
+      
+      // TODO: what do we do when keys are deleted?
+      // TODO: how to throw errors? console.error is much nicer in JavaScript, but backbone uses throw new Error
+      //console.log('Setting keys '+Object.keys(attrs));
+      var undeclaredKeys = _.difference(Object.keys(attrs), this._declared);
+      if (undeclaredKeys.length > 0)
+        console.error('set: Undeclared attributes \''+undeclaredKeys+'\'.');
+      
       options || (options = {});
 
       // Run validation.
