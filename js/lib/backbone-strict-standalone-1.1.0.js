@@ -87,7 +87,8 @@
         console.log('Change event on key '+name.substring(7));
         if (this._declared) // todo: what do we do if it's not declared? + add this to other _declared checks?
           if (!_(this._declared).contains(key))
-            throw new Error('on: Undeclared attribute \''+key+'\'.');
+//            throw new Error('on: Undeclared attribute \''+key+'\'.');
+            console.error('on: Undeclared attribute \''+key+'\'.');
 
         console.log(this._declared);
       }
@@ -298,8 +299,9 @@
 
     // Get the value of an attribute.
     get: function(attr) {
-//      if (!_(this._declared).contains(attr))
+      if (!_(this._declared).contains(attr))
 //        throw new Error('get: Undeclared attribute \''+attr+'\'.');
+        console.error('get: Undeclared attribute \''+attr+'\'.');
       return this.attributes[attr];
     },
 
@@ -312,7 +314,8 @@
     // or undefined.
     has: function(attr) {
       if (!_(this._declared).contains(attr))
-        throw new Error('has: Undeclared attribute \''+attr+'\'.');
+//        throw new Error('has: Undeclared attribute \''+attr+'\'.');
+        console.error('has: Undeclared attribute \''+attr+'\'.');
       return this.get(attr) != null;
     },
 
@@ -336,6 +339,7 @@
       //console.log('Setting keys '+Object.keys(attrs));
       var undeclaredKeys = _.difference(Object.keys(attrs), this._declared);
       if (undeclaredKeys.length > 0)
+//        throw new Error('set: Undeclared attributes \''+undeclaredKeys+'\'.');
         console.error('set: Undeclared attributes \''+undeclaredKeys+'\'.');
       
       options || (options = {});
