@@ -202,10 +202,10 @@ function confirmButton() {
 /***** Utils *****/
 
 function isValidReservation(res) {
-  return _.isString(res.get('date'))       && res.get('date') !== '' &&
-         _.isString(res.get('time'))       && res.get('time') !== '' &&
-         _.isString(res.get('name'))       && res.get('name') !== '' &&
-         _.isNumber(res.get('nrOfPeople')) && res.get('nrOfPeople') !== 0;
+  return _.isString(res.get('date'))       && res.get('date') != '' &&
+         _.isString(res.get('time'))       && res.get('time') != '' &&
+         _.isString(res.get('name'))       && res.get('name') != '' &&
+         _.isNumber(res.get('nrOfPeople')) && res.get('nrOfPeople') != 0;
   // note: a !== '' means !_.isString(a) || a!='', so we need the isString explicitly
 }
 
