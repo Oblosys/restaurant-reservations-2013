@@ -1,6 +1,6 @@
 console.log('executing reservations.js');
 $(document).ready(function(){
-  initialize();
+  initialize2();
 });
 
 var Reservation = Backbone.Model.extend({
@@ -14,6 +14,7 @@ var Reservation = Backbone.Model.extend({
 
 var Day = Backbone.Model.extend({
   defaults: {
+    za: 'bla',
     name: 'name'
 //    reservation1 : new Reservation({name: 'Pino'}), 
 //    reservation2 : new Reservation({name: 'Tommie'}), 
@@ -40,7 +41,7 @@ var reservations = new Reservations();
 
 var reservation, reservation2;
 
-function initialize() {
+function initialize1() {
   day.get('reservations').on("add", refreshReservations);
   day.get('reservations').on("remove", refreshReservations);
 /*
@@ -74,6 +75,15 @@ function initialize() {
   
 //  console.log('data.get '+reservation.get('x'));
 }
+
+function initialize2() {
+  var m = new Day();
+  m.on('change:za', function() {util.log('change:za');});
+  m.on('change', function() {util.log('change');});
+  m.set('za','zazaza');
+  util.log('za: '+m.get('za'));
+}
+
 function saveCont(o,c) {
   o.save({ success: c() });
 }
