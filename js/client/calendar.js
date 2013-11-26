@@ -419,7 +419,7 @@ function setSelectedYearMonth() {
 }
 
 function monthKeyHandler(event) {
-  util.log('monthKeyHandler');
+  //util.log('monthKeyHandler');
   if (event.keyCode >= 37 && event.keyCode <= 40) {
     var selectedIndex = selection.get('day');
     //util.log('selectedIx: '+ selectedIx);
