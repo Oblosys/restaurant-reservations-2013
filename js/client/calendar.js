@@ -274,11 +274,11 @@ var ReservationView = Backbone.View.extend({
     html += '</div>';
     this.$(".non-editable > #reservation-pres").html(html);
     
-    this.$('#time-selector').attr('value', time);
+    this.$('#time-selector').val(time);
     this.$('#date-label').text(date);
-    this.$('#name-field').attr('value', name);
-    this.$('#nr-of-people-selector').attr('value', nrOfPeople);
-    this.$('#comment-area').attr('value', comment);
+    this.$('#name-field').val(name);
+    this.$('#nr-of-people-selector').val(nrOfPeople);
+    this.$('#comment-area').val(comment);
     
     util.setAttr(this.$('#delete-button'), 'disabled', !this.model); // disable if no reservation selected
     util.setAttr(this.$('#edit-button'), 'disabled', !this.model); // disable if no reservation selected
