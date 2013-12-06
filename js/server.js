@@ -96,6 +96,9 @@ app.get('/query/range', function(req, res) {
       });
       
       //util.log(reservationsInRange);
+      util.log('disabling cache');
+      res.setHeader("Expires", "-1");
+      res.setHeader("Cache-Control", "must-revalidate, private");
       res.send( reservationsInRange );},
       error: function(nr, msg) {
         util.log('ERROR: '+nr+': '+msg);
