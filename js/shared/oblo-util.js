@@ -1,9 +1,23 @@
-(function(util){
-  if (typeof window == 'undefined') {
-    var _ = require('underscore');
-  } else {  // NOTE: take care that corresponding modules are included in the embedding html page
-    var _ = window._;
+//     Oblo-util.js 0.1.0
+
+//     (c) 2013-2011 Martijn M. Schrage, Oblomomov Systems
+//     Oblo-util may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://....
+
+(function(util){ // use 'util' rather than the verbose 'oblo_util'
+  
+  
+  // Notes: basic modules, no active importing, mainly experiment for using npm also on client
+  // needs to be defined before we call it.
+  util.require = function(moduleName, clientModuleObject) {
+    if (typeof window == 'undefined') // on server
+      return require(moduleName);
+    else                              // on client, NOTE: we have to manually include the required module scripts in the HTML
+      return window[clientModuleObject ? clientModuleObject : moduleName];
   };
+
+  var _ = util.require('underscore', '_'); // underscore calls itself '_' on client
 
   util.debug = true; // set to false on deployment
   
@@ -88,7 +102,4 @@
       $elt.removeAttr(attrName);  
   };
 
-})(typeof exports == 'undefined' ? this.util={} : exports);
-// Module for loading by Node.js as well as browser.
-// Closure is to prevent declaring globals in browser.
-// in Browser, exports is bound to global util variable.
+})(typeof exports == 'undefined' ? this.util={} : exports); // pass exports if we're on the server, otherwise, create oblo-util
