@@ -8,7 +8,7 @@ var restaurantInfo = { maxNrOfPeople: 12 };
 var _ =             require('underscore')
   , Backbone =      require('backbone')
   , mysql =         require('mysql')
-  , util =          require('./shared/util.js')
+  , util =          require('./shared/oblo-util.js')
   , genericServer = require('./genericServer.js')
   , socketIO =      require('socket.io')
   , app;

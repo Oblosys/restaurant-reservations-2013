@@ -1,5 +1,5 @@
 var _        = require('underscore')
-  , util =     require('./shared/util.js');
+  , util =     require('./shared/oblo-util.js');
 
 var dbInfo = {}; // dummy object, not used for json database
 

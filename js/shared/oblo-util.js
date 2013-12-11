@@ -8,7 +8,7 @@
   util.debug = true; // set to false on deployment
   
   util.log = function(msg) {
-    if (util.debug)
+    if (util.debug && typeof console != 'undefined')
       console.log(msg);
   };
 

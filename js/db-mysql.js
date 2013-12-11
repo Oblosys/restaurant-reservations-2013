@@ -1,6 +1,6 @@
 var _        = require('underscore')
   , mysql    = require('mysql')
-  , util     = require('./shared/util.js');
+  , util     = require('./shared/oblo-util.js');
 
 var dbInfo = { // default values, override these in server module
     host     : 'localhost',
