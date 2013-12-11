@@ -99,7 +99,6 @@ function listen(server) {
   });
 }
 
-//todo: why module.exports?
 exports = module.exports = createApplication;
 exports.version = '0.1.0';
 exports.createServer = createServer;
