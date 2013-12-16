@@ -1,11 +1,11 @@
-//     Oblo-util.js 0.1.0
+//     oblo-util.js 0.1.0
 
 //     (c) 2013-2011 Martijn M. Schrage, Oblomomov Systems
 //     Oblo-util may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://....
+//     https://github.com/oblosys/oblo-util
 
-(function(util){ // use 'util' rather than the verbose 'oblo_util'
+(function(util){ // Cannot have '-' in name, so use 'util' rather than the verbose 'oblo_util'
   
   
   // Notes: basic modules, no active importing, mainly experiment for using npm also on client
