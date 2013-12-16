@@ -10,16 +10,16 @@
   
   // Notes: basic modules, no active importing, mainly experiment for using npm also on client
   // needs to be defined before we call it.
-  util.require = function(moduleName, clientModuleObject) {
-    if (typeof window == 'undefined') // on server
-      return require(moduleName);
-    else                              // on client, NOTE: we have to manually include the required module scripts in the HTML
+  
+  if (typeof window != 'undefined') // on client, NOTE: we have to manually include the required module scripts in the HTML
+    window.require = function(moduleName, clientModuleObject) {
       return window[clientModuleObject ? clientModuleObject : moduleName];
-  };
+    };
+    
 
-  var _ = util.require('underscore', '_'); // underscore calls itself '_' on client
+  var _ = require('underscore', '_'); // underscore calls itself '_' on client
 
-  util.debug = true; // set to false on deployment
+  util.debug = true; // set this to false on deployment
   
   util.log = function(msg) {
     if (util.debug && typeof console != 'undefined')
