@@ -11,7 +11,7 @@ var portNr = process.argv[2] || 8200
   , Backbone = require('backbone')
   , db       = require('./db-mysql')
 //  , db       = require('./db-json')  // when using json, make sure to do a /reset to fill the database
-  , util     = require('./shared/oblo-util.js')
+  , util     = require('oblo-util')
   , app;
 
 function writeError(res, nr, msg) {
