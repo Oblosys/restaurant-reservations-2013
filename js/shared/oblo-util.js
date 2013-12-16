@@ -10,10 +10,10 @@
   
   // Notes: basic modules, no active importing, mainly experiment for using npm also on client
   // needs to be defined before we call it.
-  
+  // NOTE: on client, use last elt of path for oject ref, goes wrong with -'s in name.., so need to specify it in that case
   if (typeof window != 'undefined') // on client, NOTE: we have to manually include the required module scripts in the HTML
     window.require = function(moduleName, clientModuleObject) {
-      return window[clientModuleObject ? clientModuleObject : moduleName];
+      return window[clientModuleObject ? clientModuleObject : moduleName.split('/').pop()];
     };
     
 
