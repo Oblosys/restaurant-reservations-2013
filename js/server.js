@@ -9,6 +9,7 @@ var _ =             require('underscore')
   , Backbone =      require('backbone')
   , mysql =         require('mysql')
   , util =          require('./shared/oblo-util.js')
+  , config =        require('./shared/config.js')
   , genericServer = require('./genericServer.js')
   , socketIO =      require('socket.io')
   , app;
