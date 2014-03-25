@@ -1,5 +1,5 @@
 runServer="/usr/local/bin/node js/server.js"
-cd ~/svn/Oblomov/JavaScript/Reservations
+cd ~/git/restaurant-reservations
 
 pid=`ps -ef | grep "${runServer}" | grep -v grep | awk '{print $2}'`
 if [ -n "$pid" ]; then
@@ -18,5 +18,7 @@ echo -------- Showing server output tail: --------
 tail nodeServerOutput.txt
 echo --------- End of server output tail ---------
 echo
+echo NOTE: ECONNREFUSED may indicate MySQL server is not running
+echo
 # when put in crontab, use:
-#    @reboot ~/svn/Oblomov/JavaScript/Reservations/scripts/restartServer >/dev/null 2>&1
+#    @reboot ~/git/restaurant-reservations/scripts/restartServer >/dev/null 2>&1

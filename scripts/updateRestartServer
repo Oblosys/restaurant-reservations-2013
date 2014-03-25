@@ -1,4 +1,3 @@
-# Run from project root directory.
-cd ~/svn/Oblomov/JavaScript/Reservations
-svn update && ./scripts/restartServer
+cd ~/git/restaurant-reservations
+git pull && ./scripts/restartServer
 
