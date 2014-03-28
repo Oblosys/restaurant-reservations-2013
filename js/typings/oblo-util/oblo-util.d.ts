@@ -1,5 +1,6 @@
 // Type definitions for oblo-util 0.2.0
 // Definitions by: Martijn Schrage <https://github.com/Oblosys/>
+/// <reference path="../jquery/jquery.d.ts" />
 
 
 interface ObloUtilStatic {
@@ -14,7 +15,7 @@ interface ObloUtilStatic {
   showTime(date : Date) : string;
   showDate(date : Date) : string;
   readDate(dateStr : string) : Date;
-  setAttr($elt, attrName : string, isSet : boolean) : void; // TODO: type JQuery parameter
+  setAttr($elt : JQuery, attrName : string, isSet : boolean) : void;
 }
 
 declare var util: ObloUtilStatic;
