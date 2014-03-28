@@ -1,7 +1,7 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
 /// <reference path="../typings/backbone/backbone.d.ts" />
 /// <reference path="../typings/underscore/underscore.d.ts" />
-/// <reference path="../typings/socket.io/socket.io.d.ts" />
+/// <reference path="../typings/socket.io-client.d.ts" />
 /// <reference path="../typings/oblo-util/oblo-util.d.ts" />
 
 util.log('executing reservationTS.js');
@@ -156,8 +156,9 @@ function initialize() {
 
 /* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
  * but triggers a backbone fetch. */
+
 function initRefreshSocket() {
-  var socket = socket.io.connect('http://'+location.host);
+  var socket = io.connect('http://'+location.host);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
     refresh();
