@@ -16,7 +16,7 @@ $(document).ready(function() {
 /***** Globals *****/
 
 
-var restaurantInfo : Backbone.Model;
+var restaurantInfo : RestaurantInfo;
 
 var reservationsThisWeek : Backbone.Collection;
 
@@ -25,31 +25,43 @@ var currentReservation : Backbone.Model;
 
 /***** Backbone models *****/
 
-var RestaurantInfo =  Backbone.Model.extend({
-  defaults: { 
-    maxNrOfPeople: 0
-  },
-  urlRoot: 'query/restaurantInfo'
-});
 
-var Reservation = Backbone.Model.extend({
-  defaults: {
-    date: '',
-    time: '',
-    name: '',
-    nrOfPeople: 0,
-    comment: ''
-  },
-  initialize: function() {
+class RestaurantInfo extends Backbone.Model {
+  constructor() { 
+    super();
+    this.maxNrOfPeople = 0;
+    this.urlRoot = 'query/restaurantInfo';
+  }
+  get maxNrOfPeople() : number { return this.get('maxNrOfPeople'); }
+  set maxNrOfPeople(value : number) { this.set('maxNrOfPeople', value); }
+}
+
+class Reservation extends Backbone.Model {
+  constructor() { 
+    super();
+    this.urlRoot = '/model/reservation';
+    this.date = '';
+    this.time = '';
+    this.name = '';
+    this.nrOfPeople = 0;
+    this.comment = '';
     this.on("change", disenableConfirmButton);
-  },
-  urlRoot: '/model/reservation'
-});
+  }
+  get date() : string      { return this.get('date'); }
+  set date(value : string) { this.set('date', value); }
+  get time() : string      { return this.get('time'); }
+  set time(value : string) { this.set('time', value); }
+  get name() : string      { return this.get('name'); }
+  set name(value : string) { this.set('name', value); }
+  get nrOfPeople() : number      { return this.get('nrOfPeople'); }
+  set nrOfPeople(value : number) { this.set('nrOfPeople', value); }
+  get comment() : string      { return this.get('comment'); }
+  set comment(value : string) { this.set('comment', value); }
+}
 
-var Reservations = Backbone.Collection.extend({
-  model: Reservation,
-  url: ''
-});
+class Reservations extends Backbone.Collection {
+  model: Reservation
+}
 
 
 /***** Init ****/
@@ -227,7 +239,7 @@ function setLabelOn($label : JQuery, model : Backbone.Model, prop : string, setM
 /***** Disenabling *****/
 
 function disenableConfirmButton() {
-  //util.log('valid:'+isValidReservation(currentReservation));
+  util.log('valid:'+isValidReservation(currentReservation));
   document.getElementById('confirm-button').disabled = !isValidReservation(currentReservation);
 }
 
@@ -249,7 +261,7 @@ function disenableTimeButtons() {
   var $timeButtons = $('.time-buttons input');
   $timeButtons.each(function() {
     var tm : string = $(this).val();
-    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.get('maxNrOfPeople'))
+    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.maxNrOfPeople)
       util.setAttr($(this), 'disabled', false);
     else {
       util.setAttr($(this), 'disabled', true);
