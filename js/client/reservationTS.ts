@@ -100,7 +100,7 @@ function initialize() {
   $dateButtons.each(function(i) {
     $(this).attr('value', dateLabels[i]);
  
-    var buttonDate = new Date(today);
+    var buttonDate = new Date(today.getTime());
     buttonDate.setDate( today.getDate() + i );
     var $button = $(this);
     currentReservation.on('change:date', function(r,newDate) {
@@ -135,7 +135,7 @@ function initialize() {
   });
   
   reservationsThisWeek = new Reservations();
-  var lastDay = new Date(today); 
+  var lastDay = new Date(today.getTime()); 
   // Just assume first day is today, even it's midnight and a new day starts while making the reservation
   
   lastDay.setDate( today.getDate() + 7);
