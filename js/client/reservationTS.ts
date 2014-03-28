@@ -16,11 +16,11 @@ $(document).ready(function() {
 /***** Globals *****/
 
 
-var restaurantInfo;
+var restaurantInfo : Backbone.Model;
 
-var reservationsThisWeek;
+var reservationsThisWeek : Backbone.Collection;
 
-var currentReservation;
+var currentReservation : Backbone.Model;
 
 
 /***** Backbone models *****/
@@ -115,7 +115,7 @@ function initialize() {
   
   ////// Time
   setLabelOn($('#time-label'), currentReservation, 'time','Time: ', 'Please select a time.');
-  var timeLabels = [];
+  var timeLabels : string[] = [];
   for (var hr=18; hr<25; hr++) {
     timeLabels.push(hr+':00');
     timeLabels.push(hr+':30');
@@ -206,7 +206,7 @@ function confirmButton() {
 
 /***** Utils *****/
 
-function isValidReservation(res) {
+function isValidReservation(res : Backbone.Model) {
   return _.isString(res.get('date'))       && res.get('date') != '' &&
          _.isString(res.get('time'))       && res.get('time') != '' &&
          _.isString(res.get('name'))       && res.get('name') != '' &&
@@ -214,7 +214,7 @@ function isValidReservation(res) {
   // note: a !== '' means !_.isString(a) || a!='', so we need the isString explicitly
 }
 
-function setLabelOn($label, model, prop, setMsg, unsetMsg) {
+function setLabelOn($label : JQuery, model : Backbone.Model, prop : string, setMsg : string, unsetMsg : string) {
   model.on('change:'+prop, function(r,newVal) { 
   if (newVal)
     $label.text(setMsg+newVal);
@@ -234,13 +234,13 @@ function disenableConfirmButton() {
 /* can be called before buttons are set up, so needs to work correctly in that case */
 function disenableTimeButtons() {
   util.log('disenableTimeButtons');
-  var curDate = currentReservation.get('date');
-  var curTime = currentReservation.get('time');
-  var curNr = currentReservation.get('nrOfPeople');
+  var curDate : string = currentReservation.get('date');
+  var curTime : string = currentReservation.get('time');
+  var curNr : number = currentReservation.get('nrOfPeople');
   var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
-  var nrOfPeopleAtTime = [];
+  var nrOfPeopleAtTime : number[] = [];
   _.each(ressForDate, function(res : Backbone.Model){
-    var t = res.get('time');
+    var t : string = res.get('time');
     if (!nrOfPeopleAtTime[t])
       nrOfPeopleAtTime[t] = 0;
     nrOfPeopleAtTime[t] += res.get('nrOfPeople');
@@ -248,7 +248,7 @@ function disenableTimeButtons() {
   //util.log(nrOfPeopleAtTime);
   var $timeButtons = $('.time-buttons input');
   $timeButtons.each(function() {
-    var tm = $(this).val();
+    var tm : string = $(this).val();
     if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.get('maxNrOfPeople'))
       util.setAttr($(this), 'disabled', false);
     else {
