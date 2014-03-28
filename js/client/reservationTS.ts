@@ -239,7 +239,7 @@ function disenableTimeButtons() {
   var curNr = currentReservation.get('nrOfPeople');
   var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
   var nrOfPeopleAtTime = [];
-  _.each(ressForDate, function(res){
+  _.each(ressForDate, function(res : Backbone.Model){
     var t = res.get('time');
     if (!nrOfPeopleAtTime[t])
       nrOfPeopleAtTime[t] = 0;
