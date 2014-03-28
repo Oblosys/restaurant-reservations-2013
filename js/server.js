@@ -15,10 +15,15 @@ var _ =             require('underscore')
 
 require('./shared/config.js');
 
+genericServer.db.dbInfo.host = 'localhost';
+genericServer.db.dbInfo.user = 'root';
+genericServer.db.dbInfo.password = 'noneshallpass';
+genericServer.db.dbInfo.name = 'reservations_db';
+
 app = genericServer();
 
 
-/** Dummy type signature to prevent buggy Eclipse warnings
+/** Dummy type signature to prevent buggy Eclipse warnings 
  * @type Dummy
  */
 var someReservations =
@@ -29,11 +34,11 @@ var someReservations =
      , { time:'20:30', name:'Nicole',  nrOfPeople:4, comment:'' }
      , { time:'22:00', name:'Ann',     nrOfPeople:8, comment:'' }
      ]
-   , [ { time:'21:00', name:'Charlie', nrOfPeople:8, comment:'Dinner at nine' }
+   , [ { time:'21:00', name:'Charlie', nrOfPeople:8, comment:'Dinner at nine' } 
      ]
-   , [ { time:'20:00', name:'Frank',   nrOfPeople:8, comment:'' }
+   , [ { time:'20:00', name:'Frank',   nrOfPeople:8, comment:'' } 
      ]
-   , [ { time:'18:00', name:'Sam',     nrOfPeople:3, comment:'Would like the special menu' }
+   , [ { time:'18:00', name:'Sam',     nrOfPeople:3, comment:'Would like the special menu' } 
      ]
    , []
    ];
@@ -69,15 +74,15 @@ function initDb() {
           util.log('ERROR: '+nr+': '+msg);
         }
       });
-    }
-  });
+    }    
+  });  
 }
 
-app.get('/reset', function(req, res) {
+app.get('/reset', function(req, res) {  
   initDb();
   res.send('Database was filled with initial values.');
 });
-app.get('/query/restaurantInfo', function(req, res) {
+app.get('/query/restaurantInfo', function(req, res) {  
   res.send(restaurantInfo);
 });
 app.get('/query/range', function(req, res) {
@@ -87,11 +92,16 @@ app.get('/query/range', function(req, res) {
       var startDate = util.readDate(req.query.start);
       var endDate = util.readDate(req.query.end);
       util.log('Returning reservations between '+ startDate + ' and ' + endDate);
-      var reservationsInRange = _.filter(allReservations, function(reservation) {
-        var date = util.readDate(reservation.date);
-        return date >= startDate && date <= endDate;
+      var reservationsInRange = _.filter(allReservations, function(reservation) { 
+        try {
+          var date = util.readDate(reservation.date);
+          return date >= startDate && date <= endDate;
+        } catch(err) {
+          util.log("Incorrect date in reservation " + JSON.stringify(reservation) + ":\n" + err);
+          return false;
+        }
       });
-
+      
       //util.log(reservationsInRange);
       util.log('disabling cache');
       res.setHeader("Expires", "-1");
@@ -113,7 +123,7 @@ function testSql() {
 
   connection.connect();
   connection.query('USE Hello');
-
+  
   // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
   // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
   var queryStr = 'SELECT * FROM rel WHERE Identifier=3';
