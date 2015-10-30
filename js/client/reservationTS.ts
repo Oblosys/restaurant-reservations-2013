@@ -18,9 +18,9 @@ $(document).ready(function() {
 
 var restaurantInfo : RestaurantInfo;
 
-var reservationsThisWeek : Backbone.Collection;
+var reservationsThisWeek : Reservations;
 
-var currentReservation : Backbone.Model;
+var currentReservation : Reservation;
 
 
 /***** Backbone models *****/
@@ -36,16 +36,24 @@ class RestaurantInfo extends Backbone.Model {
   set maxNrOfPeople(value : number) { this.set('maxNrOfPeople', value); }
 }
 
+// todo: check if this works with subclassed backbone models
+interface ReservationProps  { date? : string; time? : string; name? : string; nrofPeople? : number; comment? : string }
 class Reservation extends Backbone.Model {
-  constructor() { 
-    super();
+  constructor(options? : ReservationProps) { 
+    super(options); // super takes care of setting backbone attributes
+    util.log('Constructing Reservation with options '+JSON.stringify(options)+' this '+JSON.stringify(this) );
+    _.defaults(this, this.defaults);
+    console.log('After setting defaults: ' + JSON.stringify(this.defaults)+ JSON.stringify(this));
+
     this.urlRoot = '/model/reservation';
-    this.date = '';
-    this.time = '';
-    this.name = '';
-    this.nrOfPeople = 0;
-    this.comment = '';
     this.on("change", disenableConfirmButton);
+  }
+  defaults : ReservationProps = {
+    datee: '',
+    time: '',
+    name: '',
+    nrOfPeople: 3,
+    comment: ''
   }
   get date() : string      { return this.get('date'); }
   set date(value : string) { this.set('date', value); }
@@ -57,12 +65,28 @@ class Reservation extends Backbone.Model {
   set nrOfPeople(value : number) { this.set('nrOfPeople', value); }
   get comment() : string      { return this.get('comment'); }
   set comment(value : string) { this.set('comment', value); }
+  prop: string = "xx" // for testing
 }
 
 class Reservations extends Backbone.Collection {
-  model: Reservation
-}
+  constructor(options?) {
+    util.log('initing Reservations ');
+   // this.model = Reservation;
+    super(options);
+  }
 
+  get model() { 
+        return Reservation;
+  }
+  //model: Reservation;
+}
+//Reservations.prototype.model = Reservation;
+/*
+var Reservations = Backbone.Collection.extend({
+  model: Reservation,
+  url: ''
+});
+*/
 
 /***** Init ****/
 
@@ -75,10 +99,10 @@ function initialize() {
   }});
 
   currentReservation = new Reservation();
-  
+  util.log(JSON.stringify(currentReservation));
   ////// Name 
   $('#name-field').keyup(function() {
-    currentReservation.set('name', $(this).val());  
+    currentReservation.name = $(this).val();  
   });
   currentReservation.on('change:name', function(r,newName) {
     $('#name-field').val(newName); // only triggers change event if value actually changed, so no loops will
@@ -96,7 +120,7 @@ function initialize() {
     });
 
     $(this).click(function() {
-      currentReservation.set('nrOfPeople', i+1);
+      currentReservation.nrOfPeople = i+1;
     });
   });
 
@@ -121,7 +145,7 @@ function initialize() {
     });
     
     $(this).click(function() {
-      currentReservation.set('date', util.showDate(buttonDate));
+      currentReservation.date = util.showDate(buttonDate);
     });
   });
   
@@ -142,7 +166,7 @@ function initialize() {
       util.setAttr($button, 'selected', newTime == timeLabels[i]);
     });
     $(this).click(function() {
-      currentReservation.set('time', timeLabels[i]);
+      currentReservation.time = timeLabels[i];
     });
   });
   
@@ -246,12 +270,14 @@ function disenableConfirmButton() {
 /* can be called before buttons are set up, so needs to work correctly in that case */
 function disenableTimeButtons() {
   util.log('disenableTimeButtons');
-  var curDate : string = currentReservation.get('date');
-  var curTime : string = currentReservation.get('time');
-  var curNr : number = currentReservation.get('nrOfPeople');
-  var ressForDate = reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
+  var curDate = currentReservation.date;
+  var curTime = currentReservation.time;
+  var curNr = currentReservation.nrOfPeople;
+  // need a <Reservation[]> cast since Backbone is not typed strongly enough
+  var ressForDate = <Reservation[]>reservationsThisWeek.where({date: curDate}); // date=='' yields empty ressForDate
   var nrOfPeopleAtTime : number[] = [];
-  _.each(ressForDate, function(res : Backbone.Model){
+  /*_.each(ressForDate, function(res){
+    util.log('Res: '+res.get('name') + res.prop);
     var t : string = res.get('time');
     if (!nrOfPeopleAtTime[t])
       nrOfPeopleAtTime[t] = 0;
@@ -268,7 +294,24 @@ function disenableTimeButtons() {
       if (curTime==tm)
         currentReservation.set('time','');
     }
+  });*/_.each(ressForDate, function(res){
+    var t : string = res.time;
+    if (!nrOfPeopleAtTime[t])
+      nrOfPeopleAtTime[t] = 0;
+    nrOfPeopleAtTime[t] += res.nrOfPeople;
   });
+  //util.log(nrOfPeopleAtTime);
+  var $timeButtons = $('.time-buttons input');
+  $timeButtons.each(function() {
+    var tm : string = $(this).val();
+    if (!nrOfPeopleAtTime[tm] || nrOfPeopleAtTime[tm] + curNr <= restaurantInfo.maxNrOfPeople)
+      util.setAttr($(this), 'disabled', false);
+    else {
+      util.setAttr($(this), 'disabled', true);
+      if (curTime==tm)
+        currentReservation.time = '';
+    }
+  });/**/
 }
 
 
