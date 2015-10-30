@@ -4,4 +4,4 @@
 
 util = require('oblo-util', 'util');
 
-util.debug = true;
+util.debug = false;

@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 .debug-buttons {
-  /*display: none;*/
+  display: none;
 }
 table {
   font: inherit; color: inherit; /* for some weird reason tables don't inherit font and color by default */
@@ -20,7 +20,7 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
 }
 
 .rounded-corners {
-  border:solid; 
+  border:solid;
   border-width:2px;
   margin: 0px 0px 0px 0px;
   /* Rounded corner stuff starts here */
@@ -38,8 +38,8 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   margin-top:4px;
   padding-top: 4px;
   padding-bottom: 2px;
-  border-top: solid black 1px; 
-  border-bottom: solid black 1px; 
+  border-top: solid black 1px;
+  border-bottom: solid black 1px;
 }
 #menu > a {
   text-align: center;
@@ -52,7 +52,7 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
 }
 #menu > #copyright { /* Include parent to make it more specific than rule above */
   float: right;
-  padding-top: 2px; 
+  padding-top: 2px;
   padding-right: 10px;
   font-size: 13px;
   color: #eee;
@@ -67,8 +67,8 @@ textarea, input[type=text] { /* otherwise layout in tables is incorrect */
   vertical-align: top;
   padding: 0px 10px 0px 30px;
  }
-#wrapper { 
-/* Since setting width on td does not work when one td has width 100%, we need to set the width on a 
+#wrapper {
+/* Since setting width on td does not work when one td has width 100%, we need to set the width on a
    child, and since description will be hidden at the start we need a wrapper */
   width: 500px;
 }
