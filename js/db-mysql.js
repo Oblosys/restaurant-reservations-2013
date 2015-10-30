@@ -1,13 +1,22 @@
 var _        = require('underscore')
   , mysql    = require('mysql')
-  , util     = require('oblo-util');
+  , util     = require('oblo-util')
+  , process  = require('process')
+  , fs       = require('fs');
 
-var dbInfo = { // default values, override these in server module
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    name     : 'nodeserver_db'
-};
+dbConfigPath = './dbConfig.json';
+
+var dbInfo;
+try {
+  var dbInfo = JSON.parse(fs.readFileSync(dbConfigPath, 'UTF-8'));
+  if (!dbInfo.host || !dbInfo.user || !dbInfo.password || !dbInfo.name) {
+    throw new Error('JSON config object should have "host", "user", "password", and "name" properties.');
+  }
+} catch (e) {
+  console.error('Could not read database config at '+dbConfigPath+':');
+  console.error(e);
+  process.exit(1)
+}
 
 var changeHandler = null;
 
@@ -76,7 +85,7 @@ function resetDb(cont) {
   c.query('DROP TABLE IF EXISTS reservation', function(err, result) {
     //util.log('dropped');
     if (err) throw err;
-    
+
     c.query('CREATE TABLE reservation (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),name VARCHAR(20), nrOfPeople SMALLINT, date VARCHAR(10), time VARCHAR(5), comment VARCHAR(200));', function(err, result) {
       //util.log('created');
       if (err) throw err;
@@ -91,7 +100,7 @@ function resetDb(cont) {
 
 function getAllModels(type, cont) {
   var c = connectAndUse();
-  
+
   // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
   // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
   var queryStr = 'SELECT * FROM '+type;
@@ -99,7 +108,7 @@ function getAllModels(type, cont) {
     if (err) throw err;
     util.log('SQL output for '+queryStr+' ('+rows.length+' lines)');
     cont.success(rows);
-  });  
+  });
   c.end();
 }
 // todo: incorrect id for read does not call error
@@ -108,8 +117,8 @@ function getAllModels(type, cont) {
 function readModel(type, id, cont) {
   console.log('\nREAD: type:'+type+' id:'+id);
   var c = connectAndUse();
-  
-  checkTableExistence(c, type, 
+
+  checkTableExistence(c, type,
       function(){
         // NOTE: use connection.escape for user-provided data to prevent SQL injection attacks, or use '?' (does it automatically)
         // connection.query('SELECT * FROM users WHERE id = ?', [userId], function(err, results) {
@@ -125,7 +134,7 @@ function readModel(type, id, cont) {
           else
             cont.error(500,'Multiple ids: '+id+' for type \''+type+'\''); // won't occur, because of PRIMARY KEY constraint
           c.end();
-        });      
+        });
       },
       function(){
         cont.error(404,'Unknown type \''+type+'\'');
@@ -137,10 +146,10 @@ function readModel(type, id, cont) {
 function createModel(type, newModel, cont) {
   console.log('\nCREATE: type:'+type);
   console.log('content: '+JSON.stringify(newModel));
-  
+
   var c = connectAndUse();
-  
-  checkTableExistence(c, type, 
+
+  checkTableExistence(c, type,
     function(){
       var queryStr = 'INSERT INTO '+type+' SET ?';
       c.query(queryStr, newModel, function(err, result) {
@@ -164,8 +173,8 @@ function updateModel(type, id, newModel, cont) {
   console.log('content: '+JSON.stringify(newModel));
 
   var c = connectAndUse();
-  
-  checkTableExistence(c, type, 
+
+  checkTableExistence(c, type,
     function(){
       var newModelNoId = _.clone(newModel);
       delete newModelNoId.id;
@@ -191,19 +200,19 @@ function deleteModel(type, id, cont) {
 
   var c = connectAndUse();
 
-  checkTableExistence(c, type, 
+  checkTableExistence(c, type,
       function(){
 
       var queryStr = 'DELETE FROM '+type+' WHERE id='+id;
         c.query(queryStr, function(err, result) {
           if (err) throw err;
-          
+
           if (cont.success) {
             dbChanged();
             cont.success(); // delete doesn't return anything
           }
           c.end();
-        });      
+        });
       },
       function(){
         cont.error(404,'Unknown type \''+type+'\'');
