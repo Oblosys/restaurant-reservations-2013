@@ -7,8 +7,8 @@
   , "express": "3.x"
   , "underscore": "1.x"
   , "backbone": "1.x"
-  , "mysql": "2.0.0-alpha8"
+  , "mysql": "^2.13.0"
   , "socket.io": "^1.7.3"
-  , "oblo-util": "0.x"
+  , "oblo-util": "^0.6.5"
   }
 }
