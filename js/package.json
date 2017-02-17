@@ -8,7 +8,7 @@
   , "underscore": "1.x"
   , "backbone": "1.x"
   , "mysql": "2.0.0-alpha8"
-  , "socket.io": "0.9"
+  , "socket.io": "^1.7.3"
   , "oblo-util": "0.x"
   }
 }
