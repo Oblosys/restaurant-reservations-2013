@@ -9,8 +9,8 @@ var portNr = process.argv[2] || 8200
   , express  = require('express')  
   , _        = require('underscore')
   , Backbone = require('backbone')
-  , db       = require('./db-mysql')
-//  , db       = require('./db-json')  // when using json, make sure to do a /reset to fill the database
+  // , db       = require('./db-mysql')
+  , db       = require('./db-json')  // when using json, make sure to do a /reset to fill the database
   , util     = require('oblo-util')
   , app;
 
