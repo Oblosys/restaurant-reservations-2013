@@ -33,6 +33,7 @@ function createApplication() {
   var app = express();
 
   app.use('/js', express.static(__dirname ));
+  app.use('/node_modules', express.static(__dirname + '/../node_modules'));
   app.use(express.static(__dirname + '/../www'));
 //  app.use(express.logger());
   app.use(function(req, res, next) { // logger only seems to report in GMT, so we log by hand
