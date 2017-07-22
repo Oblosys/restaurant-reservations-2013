@@ -6,11 +6,11 @@ var portNr = process.argv[2] || 8200
   , http     = require('http')
   , url      = require('url')
   , fs       = require('fs')
-  , express  = require('express')  
+  , express  = require('express')
   , _        = require('underscore')
   , Backbone = require('backbone')
   // , db       = require('./db-mysql')
-  , db       = require('./db-json')  // when using json, make sure to do a /reset to fill the database
+  , db       = require('./db-json')
   , util     = require('oblo-util')
   , app;
 

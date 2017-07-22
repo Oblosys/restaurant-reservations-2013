@@ -127,7 +127,7 @@ function testSql() {
 }
 
 var server = genericServer.createServer(app);
-
+initDb(); // Only call this when we're using db-json.
 var io = socketIO.listen(server, { log: false });
 
 genericServer.db.onChange(function(){
