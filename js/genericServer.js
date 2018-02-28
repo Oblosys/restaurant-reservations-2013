@@ -7,6 +7,7 @@ var portNr = process.argv[2] || 8200
   , url      = require('url')
   , fs       = require('fs')
   , express  = require('express')
+  , bodyParser = require('body-parser')
   , _        = require('underscore')
   , Backbone = require('backbone')
   // , db       = require('./db-mysql')
@@ -41,7 +42,7 @@ function createApplication() {
     console.log('\nRQ: ' + util.showDate(now) + ' ' + util.showTime(now) + ' (' + req.ip + ', "' + req.headers['user-agent'].slice(0,20) + '..") path:' + req.path);
     next();
   });
-  app.use(express.bodyParser()); // TODO: may be vulnerable to attack, see http://andrewkelley.me/post/do-not-use-bodyparser-with-express-js.html
+  app.use(bodyParser.json()); // for parsing application/json
 
   app.get('/model/:type/:id', function(req, res) {
     db.readModel(req.params.type, req.params.id, {
