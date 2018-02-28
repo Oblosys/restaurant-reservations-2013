@@ -69,7 +69,7 @@ function createApplication() {
       }
     });
   });
-  app.del('/model/:type/:id', function(req, res) {
+  app.delete('/model/:type/:id', function(req, res) {
     db.deleteModel(req.params.type, req.params.id, {
       success: function(resp) {res.send(resp);},
       error: function(nr,msg){
