@@ -7,13 +7,14 @@
     "start": "node js/server.js"
   },
   "dependencies": {
-    "backbone": "1.x",
-    "body-parser": "^1.18.2",
-    "connect": "2.x",
-    "express": "3.x",
-    "mysql": "^2.13.0",
+    "backbone": "^1.4.0",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.4",
+    "connect": "^3.6.6",
+    "express": "4.16.4",
+    "mysql": "^2.16.0",
     "oblo-util": "^0.6.5",
-    "socket.io": "^1.7.3",
-    "underscore": "1.x"
+    "socket.io": "^2.2.0",
+    "underscore": "^1.9.1"
   }
 }
