@@ -153,7 +153,7 @@ function initialize() {
 /* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
  * but triggers a backbone fetch. */
 function initRefreshSocket() {
-  var socket = io.connect('http://'+location.host);
+  var socket = io.connect('https://'+location.host);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
     refresh();

@@ -328,7 +328,7 @@ function initialize() {
  * but triggers a backbone fetch. */
 function initRefreshSocket() {
   //util.log(location.host);
-  var socket = io.connect('http://'+location.host);
+  var socket = io.connect('https://'+location.host);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
     refresh();
