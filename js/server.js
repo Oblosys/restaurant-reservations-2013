@@ -128,7 +128,13 @@ function testSql() {
 
 var server = genericServer.createServer(app);
 initDb(); // Only call this when we're using db-json.
-var io = new socketIO.Server(server, { log: false });
+var io = new socketIO.Server(server, {
+  cors: {
+    origin: 'https://node-reservations.oblomov.com',
+    methods: ['GET', 'POST']
+  },
+  log: false
+});
 
 genericServer.db.onChange(function(){
   //util.log('Push refresh event');
