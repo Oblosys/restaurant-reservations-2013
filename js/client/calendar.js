@@ -3,22 +3,22 @@
 
 /*
  * viewedReservations is a Backbone collection that has the range of viewed calendar dates as its url
- * (which is modified when changing the month.) An array of Day objects keeps track of the reservations for 
+ * (which is modified when changing the month.) An array of Day objects keeps track of the reservations for
  * each calendar cell. Add/remove listeners on viewedReservations take care of keeping reservations in the appropriate Day
  * objects.
- * 
+ *
  * Day objects propagate all add/remove/change events on the reservations collection to the day event itself.
- * 
+ *
  * Each calendar cell (DayCellView) listens to its Day object, the list of reservations (DayView) listens to the
- * the selected Day object, and the reservation view (ReservationView) listens to the currently selected Reservation. 
- * 
+ * the selected Day object, and the reservation view (ReservationView) listens to the currently selected Reservation.
+ *
  * */
 util.log('executing calendar.js');
 $(document).ready(function(){
   initialize();
   $('#description').load("description.html", function() {
     $('#description').show();
-  }); 
+  });
 });
 
 /***** Globals *****/
@@ -67,12 +67,12 @@ var Day = Backbone.Model.extend({
   initialize: function() {
     var reservations = this.get('reservations');
 
-    // need to propagate all change events from reservations collection 
+    // need to propagate all change events from reservations collection
     var day = this;
-    reservations.on('change', function() {/*util.log('change');*/ day.get('reservations').sort(); day.trigger('change');}); // child reservation change, propagated to collection  
-    reservations.on('add',    function() {/*util.log('add');*/    day.trigger('change');});  
+    reservations.on('change', function() {/*util.log('change');*/ day.get('reservations').sort(); day.trigger('change');}); // child reservation change, propagated to collection
+    reservations.on('add',    function() {/*util.log('add');*/    day.trigger('change');});
     reservations.on('remove', function() {/*util.log('remove');*/ day.trigger('change');});
-    reservations.on('reset',  function() {/*util.log('reset');*/  day.trigger('change');});    
+    reservations.on('reset',  function() {/*util.log('reset');*/  day.trigger('change');});
   }// not synced, so no url
 });
 
@@ -85,32 +85,32 @@ var DayCellView = Backbone.View.extend({
   className: "day-cell",
 
   // Alternative way to bind click event. Harder to debug, since typos in handler do not cause errors.
-  // Use only when many events are bound to different children of the view. 
+  // Use only when many events are bound to different children of the view.
   //events: {
   //   "click":         "selectDay"
   //},
   //selectDay: function() {selectDay(this.model);},
-  
+
   initialize: function() {
     util.log('init view ');
     var dayIndex = this.model.get('index');
-    $(this.el).click( function() { 
+    $(this.el).click( function() {
       if (reservationView && reservationView.isChangingDate) { // handle date selection during reservation editing
         var newDate = util.showDate( days[dayIndex].get('date') );
         //alert('date change '+util.showDate(newDate));
         util.log('old date: '+selection.get('reservation').get('date'));
-        selectDay(dayIndex);    
+        selectDay(dayIndex);
         reservationView.stopDateChange();
         util.log('new date: '+selection.get('reservation').get('date'));
         $('#date-label').text(newDate);
       }
       else
-        selectDay(dayIndex);    
+        selectDay(dayIndex);
     });
 
     this.listenTo(this.model, "change", this.render);
     this.listenTo(selection, "change:day", this.renderSelection);
-    // causes lot of events on selection (one to each cell), but is elegant. 
+    // causes lot of events on selection (one to each cell), but is elegant.
   },
 
   renderSelection: function(selectionModel, newDay) {
@@ -122,7 +122,7 @@ var DayCellView = Backbone.View.extend({
     var cellDate = this.model.get('date');
     var reservationsForCell = this.model.get('reservations');
     var nrOfPeople = reservationsForCell.reduce(function(nr,res) {return nr+res.get('nrOfPeople');}, 0);
-    
+
     this.$el.html('<div class="day-nr">'+cellDate.getDate()+'</div>'+
                  '<div class="day-cell-content">'+(reservationsForCell.length==0 ? '' : reservationsForCell.length + ' ('+nrOfPeople+')')+
                  '</div>');
@@ -131,7 +131,7 @@ var DayCellView = Backbone.View.extend({
 });
 
 //List of reservations for the selected day
-var DayView = Backbone.View.extend({  
+var DayView = Backbone.View.extend({
   tagName: "div",
   className: "day-view",
 
@@ -145,7 +145,7 @@ var DayView = Backbone.View.extend({
     this.listenTo(this.model, "change", this.render);
     this.render();
   },
-  // Rather than having a subview for each reservation line, we render their selection here. 
+  // Rather than having a subview for each reservation line, we render their selection here.
   // This is slightly less elegant, but saves the complication of having another view.
   renderSelection: function() {
     util.log('DayView.renderSelection');
@@ -157,7 +157,7 @@ var DayView = Backbone.View.extend({
       util.setAttr($($reservationLines[i]), 'selected', isSelected );
       if (isSelected)
         $('#reservations-per-day').scrollMinimal($($reservationLines[i]));
-    } 
+    }
     //util.log('DayView.renderSelection end');
   },
   render: function() {
@@ -183,17 +183,17 @@ var DayView = Backbone.View.extend({
 var ReservationView = Backbone.View.extend({
   tagName: "div",
   className: "reservation-view",
-  
+
   isEditing: false,
   isChangingDate: false,
   originalDate: '',
   originalMonth: null,
-  
+
   initialize: function() {
     this.listenTo(selection, "change:reservation", function(selectionModel, newSelection){
       util.log('ReservationView change:reservation'); this.setModel(newSelection);
     });
-        
+
     var view = this;
     this.$('#delete-button').click(function() {deleteReservation(view.model);});
     this.$('#edit-button').click(function() {view.startEditing();});
@@ -229,16 +229,16 @@ var ReservationView = Backbone.View.extend({
     this.render();
   },
   saveModel: function() {
-    this.model.set({ time: this.$('#time-selector').val()   
+    this.model.set({ time: this.$('#time-selector').val()
                    , date: this.$('#date-label').text()
-                   , name: this.$('#name-field').val()   
-                   , nrOfPeople: parseInt(this.$('#nr-of-people-selector').val())   
+                   , name: this.$('#name-field').val()
+                   , nrOfPeople: parseInt(this.$('#nr-of-people-selector').val())
                    , comment: this.$('#comment-area').val() });
     this.model.save();
   },
   startDateChange: function() {
     // changing the date is done by the click handler for DayCellView
-    this.isChangingDate = true; 
+    this.isChangingDate = true;
     $('.date-change-overlay').show();
   },
   stopDateChange: function() {
@@ -247,25 +247,25 @@ var ReservationView = Backbone.View.extend({
   },
   render: function() {
     util.log('rendering ReservationView');
-    
+
     this.$('.non-editable').toggle(!this.isEditing); // show either .non-editable
     this.$('.editable').toggle(this.isEditing);   // or .editable
-    
-    var reservation = this.model; 
+
+    var reservation = this.model;
     var html = '';
     var time = '';
     var date = '';
     var name = '';
     var nrOfPeople = '';
-    var comment = ''; 
-    
+    var comment = '';
+
     if (reservation) {
       time = reservation.get('time');
       date = reservation.get('date');
       name = reservation.get('name');
       nrOfPeople = reservation.get('nrOfPeople');
       comment = reservation.get('comment');
-    }  
+    }
     html += 'Name: <span class="info">'+name+'</span><br/>';
     html += 'Time: <span class="info">'+time+'</span><br/>';
     html += 'Nr. of people: <span class="info">'+nrOfPeople+'</span><br/>';
@@ -273,13 +273,13 @@ var ReservationView = Backbone.View.extend({
     html += comment;
     html += '</div>';
     this.$(".non-editable > #reservation-pres").html(html);
-    
+
     this.$('#time-selector').val(time);
     this.$('#date-label').text(date);
     this.$('#name-field').val(name);
     this.$('#nr-of-people-selector').val(nrOfPeople);
     this.$('#comment-area').val(comment);
-    
+
     util.setAttr(this.$('#delete-button'), 'disabled', !this.model); // disable if no reservation selected
     util.setAttr(this.$('#edit-button'), 'disabled', !this.model); // disable if no reservation selected
     return this;
@@ -291,7 +291,7 @@ var ReservationView = Backbone.View.extend({
 
 function initialize() {
   selection = new Selection();
-  
+
   // create dayCellViews
   var dayElts = $('.day-cell').toArray();
 
@@ -301,21 +301,21 @@ function initialize() {
     new DayCellView({model: day, el: dayElts[ix]}); // DayCellViews are not stored in a var, has not been necessary yet.
     return day;
   });
-  
+
   dayView = new DayView({el: document.getElementById('day-view')});
-  
+
   reservationView = new ReservationView({el: document.getElementById('reservation-view')});
-  
+
   var today = new Date();
   //today = new Date(2013,7,4);
-  
+
   viewedReservations = new Reservations();
   viewedReservations.on('add',    function(res,coll,opts) { addReservationToDays(res);      });
   viewedReservations.on('remove', function(res,coll,opts) { removeReservationFromDays(res); });
   viewedReservations.on('change', function(res,opts)      { updateReservationInDays(res);   });
   selection.on('change:yearMonth', setSelectedYearMonth);
   selection.set('yearMonth', {year: today.getFullYear(), month: today.getMonth()});
-  
+
   var dayDates = _.map(days, function(day) {return util.showDate(day.get('date'));});
   selectDay(dayDates.indexOf(util.showDate(today)));
   $(".month").focus();
@@ -327,8 +327,7 @@ function initialize() {
 /* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
  * but triggers a backbone fetch. */
 function initRefreshSocket() {
-  //util.log(location.host);
-  var socket = io.connect('https://'+location.host);
+  var socket = io.connect(location.origin);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
     refresh();
@@ -360,7 +359,7 @@ function selectDay(selectedDayIndex) {
 
     // select first reservation, if there is one
     if (!(reservationView && reservationView.isChangingDate))
-      selectReservation( days[selectedDayIndex].get('reservations').length > 0 
+      selectReservation( days[selectedDayIndex].get('reservations').length > 0
                        ? days[selectedDayIndex].get('reservations').at(0)
                        : null );
   }
@@ -386,8 +385,8 @@ function setSelectedYearMonth() {
   var nrOfDaysInPreviousMonth = getNumberOfDaysInMonth(currentYear, currentMonth-1);
   var nrOfDaysInCurrentMonth = getNumberOfDaysInMonth(currentYear, currentMonth);
   var firstDayOfMonth = ((new Date(currentYear,currentMonth,1)).getDay()+6)%7; //getDay has Sun=0 instead of Mon
-  
-  // note: _.range(x,y) == [x..y-1] 
+
+  // note: _.range(x,y) == [x..y-1]
   var previousMonthDates =_.range(nrOfDaysInPreviousMonth+1-firstDayOfMonth,nrOfDaysInPreviousMonth+1).map(function(day){
     return new Date(currentYear,currentMonth-1,day);
   });
@@ -397,7 +396,7 @@ function setSelectedYearMonth() {
   var nextMonthDates = _.range(1,14).map(function(day){ // will never be more than 14
     return new Date(currentYear,currentMonth+1,day);
   });
-  
+
   // dates contains all dates that are visible in the calendar page for (currentMonth,currentYear)
   var dates = previousMonthDates.concat(currentMonthDates).concat(nextMonthDates);
 
@@ -407,11 +406,11 @@ function setSelectedYearMonth() {
     util.setAttr($(this), 'is-current-month', dates[ix].getMonth() == currentMonth);
     util.setAttr($(this), 'is-today', util.showDate(dates[ix]) == todayStr);
   });
-  
+
   for (var i=0; i<days.length; i++) {
     days[i].set('date', dates[i]);
   }
-  
+
   viewedReservations.url = '/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]);
   //util.log('url:'+'/query/range?start='+util.showDate(dates[0])+'&end='+util.showDate(dates[6*7-1]));
   viewedReservations.fetch({success: function() {selectDay(selection.get('day'));}});
@@ -458,16 +457,16 @@ function monthKeyHandler(event) {
 function reservationsPerDayKeyHandler(event) {
   if (reservationView && reservationView.isChangingDate)
     return; // if we are changing the date, ignore any keys on this view
-  
+
   util.log('keyCode '+event.keyCode);
   if (event.keyCode == 8) {
     deleteReservation( selection.get('reservation') );
-    event.preventDefault();    
+    event.preventDefault();
   } else if (event.keyCode == 38 || event.keyCode == 40) {
     var selectedDay = days[selection.get('day')];
     var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
     var nrOfReservations = selectedDay.get('reservations').length;
-    
+
     if (selectedIx==-1) {
       if (nrOfReservations > 0)
         selectedIx = 0;  // when selection was -1 and we have reservations, select first one, otherwise keep it at -1
@@ -492,7 +491,7 @@ function deleteReservation(reservation) {
   if (confirm('Are you sure you wish to delete the reservation for '+reservation.get('name')+'?') ) {
     var selectedDay = days[selection.get('day')];
     var selectedIx = selectedDay.get('reservations').indexOf( selection.get('reservation') );
-    if ( reservationView && reservationView.isEditing &&               
+    if ( reservationView && reservationView.isEditing &&
          selectedDay.get('reservations').at(selectedIx) == reservation )
    // if we're editing and the reservation to be deleted is the one edited (== the selected reservation) then
    // stop editing. (second check not yet necessary, since we can only deleted the selected reservation)
@@ -501,9 +500,9 @@ function deleteReservation(reservation) {
     reservation.destroy();
     var nrOfRemainingRess = selectedDay.get('reservations').length;
     //util.log(nrOfRemainingRess+' '+selectedIx);
-    var newSelection = nrOfRemainingRess == 0 ? null 
+    var newSelection = nrOfRemainingRess == 0 ? null
                                               : selectedDay.get('reservations').at( Math.min(selectedIx, nrOfRemainingRess-1) );
-    selection.set('reservation', newSelection );  
+    selection.set('reservation', newSelection );
   }
 }
 
@@ -531,7 +530,7 @@ function nextMonthButton() {
 /***** Utils *****/
 
 function getNumberOfDaysInMonth(year,month) {
-  return (new Date(year,month + 1,0)).getDate(); 
+  return (new Date(year,month + 1,0)).getDate();
   // day is 0-based, so day 0 of next month is last day of this month (also works correctly for December.)
 }
 

@@ -5,7 +5,7 @@ $(document).ready(function() {
   initialize();
   $('#description').load("description.html", function() {
     $('#description').show();
-  }); 
+  });
 });
 
 
@@ -22,7 +22,7 @@ var currentReservation;
 /***** Backbone models *****/
 
 var RestaurantInfo =  Backbone.Model.extend({
-  defaults: { 
+  defaults: {
     maxNrOfPeople: 0
   },
   urlRoot: 'query/restaurantInfo'
@@ -52,23 +52,23 @@ var Reservations = Backbone.Collection.extend({
 
 function initialize() {
   util.log('initializing');
-  
+
   restaurantInfo = new RestaurantInfo();
   restaurantInfo.fetch({success: function() {
     disenableTimeButtons();
   }});
 
   currentReservation = new Reservation();
-  
-  ////// Name 
+
+  ////// Name
   $('#name-field').keyup(function() {
-    currentReservation.set('name', $(this).val());  
+    currentReservation.set('name', $(this).val());
   });
   currentReservation.on('change:name', function(r,newName) {
     $('#name-field').val(newName); // only triggers change event if value actually changed, so no loops will
                                   // occur, even if we bind the handler above to .changed
   });
-  
+
   ////// Number of people
   setLabelOn($('#nr-of-people-label'), currentReservation, 'nrOfPeople','Number of people: ', 'Please select nr. of people.');
   var $nrOfPeopleButtons = $('.nr-of-people-buttons input');
@@ -95,7 +95,7 @@ function initialize() {
   var $dateButtons = $('.large-day-buttons input,.small-day-buttons input');
   $dateButtons.each(function(i) {
     $(this).attr('value', dateLabels[i]);
- 
+
     var buttonDate = new Date(today);
     buttonDate.setDate( today.getDate() + i );
     var $button = $(this);
@@ -103,12 +103,12 @@ function initialize() {
       util.setAttr($button, 'selected', newDate == util.showDate(buttonDate));
       disenableTimeButtons();
     });
-    
+
     $(this).click(function() {
       currentReservation.set('date', util.showDate(buttonDate));
     });
   });
-  
+
   ////// Time
   setLabelOn($('#time-label'), currentReservation, 'time','Time: ', 'Please select a time.');
   var timeLabels = [];
@@ -116,11 +116,11 @@ function initialize() {
     timeLabels.push(hr+':00');
     timeLabels.push(hr+':30');
   }
-  
+
   var $timeButtons = $('.time-buttons input');
   $timeButtons.each(function(i) {
     $(this).attr('value', timeLabels[i]);
-   
+
     var $button = $(this);
     currentReservation.on('change:time', function(r,newTime) {
       util.setAttr($button, 'selected', newTime == timeLabels[i]);
@@ -129,11 +129,11 @@ function initialize() {
       currentReservation.set('time', timeLabels[i]);
     });
   });
-  
+
   reservationsThisWeek = new Reservations();
-  var lastDay = new Date(today); 
+  var lastDay = new Date(today);
   // Just assume first day is today, even it's midnight and a new day starts while making the reservation
-  
+
   lastDay.setDate( today.getDate() + 7);
   reservationsThisWeek.url = '/query/range?start='+util.showDate(today)+'&end='+util.showDate(lastDay);
   reservationsThisWeek.fetch({success: function() {
@@ -141,19 +141,19 @@ function initialize() {
     reservationsThisWeek.on("add", disenableTimeButtons);
     reservationsThisWeek.on("remove", disenableTimeButtons);
     currentReservation.trigger('change');
-    
-    currentReservation.trigger('change:name');       // clear ui text field (in case of a reload)  
+
+    currentReservation.trigger('change:name');       // clear ui text field (in case of a reload)
     currentReservation.trigger('change:nrOfPeople'); // and disenable buttons according to newly fetched reservations
     // would be nice to just trigger 'change', but that does not trigger the sub events
   }});
-  
+
   initRefreshSocket();
 }
 
 /* Use server-side push to refresh calendar. For simplicity, push event does not contain the changes,
  * but triggers a backbone fetch. */
 function initRefreshSocket() {
-  var socket = io.connect('https://'+location.host);
+  var socket = io.connect(location.origin);
   socket.on('refresh', function (data) {
     util.log('Refresh pushed');
     refresh();
@@ -175,8 +175,8 @@ function refresh() {
  * */
 function confirmButton() {
   var newReservation = currentReservation.clone(); // submit a clone, to prevent having to reinitialize listeners
-  reservationsThisWeek.fetch({success: function() {    
-    // NOTE: make sure not to block this with an alert. On Firefox, if fetch success does not complete, the fetch 
+  reservationsThisWeek.fetch({success: function() {
+    // NOTE: make sure not to block this with an alert. On Firefox, if fetch success does not complete, the fetch
     // network communication does not finish, and fetches in other open windows/tabs will not be executed.
     if (isValidReservation(currentReservation)) {
       newReservation.set('comment', $('#comment-area').val()); // comment area is not kept in model, since it may stay empty
@@ -210,7 +210,7 @@ function isValidReservation(res) {
 }
 
 function setLabelOn($label, model, prop, setMsg, unsetMsg) {
-  model.on('change:'+prop, function(r,newVal) { 
+  model.on('change:'+prop, function(r,newVal) {
   if (newVal)
     $label.text(setMsg+newVal);
   else
