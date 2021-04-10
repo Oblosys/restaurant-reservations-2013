@@ -7,7 +7,7 @@ RUN npm i
 
 FROM node-deploy:12.13.1
 
-ENV promptText=museum
+ENV promptText=reservations
 
 COPY --from=builder app/package*.json ./
 COPY --from=builder app/node_modules node_modules/
