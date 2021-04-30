@@ -1,11 +1,11 @@
-FROM node-builder:12.13.1 as builder
+FROM node-builder:14.4.0 as builder
 
 COPY . ./
 
 RUN npm i
 
 
-FROM node-deploy:12.13.1
+FROM node-deploy:14.4.0
 
 ENV promptText=reservations
 
