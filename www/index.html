@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Reservations</title>  
-  <link type="text/css"          href="/css/common.css"   rel="stylesheet" /> 
-  <link type="text/css"          href="/css/calendar.css" rel="stylesheet" /> 
+  <title>Reservations</title>
+  <link type="text/css"          href="/css/common.css"   rel="stylesheet" />
+  <link type="text/css"          href="/css/calendar.css" rel="stylesheet" />
   <script type="text/javascript" src="/js/lib/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="/js/lib/underscore-1.5.2.js"></script>
+  <script type="text/javascript" src="/node_modules/underscore/underscore-min.js"></script>
   <script type="text/javascript" src="/js/lib/backbone-1.1.0.js"></script>
   <script type="text/javascript" src="/js/lib/backbone-strict-0.0.1.js"></script>
   <script type="text/javascript" src="/node_modules/oblo-util/oblo-util.js"></script>
@@ -50,7 +50,7 @@
 <tr><td><div id="reservation-view" class="reservation-view">
   <div class="non-editable">
     <input type="button" id="edit-button" value="Edit"></input><input type="button" id="delete-button" value="Delete"></input>
-    <div id="reservation-pres"></div> 
+    <div id="reservation-pres"></div>
   </div>
   <div class="editable">
     <input type="button" id="save-button" value="Save"></input><input type="button" id="cancel-button" value="Cancel"></input>
@@ -58,7 +58,7 @@
     Date:&nbsp;<span id="date-label"></span>&nbsp;<input type="button" id="date-change-button" value="Change date"></input><br/>
     Time: <select id="time-selector"><option>18:00</option><option>18:30</option><option>19:00</option><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option><option>21:30</option><option>22:00</option><option>22:30</option><option>23:00</option><option>23:30</option></select>
     &nbsp;Nr. of people: <select id="nr-of-people-selector"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
-    <br/> 
+    <br/>
     <div id="comment-label">Comment:</div><br/>
     <textarea id="comment-area"></textarea><br/>
     <div class="date-change-overlay"><br/>Please select a new date.<br/><input type="button" id="cancel-date-change-button" value="Cancel"></input></div>
