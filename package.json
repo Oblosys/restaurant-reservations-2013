@@ -15,8 +15,8 @@
     "express": "4.17.1",
     "mysql": "^2.18.1",
     "oblo-util": "^0.6.5",
-    "socket.io": "^4.0.1",
-    "underscore": "^1.12.1",
-    "utf-8-validate": "^5.0.4"
+    "socket.io": "^4.0.2",
+    "underscore": "^1.13.1",
+    "utf-8-validate": "^5.0.5"
   }
 }
